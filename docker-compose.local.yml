@@ -1,0 +1,69 @@
+services:
+  django:
+    container_name: django
+    env_file:
+      - .env
+    build:
+      context: .
+    working_dir: /one_piece
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py collectstatic --noinput &&
+             gunicorn --workers 3 --bind 0.0.0.0:8000 config.wsgi:application"
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/one_piece
+      - static_volume:/one_piece/static
+      - media_volume:/one_piece/media
+    networks:
+      - ws
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  db:
+    image: postgres:14
+    container_name: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: pw1234
+      POSTGRES_ROOT_USER: postgres
+      POSTGRES_DB: one_piece
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - ws
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - ws
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+networks:
+  ws:
+    driver: bridge
+
+volumes:
+  static_volume:
+  media_volume:
+  postgres_data:
