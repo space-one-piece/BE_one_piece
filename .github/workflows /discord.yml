@@ -2,7 +2,7 @@ name: Discord Notification
 
 on:
   push:
-    branches: [ "main", "develop" ] # 원하는 브랜치 지정
+    branches: [ "**" ] # 원하는 브랜치 지정
   pull_request:
     types: [opened, synchronize, closed]
 
