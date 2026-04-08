@@ -1,6 +1,8 @@
 name: Discord Notification
 
-on: [push, pull_request]
+on:
+  push:
+  pull_request:
 
 jobs:
   discord-notify:
@@ -8,7 +10,6 @@ jobs:
     steps:
       - name: Send Discord Notification
         uses: sarisia/actions-status-discord@v1
-        if: success()
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
           status: ${{ job.status }}
@@ -16,9 +17,9 @@ jobs:
             ${{ github.event_name == 'pull_request' && '🚀 새로운 PR이 생성되었습니다' || '✅ 새로운 PUSH가 발생했습니다' }}
           content: |
             **작성자:** ${{ github.actor }}
-            **내용:** ${{ github.event.head_commit.message || github.event.pull_request.title }}
+            **내용:** ${{ github.event_name == 'pull_request' && github.event.pull_request.title || github.event.head_commit.message }}
             **저장소:** ${{ github.repository }}
             **브랜치:** ${{ github.ref_name }}
           description: |
             상세 내용은 아래 링크에서 확인하세요.
-            ${{ github.event.pull_request.html_url || github.event.head_commit.url }}
+            ${{ github.event_name == 'pull_request' && github.event.pull_request.html_url || github.event.head_commit.url }}
