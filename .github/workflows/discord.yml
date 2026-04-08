@@ -9,7 +9,6 @@ on:
 jobs:
   discord-notify:
     runs-on: ubuntu-latest
-    if: success() # 성공했을 때만 실행
     steps:
       - name: Send Discord Notification
         shell: bash
