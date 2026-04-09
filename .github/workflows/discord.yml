@@ -4,7 +4,7 @@ on:
   push:
     branches: [ "**" ] # 원하는 브랜치 지정
   pull_request:
-    types: [opened, synchronize, closed]
+    types: [opened, synchronize]
 
 jobs:
   discord-notify:
@@ -17,6 +17,7 @@ jobs:
           EVENT_NAME="${{ github.event_name }}"
           ACTOR="${{ github.actor }}"
           REPO="${{ github.repository }}"
+          CONTENT="${{ github.event.pull_request.title }}"
           
           if [[ "$EVENT_NAME" == "pull_request" ]]; then
             TITLE="🚀 새로운 PR이 생성되었습니다"
@@ -26,7 +27,7 @@ jobs:
             if [[ "${{ github.event.pull_request.merged }}" == "true" ]]; then
               TITLE="💜 PR이 성공적으로 병합되었습니다"
             fi
-          else
+          elif [[ "$EVENT_NAME" == "push" ]]; then
             TITLE="✅ 새로운 PUSH가 발생했습니다"
             CONTENT="${{ github.event.head_commit.message }}"
             URL="${{ github.event.head_commit.url }}"

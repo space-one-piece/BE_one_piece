@@ -2,7 +2,7 @@ services:
   django:
     container_name: django
     env_file:
-      - .env
+      - envs/.env
     build:
       context: .
     working_dir: /one_piece
@@ -28,10 +28,10 @@ services:
     image: postgres:14
     container_name: postgres
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: pw1234
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_ROOT_USER: postgres
-      POSTGRES_DB: one_piece
+      POSTGRES_DB: ${DB_NAME}
     ports:
       - 5432:5432
     volumes:
@@ -39,7 +39,7 @@ services:
     networks:
       - ws
     healthcheck:
-      test: [ "CMD", "pg_isready", "-U", "postgres"]
+      test: [ "CMD", "pg_isready", "-U", "${DB_USER}"]
       interval: 10s
       timeout: 5s
       retries: 5
