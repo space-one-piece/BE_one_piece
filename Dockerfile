@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /one_piece
 
 # 1. uv 설치 (pip를 통해 설치하는 게 가장 깔끔합니다)
-RUN pip install --upgrade pip && pip install uv
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # 2. uv 설정 (uv는 기본적으로 가상환경을 만들려고 하지만,
 # 도커 컨테이너 자체를 환경으로 쓰려면 시스템에 직접 설치하도록 설정합니다)
