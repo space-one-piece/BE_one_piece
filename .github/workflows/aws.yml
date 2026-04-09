@@ -56,7 +56,7 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
-          source: "resource/docker-compose.local.yml"
+          source: "docker-compose.local.yml"
           target: "~/app"
 
       - name: Deploy to server
@@ -85,11 +85,11 @@ jobs:
             echo ${{ secrets.GHCR_TOKEN }} | sudo docker login ghcr.io -u ${{ github.actor }} --password-stdin
             
             # 최신 이미지 Pull & 재시작
-            sudo docker compose -f resource/docker-compose.local.yml --env-file envs/.env pull web
-            sudo docker compose -f resource/docker-compose.local.yml --env-file envs/.env up -d
+            sudo docker compose -f docker-compose.local.yml --env-file envs/.env pull web
+            sudo docker compose -f docker-compose.local.yml --env-file envs/.env up -d
             
             # 마이그레이션 실행
-            sudo docker compose -f resource/docker-compose.local.yml --env-file envs/.env exec -T web uv run python manage.py migrate --no-input
+            sudo docker compose -f docker-compose.local.yml --env-file envs/.env exec -T web uv run python manage.py migrate --no-input
             
             # 안 쓰는 이미지 정리
             sudo docker image prune -f
