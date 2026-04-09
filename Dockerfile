@@ -1,4 +1,4 @@
-FROM python:3.12-slim
+FROM python:3.12
 
 # Install System Packages
 RUN apt-get update && apt-get install -y \
@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y \
 # Set WORKDIR
 WORKDIR /one_piece
 
-# 1. uv 설치 (pip를 통해 설치하는 게 가장 깔끔합니다)
+# 1. uv 설치
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # 2. uv 설정 (uv는 기본적으로 가상환경을 만들려고 하지만,
