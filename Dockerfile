@@ -9,10 +9,9 @@ RUN apt-get update && apt-get install -y \
 # Set WORKDIR
 WORKDIR /one_piece
 
-# 1. uv 설치
-RUN curl -LsSf https://astral.sh/uv/install.sh | sh
-
-ENV PATH="/root/.local/bin:$PATH"
+# 1. uv 설치 + PATH 등록을 한 번에
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh && \
+    ln -s /root/.local/bin/uv /usr/local/bin/uv
 
 # 2. uv 설정 (uv는 기본적으로 가상환경을 만들려고 하지만,
 # 도커 컨테이너 자체를 환경으로 쓰려면 시스템에 직접 설치하도록 설정합니다)
