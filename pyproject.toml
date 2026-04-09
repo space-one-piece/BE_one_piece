@@ -37,7 +37,7 @@ dependencies = [
 line-length = 120
 target-version = "py312"
 select = ["E", "F", "I"]
-ignore = ["B008", "B904"]
+ignore = ["B008", "B904", "E501"]
 
 [tool.ruff.lint] #내용검사
 # --fix 옵션을 넣었을 때 자동으로 고쳐줄 규칙들
