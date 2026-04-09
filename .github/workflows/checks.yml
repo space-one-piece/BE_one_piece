@@ -55,9 +55,9 @@ jobs:
 #        ports:
 #          - 5432:5432
 #        env:
-#          POSTGRES_USER: postgres
-#          POSTGRES_PASSWORD: pw1234
-#          POSTGRES_DB: one_piece
+#          POSTGRES_USER: ${{ DB_USER }}
+#          POSTGRES_PASSWORD: ${{ DB_PASSWORD }}
+#          POSTGRES_DB: ${{ DB_NAME }}
 #          TZ: Asia/Seoul
 #        # DB 상태 체크
 #        options: >-
