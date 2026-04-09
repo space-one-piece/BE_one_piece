@@ -3,7 +3,7 @@ services:
     container_name: django
     env_file:
       - envs/.env
-#    image: ${DJANGO_IMAGE:-local}
+    image: ${DJANGO_IMAGE:-local}
     build:
       context: .
     working_dir: /one_piece
