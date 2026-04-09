@@ -80,19 +80,19 @@ jobs:
             fi
             
             cd ~/app
-            
+
             # GitHub Container Registry 로그인
-            echo ${{ secrets.GHCR_TOKEN }} | sudo docker login ghcr.io -u ${{ github.actor }} --password-stdin
-            
+            echo ${{ secrets.GHCR_TOKEN }} | sudo docker login ghcr.io -u ${{ secrets.GHCR_USERNAME }} --password-stdin
+
+            # DJANGO_IMAGE를 env 파일에 저장
+            DJANGO_IMAGE=ghcr.io/$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]'):latest
+            grep -q "^DJANGO_IMAGE=" envs/.env \
+              && sed -i "s|^DJANGO_IMAGE=.*|DJANGO_IMAGE=$DJANGO_IMAGE|" envs/.env \
+              || echo "DJANGO_IMAGE=$DJANGO_IMAGE" >> envs/.env
+
             # 최신 이미지 Pull & 재시작
-            export DJANGO_IMAGE=ghcr.io/$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]'):latest
-            sudo -E docker compose -f docker-compose.local.yml --env-file envs/.env pull django
-            sudo -E docker compose -f docker-compose.local.yml --env-file envs/.env up -d django
-            
-            sleep 3
-            
-            # 마이그레이션 실행
-            sudo -E docker compose -f docker-compose.local.yml --env-file envs/.env exec -T django uv run python manage.py migrate --no-input
-            
+            sudo docker compose -f docker-compose.local.yml --env-file envs/.env pull django
+            sudo docker compose -f docker-compose.local.yml --env-file envs/.env up -d
+
             # 안 쓰는 이미지 정리
             sudo docker image prune -f
