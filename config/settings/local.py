@@ -1,4 +1,4 @@
-from config.settings.base import BASE_DIR  # noqa: F403
+from config.settings.base import *  # noqa: F403
 
 DEBUG = True
 
