@@ -3,9 +3,9 @@ services:
     container_name: django
     env_file:
       - envs/.env
-    image: ${DJANGO_IMAGE:-local}
     build:
       context: .
+    image: ${DJANGO_IMAGE:-django}
     working_dir: /one_piece
     command: >
       sh -c "python manage.py migrate &&
@@ -14,7 +14,6 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - .:/one_piece
       - static_volume:/one_piece/static
       - media_volume:/one_piece/media
     networks:
