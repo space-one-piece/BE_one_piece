@@ -86,7 +86,9 @@ jobs:
             
             # 최신 이미지 Pull & 재시작
             sudo docker compose -f docker-compose.local.yml --env-file envs/.env pull web
-            sudo docker compose -f docker-compose.local.yml --env-file envs/.env up -d
+            sudo docker compose -f docker-compose.local.yml --env-file envs/.env up -d web
+            
+            sleep 3
             
             # 마이그레이션 실행
             sudo docker compose -f docker-compose.local.yml --env-file envs/.env exec -T web uv run python manage.py migrate --no-input

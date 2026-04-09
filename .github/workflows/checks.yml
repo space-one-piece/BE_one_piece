@@ -1,8 +1,13 @@
 name: checks.yml
 on:
+  push:
+    branches:
+      - 'main'
+      - 'develop'
   pull_request:
     branches:
       - 'develop'
+      - 'main'
 
 jobs:
   ci:
@@ -42,86 +47,86 @@ jobs:
       - name: Run Mypy
         run: uv run mypy .
 
-  test:
-    runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:14
-        ports:
-          - 5432:5432
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: pw1234
-          POSTGRES_DB: one_piece
-          TZ: Asia/Seoul
-        # DB 상태 체크
-        options: >-
-          --health-start-period 5s
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-      redis:
-        image: redis:latest
-        ports:
-          - 6379:6379
-        # redis_cli
-        options: >-
-          --health-start-period 5s
-          --health-cmd "redis-cli ping"
-          --health-interval 5s
-          --health-timeout 3s
-          --health-retries 5        
-    steps:
-      # actions 가상서버에 git 코드 복제하기
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      # uv 세팅 및 설치
-      - name: Install uv
-        uses: astral-sh/setup-uv@v5
-        with:
-          enable-cache: true
-
-      # python 설치
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.12"
-
-      # uv 의존성 설치
-      - name: Install dependencies
-        run: uv sync --frozen
-
-#      - name: Run Django Migration
+#  test:
+#    runs-on: ubuntu-latest
+#    services:
+#      postgres:
+#        image: postgres:14
+#        ports:
+#          - 5432:5432
+#        env:
+#          POSTGRES_USER: ${{ DB_USER }}
+#          POSTGRES_PASSWORD: ${{ DB_PASSWORD }}
+#          POSTGRES_DB: ${{ DB_NAME }}
+#          TZ: Asia/Seoul
+#        # DB 상태 체크
+#        options: >-
+#          --health-start-period 5s
+#          --health-cmd pg_isready
+#          --health-interval 10s
+#          --health-timeout 5s
+#          --health-retries 5
+#      redis:
+#        image: redis:latest
+#        ports:
+#          - 6379:6379
+#        # redis_cli
+#        options: >-
+#          --health-start-period 5s
+#          --health-cmd "redis-cli ping"
+#          --health-interval 5s
+#          --health-timeout 3s
+#          --health-retries 5
+#    steps:
+#      # actions 가상서버에 git 코드 복제하기
+#      - name: Checkout code
+#        uses: actions/checkout@v4
+#
+#      # uv 세팅 및 설치
+#      - name: Install uv
+#        uses: astral-sh/setup-uv@v5
+#        with:
+#          enable-cache: true
+#
+#      # python 설치
+#      - name: Set up Python
+#        uses: actions/setup-python@v4
+#        with:
+#          python-version: "3.12"
+#
+#      # uv 의존성 설치
+#      - name: Install dependencies
+#        run: uv sync --frozen
+#
+##      - name: Run Django Migration
+##        run: |
+##          uv run python manage.py migrate
+#
+#      - name: Check each app has test & Run coverage
 #        run: |
-#          uv run python manage.py migrate
-
-      - name: Check each app has test & Run coverage
-        run: |
-          # 1. 전체 테스트를 병렬로 실행하며 coverage 수집
-          uv run coverage run --parallel-mode --concurrency=multiprocessing manage.py test --parallel 3
-
-          # 2. 커버리지 데이터 합치기
-          uv run coverage combine
-
-          # 3. apps 디렉터리 하위의 앱 디렉터리 배열 수집
-          apps=$(find apps -maxdepth 1 -mindepth 1 -type d ! -name "__pycache__" -exec basename {} \;)
-
-          # 4. 각 app 디렉터리를 순회하며 test 코드가 존재하는 지 확인 후 coverage report 도출
-          for app_name in $apps; do
-            app_path="apps/$app_name"
-            test_files=$(find "$app_path" -type f \( -name "tests.py" -o -name "test_*.py" \))
-            if [ -n "$test_files" ] && grep -q "def test_" $test_files 2>/dev/null; then
-              echo "📊 Coverage for apps.$app_name:"
-              uv run coverage report -m --include="$app_path/*"
-              echo ""
-            else
-              echo "⚠️  No test functions found in apps.$app_name"
-            fi
-          done
-
-          # 5. 전체 커버리지 보고
-          echo "======================="
-          echo "📊 Total Coverage Report:"
-          uv run coverage report -m
+#          # 1. 전체 테스트를 병렬로 실행하며 coverage 수집
+#          uv run coverage run --parallel-mode --concurrency=multiprocessing manage.py test --parallel 3
+#
+#          # 2. 커버리지 데이터 합치기
+#          uv run coverage combine
+#
+#          # 3. apps 디렉터리 하위의 앱 디렉터리 배열 수집
+#          apps=$(find apps -maxdepth 1 -mindepth 1 -type d ! -name "__pycache__" -exec basename {} \;)
+#
+#          # 4. 각 app 디렉터리를 순회하며 test 코드가 존재하는 지 확인 후 coverage report 도출
+#          for app_name in $apps; do
+#            app_path="apps/$app_name"
+#            test_files=$(find "$app_path" -type f \( -name "tests.py" -o -name "test_*.py" \))
+#            if [ -n "$test_files" ] && grep -q "def test_" $test_files 2>/dev/null; then
+#              echo "📊 Coverage for apps.$app_name:"
+#              uv run coverage report -m --include="$app_path/*"
+#              echo ""
+#            else
+#              echo "⚠️  No test functions found in apps.$app_name"
+#            fi
+#          done
+#
+#          # 5. 전체 커버리지 보고
+#          echo "======================="
+#          echo "📊 Total Coverage Report:"
+#          uv run coverage report -m

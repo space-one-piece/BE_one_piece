@@ -26,4 +26,60 @@ dependencies = [
     "google-genai (>=1.67.0,<2.0.0)",
     "whitenoise (>=6.12.0,<7.0.0)",
     "psycopg2-binary>=2.9.11",
+    "ruff>=0.15.9",
+    "mypy>=1.20.0",
+    "django-stubs>=6.0.2",
+    "djangorestframework-stubs>=3.16.9",
 ]
+
+[dependency-groups]
+dev = [
+    "coverage>=7.13.5",
+]
+
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+select = ["E", "F", "I"]
+ignore = ["B008", "B904", "E501", "F405"]
+
+[tool.ruff.lint] #내용검사
+# --fix 옵션을 넣었을 때 자동으로 고쳐줄 규칙들
+fixable = ["ALL"] # ruff한테 수정 허락해주는 규칙
+unfixable = []
+
+[tool.ruff.format] #글씨체, 정렬
+quote-style = "double"
+indent-style = "space"
+
+
+[tool.mypy]
+plugins = ["mypy_django_plugin.main"]
+python_version = 3.12
+strict = true
+exclude = ["migrations", "manage.py"]
+
+[[tool.mypy.overrides]]
+module = ["admin_auto_filters", "admin_auto_filters.*"]
+ignore_missing_imports = true
+
+[tool.django-stubs]
+django_settings_module = "config.settings.local"
+
+[tool.coverage.run]
+omit = [
+    "/migrations/",
+    "/tests/",
+    "/test_.py",
+    "/settings/",
+    "/manage.py",
+    "/urls.py",
+    "/wsgi.py",
+    "/asgi.py",
+    "*testcase.py",
+]
+
+[tool.coverage.report]
+fail_under = 80
+show_missing = true
