@@ -26,4 +26,6 @@ dependencies = [
     "google-genai (>=1.67.0,<2.0.0)",
     "whitenoise (>=6.12.0,<7.0.0)",
     "psycopg2-binary>=2.9.11",
+    "ruff>=0.15.9",
+    "mypy>=1.20.0",
 ]
