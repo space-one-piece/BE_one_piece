@@ -20,6 +20,8 @@ from django.urls import path
 from drf_yasg import openapi  # type: ignore
 from drf_yasg.views import get_schema_view  # type: ignore
 
+from config.views import hellow_word
+
 schema_view = get_schema_view(
     openapi.Info(
         title="Snippets API",
@@ -33,6 +35,7 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
+    path("", hellow_word),
     path("admin/", admin.site.urls),
     path("swagger<format>/", schema_view.without_ui(cache_timeout=0), name="schema-json"),
     path(
