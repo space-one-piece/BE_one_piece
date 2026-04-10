@@ -37,6 +37,7 @@ class ImageAnalysis(TimeStampModel):
     ai_keywords = models.JSONField(null=True, blank=True)
     ai_comment = models.TextField(null=True, blank=True)
     match_score = models.FloatField(null=True, blank=True)
+    review = models.TextField(null=True, blank=True)
     is_helpful = models.BooleanField(default=False)
     is_fallback = models.BooleanField(default=False)
 
