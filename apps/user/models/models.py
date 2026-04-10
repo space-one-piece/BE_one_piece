@@ -1,10 +1,8 @@
-from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager,
-                                        PermissionsMixin)
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 
 from apps.core.models import TimeStampModel
-from apps.user.choices import (SocialTypeChoice, UserGender, UserStatus,
-                               WithdrawalReason)
+from apps.user.choices import SocialTypeChoice, UserGender, UserStatus, WithdrawalReason
 
 
 class UserManager(BaseUserManager["User"]):
