@@ -1,4 +1,3 @@
-
 bind = "0.0.0.0:8000"
 
 workers = 2
@@ -22,4 +21,4 @@ threads = 1
 keepalive = 5
 
 # 리버스 프록시 IP 신뢰
-forwarded_allow_ips = '*'
+forwarded_allow_ips = "*"

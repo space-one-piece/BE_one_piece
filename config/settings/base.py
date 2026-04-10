@@ -159,8 +159,8 @@ AUTH_USER_MODEL = "user.User"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://fragmnt.pics',
-    'https://www.fragmnt.pics',
+    "https://fragmnt.pics",
+    "https://www.fragmnt.pics",
 ]
 
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")

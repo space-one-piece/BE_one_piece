@@ -6,7 +6,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -28,9 +27,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "last_login",
-                    models.DateTimeField(
-                        blank=True, null=True, verbose_name="last login"
-                    ),
+                    models.DateTimeField(blank=True, null=True, verbose_name="last login"),
                 ),
                 (
                     "is_superuser",
@@ -44,15 +41,11 @@ class Migration(migrations.Migration):
                 ("updated_at", models.DateTimeField(auto_now=True)),
                 (
                     "email",
-                    models.EmailField(
-                        max_length=255, unique=True, verbose_name="이메일"
-                    ),
+                    models.EmailField(max_length=255, unique=True, verbose_name="이메일"),
                 ),
                 (
                     "password",
-                    models.CharField(
-                        default="", max_length=128, verbose_name="비밀번호"
-                    ),
+                    models.CharField(default="", max_length=128, verbose_name="비밀번호"),
                 ),
                 ("name", models.CharField(max_length=30, verbose_name="이름")),
                 ("birthday", models.DateField(verbose_name="생년월일")),
@@ -67,9 +60,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "phone_number",
-                    models.CharField(
-                        max_length=20, unique=True, verbose_name="휴대전화"
-                    ),
+                    models.CharField(max_length=20, unique=True, verbose_name="휴대전화"),
                 ),
                 (
                     "gender",
