@@ -9,3 +9,4 @@ MEDIA_URL = "media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
 INTERNAL_IPS = ["127.0.0.1", "3.35.53.10", "fragmnt.pics"]
+
