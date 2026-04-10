@@ -13,7 +13,6 @@ jobs:
       - name: Send Discord Notification
         shell: bash
         env:
-          
           EVENT_NAME: "${{ github.event_name }}"
           ACTOR: "${{ github.actor }}"
           REPO: "${{ github.repository }}"
