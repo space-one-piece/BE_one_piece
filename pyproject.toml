@@ -27,10 +27,10 @@ dependencies = [
     "whitenoise (>=6.12.0,<7.0.0)",
     "psycopg2-binary>=2.9.11",
     "ruff>=0.15.9",
-    "mypy>=1.20.0",
-    "django-stubs>=6.0.2",
-    "djangorestframework-stubs>=3.16.9",
+    "djangorestframework-stubs==3.15.1",
     "drf-yasg>=1.21.15",
+    "mypy==1.11.2",
+    "django-stubs[compatible-mypy]==5.1.0",
 ]
 
 [dependency-groups]
