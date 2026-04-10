@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "apps.chatbot",
     "apps.question",
     "apps.user",
+    "drf_yasg",
 ]
 
 MIDDLEWARE = [
