@@ -31,6 +31,8 @@ dependencies = [
     "django-stubs>=6.0.2",
     "djangorestframework-stubs>=3.16.9",
     "drf-yasg>=1.21.15",
+    "black>=26.3.1",
+    "isort>=8.0.1",
 ]
 
 [dependency-groups]
