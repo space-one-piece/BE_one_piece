@@ -17,7 +17,7 @@ class Keyword(TimeStampModel):
 
     division = models.CharField(null=False, blank=False, max_length=2, choices=TYPE_CHOICES)
     name = models.CharField(null=False, blank=False, max_length=10)
-    score = models.IntegerField(null=False, blank=False, max_length=1)
+    score = models.IntegerField(null=False, blank=False)
 
     def __str__(self) -> str:
         return f"{self.name}"

@@ -16,8 +16,6 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-from apps import user
-
 load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -156,3 +154,4 @@ REST_FRAMEWORK = {
 }
 
 AUTH_USER_MODEL = "user.User"
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
