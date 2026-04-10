@@ -24,12 +24,8 @@ class ChatSession(TimeStampModel):
 
 class ChatbotRecommendation(TimeStampModel):
     user = models.ForeignKey("user.User", on_delete=models.CASCADE, db_column="user_id")
-    session = models.ForeignKey(
-        ChatSession, on_delete=models.CASCADE, db_column="session_id"
-    )
-    scent = models.ForeignKey(
-        "analysis.Scent", on_delete=models.CASCADE, db_column="scent_id"
-    )
+    session = models.ForeignKey(ChatSession, on_delete=models.CASCADE, db_column="session_id")
+    scent = models.ForeignKey("analysis.Scent", on_delete=models.CASCADE, db_column="scent_id")
     retry_count = models.IntegerField(default=0)
     is_saved = models.BooleanField(default=False)
     saved_at = models.DateTimeField(null=True, blank=True)

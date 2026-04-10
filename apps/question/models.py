@@ -15,9 +15,7 @@ class Keyword(TimeStampModel):
         ("PL", "place"),
     ]
 
-    division = models.CharField(
-        null=False, blank=False, max_length=2, choices=TYPE_CHOICES
-    )
+    division = models.CharField(null=False, blank=False, max_length=2, choices=TYPE_CHOICES)
     name = models.CharField(null=False, blank=False, max_length=10)
     score = models.IntegerField(null=False, blank=False, max_length=1)
 
@@ -42,7 +40,7 @@ class Question(TimeStampModel):
         verbose_name_plural = "질문 목록"
 
 
-class Questions_answer(TimeStampModel):
+class QuestionsAnswer(TimeStampModel):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     answer = models.CharField(null=False, blank=False, max_length=10)
 
@@ -56,7 +54,7 @@ class Questions_answer(TimeStampModel):
         indexes = [models.Index(fields=["question"], name="IDX_questions_questions_id")]
 
 
-class Questions_results(TimeStampModel):
+class QuestionsResults(TimeStampModel):
     TYPE_CHOICES = [
         ("Q", "Question"),
         ("K", "Keyword"),
@@ -65,9 +63,7 @@ class Questions_results(TimeStampModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     scent = models.ForeignKey(Scent, on_delete=models.CASCADE)
-    division = models.CharField(
-        null=False, blank=False, max_length=2, choices=TYPE_CHOICES
-    )
+    division = models.CharField(null=False, blank=False, max_length=2, choices=TYPE_CHOICES)
     questions_json = models.JSONField(null=False, blank=False)
     answer = models.CharField(null=False, blank=False, max_length=20)
     image_key = models.CharField(null=False, blank=False, max_length=30)
@@ -76,7 +72,7 @@ class Questions_results(TimeStampModel):
         return f"결과는{self.scent.name} 향이고 이유는 {self.answer}"
 
     class Meta:
-        db_table = "questions_answer"
+        db_table = "questions_results"
         verbose_name = "질문 결과"
         verbose_name_plural = "결과 목록"
         indexes = [

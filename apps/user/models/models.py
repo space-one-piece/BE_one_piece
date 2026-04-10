@@ -1,16 +1,12 @@
-from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager,
-                                        PermissionsMixin)
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 
 from apps.core.models import TimeStampModel
-from apps.user.choices import (SocialTypeChoice, UserGender, UserStatus,
-                               WithdrawalReason)
+from apps.user.choices import SocialTypeChoice, UserGender, UserStatus, WithdrawalReason
 
 
 class UserManager(BaseUserManager["User"]):
-    def create_user(
-        self, email: str, password: str | None = None, **extra_fields: object
-    ) -> "User":
+    def create_user(self, email: str, password: str | None = None, **extra_fields: object) -> "User":
         if not email:
             raise ValueError("이메일은 필수 입니다.")
         email = self.normalize_email(email)
@@ -19,9 +15,7 @@ class UserManager(BaseUserManager["User"]):
         user.save(using=self._db)
         return user
 
-    def create_superuser(
-        self, email: str, password: str, **extra_fields: object
-    ) -> "User":
+    def create_superuser(self, email: str, password: str, **extra_fields: object) -> "User":
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
         extra_fields.setdefault("is_active", True)
@@ -61,9 +55,7 @@ class User(TimeStampModel, AbstractBaseUser, PermissionsMixin):
 
 # 소셜 유저
 class SocialUser(TimeStampModel):
-    user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="social_accounts"
-    )
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="social_accounts")
     provider = models.CharField(
         max_length=20, choices=SocialTypeChoice, verbose_name="소셜 플랫폼"
     )  # KAKAO, NAVER, GOOGLE
@@ -76,12 +68,8 @@ class SocialUser(TimeStampModel):
 
 # 탈퇴 유저 정보
 class UserWithdrawal(TimeStampModel):
-    user = models.OneToOneField(
-        User, on_delete=models.CASCADE, related_name="user_withdrawal"
-    )
-    reason = models.CharField(
-        max_length=30, choices=WithdrawalReason, verbose_name="탈퇴 사유"
-    )
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="user_withdrawal")
+    reason = models.CharField(max_length=30, choices=WithdrawalReason, verbose_name="탈퇴 사유")
     other_reason = models.TextField(null=True, blank=True, verbose_name="기타 사유")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="탈퇴 신청일")
     scheduled_delete_at = models.DateTimeField(verbose_name="데이터 실제 삭제 예정일")
