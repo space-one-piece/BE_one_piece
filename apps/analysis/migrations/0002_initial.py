@@ -7,7 +7,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -19,22 +18,16 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="imageanalysis",
             name="user",
-            field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL
-            ),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
         ),
         migrations.AddField(
             model_name="imagecoloranalysis",
             name="analysis",
-            field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, to="analysis.imageanalysis"
-            ),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="analysis.imageanalysis"),
         ),
         migrations.AddIndex(
             model_name="scent",
-            index=models.Index(
-                fields=["is_bestseller"], name="scent_is_best_a49c37_idx"
-            ),
+            index=models.Index(fields=["is_bestseller"], name="scent_is_best_a49c37_idx"),
         ),
         migrations.AddIndex(
             model_name="scent",
@@ -42,28 +35,20 @@ class Migration(migrations.Migration):
         ),
         migrations.AddIndex(
             model_name="scent",
-            index=django.contrib.postgres.indexes.GinIndex(
-                fields=["categories"], name="scent_categories_gin"
-            ),
+            index=django.contrib.postgres.indexes.GinIndex(fields=["categories"], name="scent_categories_gin"),
         ),
         migrations.AddIndex(
             model_name="scent",
-            index=django.contrib.postgres.indexes.GinIndex(
-                fields=["keywords"], name="scent_keywords_gin"
-            ),
+            index=django.contrib.postgres.indexes.GinIndex(fields=["keywords"], name="scent_keywords_gin"),
         ),
         migrations.AddIndex(
             model_name="scent",
-            index=django.contrib.postgres.indexes.GinIndex(
-                fields=["scent_notes"], name="scent_notes_gin"
-            ),
+            index=django.contrib.postgres.indexes.GinIndex(fields=["scent_notes"], name="scent_notes_gin"),
         ),
         migrations.AddField(
             model_name="imageanalysis",
             name="recommended_scent",
-            field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, to="analysis.scent"
-            ),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="analysis.scent"),
         ),
         migrations.AddIndex(
             model_name="imagecoloranalysis",

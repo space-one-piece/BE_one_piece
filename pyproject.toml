@@ -44,10 +44,10 @@ dev = [
 [tool.ruff]
 line-length = 120
 target-version = "py312"
-select = ["E", "F", "I"]
-ignore = ["B008", "B904", "E501", "F405"]
 
 [tool.ruff.lint] #내용검사
+select = ["E", "F", "I"]
+ignore = ["B008", "B904", "E501", "F405"]
 # --fix 옵션을 넣었을 때 자동으로 고쳐줄 규칙들
 fixable = ["ALL"] # ruff한테 수정 허락해주는 규칙
 unfixable = []

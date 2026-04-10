@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -117,9 +116,7 @@ class Migration(migrations.Migration):
                 ("updated_at", models.DateTimeField(auto_now=True)),
                 (
                     "division",
-                    models.CharField(
-                        choices=[("Q", "Question"), ("K", "Keyword")], max_length=2
-                    ),
+                    models.CharField(choices=[("Q", "Question"), ("K", "Keyword")], max_length=2),
                 ),
                 ("questions_json", models.JSONField()),
                 ("answer", models.CharField(max_length=20)),
@@ -133,9 +130,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "scent",
-                    models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE, to="analysis.scent"
-                    ),
+                    models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="analysis.scent"),
                 ),
             ],
             options={
