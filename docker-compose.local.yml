@@ -29,8 +29,8 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - static_volume:/one_piece/static
-      - media_volume:/one_piece/media
+      - ./static:/one_piece/static
+      - ./media:/one_piece/media
     networks:
       - ws
     depends_on:
