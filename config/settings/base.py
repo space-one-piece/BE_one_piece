@@ -17,7 +17,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 if os.getenv("DJANGO_SETTINGS_MODULE") == "config.settings.local":
     load_dotenv(dotenv_path=BASE_DIR / "envs/.env")
@@ -128,7 +128,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = "static/"
 
 # djangorestframework-simplejwt 관련 설정
 SIMPLE_JWT = {
