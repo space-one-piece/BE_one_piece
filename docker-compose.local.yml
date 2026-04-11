@@ -26,8 +26,8 @@ services:
       sh -c "python manage.py migrate &&
              python manage.py collectstatic --noinput &&
              gunicorn -c gunicorn.conf.py config.wsgi:application"
-    expose: # 사용자 -> 80포트 -> Nginx -> 8000포트 -> Django ports:
-      - "8000"
+    ports:
+      - "8000:8000"
     volumes:
       - static_volume:/one_piece/static
       - media_volume:/one_piece/media
