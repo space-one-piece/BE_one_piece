@@ -41,5 +41,5 @@ superuser:
 shell:
 	$(DOCKER_EXEC) uv run python manage.py shell
 
-도커 실행 명령어:
-    docker compose --env-file envs/.env -f docker-compose.local.yml up --build
+# docker_run:
+#     docker compose --env-file envs/.env -f docker-compose.local.yml up --build

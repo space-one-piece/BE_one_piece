@@ -1,4 +1,19 @@
 services:
+#  nginx:
+#    image: nginx:alpine  # nginx 가벼운 버전
+#    container_name: nginx
+#    ports:
+#      - "80:80"
+#    volumes:
+#      - ./nginx.conf:/etc/nginx/conf.d/default.conf # nginx.conf파일을 컨테이너 안에 연결
+#      - static_volume:/one_piece/static
+#      - media_volume:/one_piece/media
+#    networks:
+#      - ws
+#    depends_on:
+#      - django
+
+
   django:
     container_name: django
     env_file:
@@ -10,7 +25,7 @@ services:
     command: >
       sh -c "python manage.py migrate &&
              python manage.py collectstatic --noinput &&
-             gunicorn --workers 3 --bind 0.0.0.0:8000 config.wsgi:application"
+             gunicorn -c gunicorn.conf.py config.wsgi:application"
     ports:
       - "8000:8000"
     volumes:
