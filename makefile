@@ -2,7 +2,7 @@ COLOR_GREEN = \033[0;32m
 COLOR_BLUE  = \033[0;34m
 COLOR_NC    = \033[0m
 
-DOCKER_EXEC = docker-compose -f docker-compose.local.yml exec django --env-file envs/.env
+DOCKER_EXEC = docker-compose --env-file envs/.env -f docker-compose.local.yml exec django
 
 .PHONY: setup run migrations migrate test format superuser shell
 
