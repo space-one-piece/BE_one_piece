@@ -26,7 +26,7 @@ class UserManager(BaseUserManager["User"]):
 class User(TimeStampModel, AbstractBaseUser, PermissionsMixin):
     username = None
     email = models.EmailField(max_length=255, unique=True, verbose_name="이메일")
-    password = models.CharField(max_length=128, default="", verbose_name="비밀번호") # type: ignore[misc]
+    password = models.CharField(max_length=128, default="", verbose_name="비밀번호")  # type: ignore[misc]
     name = models.CharField(max_length=30, verbose_name="이름")
     birthday = models.DateField(verbose_name="생년월일")
     social_type = models.CharField(

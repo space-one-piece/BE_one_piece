@@ -19,11 +19,11 @@ RUN curl -LsSf https://astral.sh/uv/install.sh | sh && \
 ENV UV_PROJECT_ENVIRONMENT="/usr/local"
 
 # 3. 설정 파일 복사
-COPY pyproject.toml uv.lock ./
+COPY ../../pyproject.toml uv.lock ./
 
 # 4. 의존성 설치 (uv는 'install'이 아니라 'sync'를 사용합니다)
 # --no-cache를 넣어주면 이미지 용량이 줄어듭니다.
 RUN uv sync --no-cache
 
 # 5. 프로젝트 파일 복사
-COPY . .
+COPY ../.. .

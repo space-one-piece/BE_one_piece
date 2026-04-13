@@ -5,41 +5,52 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('analysis', '0001_initial'),
+        ("analysis", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='ChatSession',
+            name="ChatSession",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('status', models.CharField(choices=[('active', '활성'), ('inactive', '비활성'), ('timeout', '타임아웃')], default='active', max_length=20)),
-                ('last_active_at', models.DateTimeField(blank=True, null=True)),
-                ('ended_at', models.DateTimeField(blank=True, null=True)),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[("active", "활성"), ("inactive", "비활성"), ("timeout", "타임아웃")],
+                        default="active",
+                        max_length=20,
+                    ),
+                ),
+                ("last_active_at", models.DateTimeField(blank=True, null=True)),
+                ("ended_at", models.DateTimeField(blank=True, null=True)),
             ],
             options={
-                'db_table': 'chat_session',
+                "db_table": "chat_session",
             },
         ),
         migrations.CreateModel(
-            name='ChatbotRecommendation',
+            name="ChatbotRecommendation",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('retry_count', models.IntegerField(default=0)),
-                ('is_saved', models.BooleanField(default=False)),
-                ('saved_at', models.DateTimeField(blank=True, null=True)),
-                ('scent', models.ForeignKey(db_column='scent_id', on_delete=django.db.models.deletion.CASCADE, to='analysis.scent')),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                ("retry_count", models.IntegerField(default=0)),
+                ("is_saved", models.BooleanField(default=False)),
+                ("saved_at", models.DateTimeField(blank=True, null=True)),
+                (
+                    "scent",
+                    models.ForeignKey(
+                        db_column="scent_id", on_delete=django.db.models.deletion.CASCADE, to="analysis.scent"
+                    ),
+                ),
             ],
             options={
-                'db_table': 'chatbot_recommendation',
+                "db_table": "chatbot_recommendation",
             },
         ),
     ]

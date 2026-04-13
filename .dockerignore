@@ -5,7 +5,7 @@ envs/
 __pycache__/
 .idea/
 docker-compose.*
-Dockerfile
+deploy/Dockerfile
 *.Dockerfile
 .gitignore
 .git/

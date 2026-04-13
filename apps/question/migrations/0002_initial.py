@@ -6,30 +6,29 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('question', '0001_initial'),
+        ("question", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='questionsresults',
-            name='user',
+            model_name="questionsresults",
+            name="user",
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
         ),
         migrations.AddIndex(
-            model_name='questionsanswer',
-            index=models.Index(fields=['question'], name='IDX_questions_questions_id'),
+            model_name="questionsanswer",
+            index=models.Index(fields=["question"], name="IDX_questions_questions_id"),
         ),
         migrations.AddIndex(
-            model_name='questionsresults',
-            index=models.Index(fields=['user'], name='IDX_questions_results_user_id'),
+            model_name="questionsresults",
+            index=models.Index(fields=["user"], name="IDX_questions_results_user_id"),
         ),
         migrations.AddIndex(
-            model_name='questionsresults',
-            index=models.Index(fields=['scent'], name='IDX_questions_results_scent_id'),
+            model_name="questionsresults",
+            index=models.Index(fields=["scent"], name="IDX_questions_results_scent_id"),
         ),
     ]

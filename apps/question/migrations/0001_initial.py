@@ -5,76 +5,88 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('analysis', '0001_initial'),
+        ("analysis", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Keyword',
+            name="Keyword",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('division', models.CharField(choices=[('EM', 'emotion'), ('MO', 'mood'), ('SP', 'sporty'), ('SE', 'serene'), ('TA', 'tamed'), ('PL', 'place')], max_length=2)),
-                ('name', models.CharField(max_length=10)),
-                ('score', models.IntegerField()),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "division",
+                    models.CharField(
+                        choices=[
+                            ("EM", "emotion"),
+                            ("MO", "mood"),
+                            ("SP", "sporty"),
+                            ("SE", "serene"),
+                            ("TA", "tamed"),
+                            ("PL", "place"),
+                        ],
+                        max_length=2,
+                    ),
+                ),
+                ("name", models.CharField(max_length=10)),
+                ("score", models.IntegerField()),
             ],
             options={
-                'verbose_name': '키워드',
-                'verbose_name_plural': '키워드 목록',
-                'db_table': 'keyword',
+                "verbose_name": "키워드",
+                "verbose_name_plural": "키워드 목록",
+                "db_table": "keyword",
             },
         ),
         migrations.CreateModel(
-            name='Question',
+            name="Question",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('content', models.TextField()),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                ("content", models.TextField()),
             ],
             options={
-                'verbose_name': '질문',
-                'verbose_name_plural': '질문 목록',
-                'db_table': 'question',
+                "verbose_name": "질문",
+                "verbose_name_plural": "질문 목록",
+                "db_table": "question",
             },
         ),
         migrations.CreateModel(
-            name='QuestionsAnswer',
+            name="QuestionsAnswer",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('answer', models.CharField(max_length=10)),
-                ('question', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='question.question')),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                ("answer", models.CharField(max_length=10)),
+                ("question", models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="question.question")),
             ],
             options={
-                'verbose_name': '답변 정보',
-                'verbose_name_plural': '답변 목록',
-                'db_table': 'questions_answer',
+                "verbose_name": "답변 정보",
+                "verbose_name_plural": "답변 목록",
+                "db_table": "questions_answer",
             },
         ),
         migrations.CreateModel(
-            name='QuestionsResults',
+            name="QuestionsResults",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('division', models.CharField(choices=[('Q', 'Question'), ('K', 'Keyword')], max_length=2)),
-                ('questions_json', models.JSONField()),
-                ('answer_ai', models.CharField(max_length=20)),
-                ('image_key', models.CharField(blank=True, max_length=30, null=True)),
-                ('results_review', models.TextField(blank=True, null=True)),
-                ('scent', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='analysis.scent')),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                ("division", models.CharField(choices=[("Q", "Question"), ("K", "Keyword")], max_length=2)),
+                ("questions_json", models.JSONField()),
+                ("answer_ai", models.CharField(max_length=20)),
+                ("image_key", models.CharField(blank=True, max_length=30, null=True)),
+                ("results_review", models.TextField(blank=True, null=True)),
+                ("scent", models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="analysis.scent")),
             ],
             options={
-                'verbose_name': '질문 결과',
-                'verbose_name_plural': '결과 목록',
-                'db_table': 'questions_results',
+                "verbose_name": "질문 결과",
+                "verbose_name_plural": "결과 목록",
+                "db_table": "questions_results",
             },
         ),
     ]

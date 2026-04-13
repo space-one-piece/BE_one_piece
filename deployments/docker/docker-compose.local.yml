@@ -17,9 +17,9 @@ services:
   django:
     container_name: django
     env_file:
-      - envs/.env
+      - ../../envs/.env
     build:
-      context: .
+      context: ../..
     image: ${DJANGO_IMAGE:-django}
     working_dir: /one_piece
     command: >
@@ -43,7 +43,7 @@ services:
     image: postgres:14
     container_name: postgres
     env_file:
-      - envs/.env
+      - ../../envs/.env
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
