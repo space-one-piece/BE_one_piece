@@ -5,7 +5,4 @@ from rest_framework.views import APIView
 
 
 class QuestAPIView(APIView):
-    permission_classes = [AllowAny]
-
-    def get(self, request, *args, **kwargs):
-        return Response({"message": "Hello World!"})
+    pass
