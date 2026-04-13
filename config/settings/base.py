@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "apps.question",
     "apps.users",
     "drf_yasg",
+    "drf_spectacular",
 ]
 
 MIDDLEWARE = [
@@ -150,6 +151,7 @@ REST_FRAMEWORK = {
     "DEFAULT_PARSER_CLASSES": [
         "rest_framework.parsers.JSONParser",
     ],
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
 AUTH_USER_MODEL = "users.User"
@@ -163,3 +165,10 @@ CSRF_TRUSTED_ORIGINS = [
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 APPEND_SLASH = False
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Fragrance Recommendation API",
+    "DESCRIPTION": "Fragrance Recommendation API",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+}
