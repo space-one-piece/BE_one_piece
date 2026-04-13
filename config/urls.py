@@ -26,9 +26,9 @@ from rest_framework import permissions
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="My Project API",
+        title="one piece API",
         default_version="v1",
-        description="API documentation for My Project",
+        description="onc piece API 문서입니다.",
         terms_of_service="https://www.example.com/terms/",
         contact=openapi.Contact(email="contact@example.com"),
         license=openapi.License(name="BSD License"),

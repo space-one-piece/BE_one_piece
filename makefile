@@ -50,13 +50,13 @@ shell:
 	$(DOCKER_EXEC) uv run python manage.py shell
 
 docker_up:
-	docker compose --env-file envs/.env -f docker-compose.local.yml up -d
+	docker compose --env-file envs/.env -f deployments/docker/docker-compose.local.yml up -d
 
 docker_up_build:
-	docker compose --env-file envs/.env -f docker-compose.local.yml up --build
+	docker compose --env-file envs/.env -f deployments/docker/docker-compose.local.yml up --build
 
 docker_down:
-	docker compose --env-file envs/.env -f docker-compose.local.yml down
+	docker compose --env-file envs/.env -f deployments/docker/docker-compose.local.yml down
 
 docker_down_v:
-	docker compose --env-file envs/.env -f docker-compose.local.yml down -v
+	docker compose --env-file envs/.env -f deployments/docker/docker-compose.local.yml down -v
