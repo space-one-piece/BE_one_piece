@@ -40,6 +40,7 @@ urlpatterns = [
     path("swagger/", schema_view.with_ui("swagger", cache_timeout=0), name="schema-swagger-ui"),
     path("", RedirectView.as_view(url="/swagger/", permanent=False)),
     path("api/v1/question", include("apps.question.urls")),
+    path("api/v1/chatbot/", include("apps.chatbot.urls")),
 ]
 
 if settings.DEBUG:
