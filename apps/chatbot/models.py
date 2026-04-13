@@ -10,7 +10,7 @@ class ChatSession(TimeStampModel):
         ("timeout", "타임아웃"),
     ]
 
-    user = models.ForeignKey("user.User", on_delete=models.CASCADE, db_column="user_id")
+    user = models.ForeignKey("users.User", on_delete=models.CASCADE, db_column="user_id")
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="active")
     last_active_at = models.DateTimeField(null=True, blank=True)
     ended_at = models.DateTimeField(null=True, blank=True)
@@ -23,7 +23,7 @@ class ChatSession(TimeStampModel):
 
 
 class ChatbotRecommendation(TimeStampModel):
-    user = models.ForeignKey("user.User", on_delete=models.CASCADE, db_column="user_id")
+    user = models.ForeignKey("users.User", on_delete=models.CASCADE, db_column="user_id")
     session = models.ForeignKey(ChatSession, on_delete=models.CASCADE, db_column="session_id")
     scent = models.ForeignKey("analysis.Scent", on_delete=models.CASCADE, db_column="scent_id")
     retry_count = models.IntegerField(default=0)

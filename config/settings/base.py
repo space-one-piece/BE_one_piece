@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     "apps.analysis",
     "apps.chatbot",
     "apps.question",
-    "apps.user",
+    "apps.users",
     "drf_yasg",
 ]
 
@@ -152,7 +152,7 @@ REST_FRAMEWORK = {
     ],
 }
 
-AUTH_USER_MODEL = "user.User"
+AUTH_USER_MODEL = "users.User"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CSRF_TRUSTED_ORIGINS = [

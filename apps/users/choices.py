@@ -9,6 +9,7 @@ class UserGender(models.TextChoices):
 
 # 소셜 종류
 class SocialTypeChoice(models.TextChoices):
+    GENERAL = "GENERAL"
     KAKAO = "K"
     NAVER = "N"
     GOOGLE = "G"
