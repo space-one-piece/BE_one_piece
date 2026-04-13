@@ -17,7 +17,6 @@ class Keyword(TimeStampModel):
 
     division = models.CharField(null=False, blank=False, max_length=2, choices=TYPE_CHOICES)
     name = models.CharField(null=False, blank=False, max_length=10)
-    score = models.IntegerField(null=False, blank=False)
 
     def __str__(self) -> str:
         return f"{self.name}"
@@ -43,6 +42,7 @@ class Question(TimeStampModel):
 class QuestionsAnswer(TimeStampModel):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     answer = models.CharField(null=False, blank=False, max_length=10)
+    score = models.IntegerField(null=False, blank=False)
 
     def __str__(self) -> str:
         return f"질문: {self.question.content} 답: {self.answer}"
