@@ -4,7 +4,7 @@ COLOR_NC    = \033[0m
 
 DOCKER_EXEC = docker-compose --env-file envs/.env -f docker-compose.local.yml exec django
 
-.PHONY: setup run migrations migrate test format superuser shell
+.PHONY: setup run migrations migrate test ruff mypy superuser shell docker_up docker_up_build docker_down docker_down_v
 
 setup:
 	@echo "$(COLOR_BLUE)Syncing dependencies inside Docker...$(COLOR_NC)"
@@ -22,18 +22,26 @@ migrate:
 
 test:
 	@echo "$(COLOR_BLUE)Running Django tests inside Docker...$(COLOR_NC)"
-	$(DOCKER_EXEC) uv run python manage.py test
+	$(DOCKER_EXEC) uv run coverage run manage.py test
+	$(DOCKER_EXEC) uv run coverage report -m
+	$(DOCKER_EXEC) uv run coverage html
 
-format:
+ruff:
 	@echo "$(COLOR_BLUE)Starting ruff isort (import sorting)$(COLOR_NC)"
-	$(DOCKER_EXEC) uv run ruff check --select I --fix .
+	$(DOCKER_EXEC) uv run ruff check . --fix
 	@echo "OK\n"
 
 	@echo "$(COLOR_BLUE)Starting ruff format (code formatting)$(COLOR_NC)"
 	$(DOCKER_EXEC) uv run ruff format .
 	@echo "OK\n"
 
-	@echo "$(COLOR_GREEN)Code Formatting successfully!$(COLOR_NC)"
+	@echo "$(COLOR_GREEN)run ruff successfully!$(COLOR_NC)"
+
+mypy:
+	@echo "$(COLOR_BLUE)Starting mypy (type check)$(COLOR_NC)"
+	$(DOCKER_EXEC) uv run mypy .
+	@echo "OK\n"
+	@echo "$(COLOR_GREEN)run mypy successfully!$(COLOR_NC)"
 
 superuser:
 	$(DOCKER_EXEC) uv run python manage.py createsuperuser
@@ -41,5 +49,14 @@ superuser:
 shell:
 	$(DOCKER_EXEC) uv run python manage.py shell
 
-# docker_run:
-#     docker compose --env-file envs/.env -f docker-compose.local.yml up --build
+docker_up:
+	docker compose --env-file envs/.env -f docker-compose.local.yml up -d
+
+docker_up_build:
+	docker compose --env-file envs/.env -f docker-compose.local.yml up --build
+
+docker_down:
+	docker compose --env-file envs/.env -f docker-compose.local.yml down
+
+docker_down_v:
+	docker compose --env-file envs/.env -f docker-compose.local.yml down -v
