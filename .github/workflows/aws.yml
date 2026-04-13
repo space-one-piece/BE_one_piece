@@ -38,7 +38,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: Dockerfile
+          file: deployments/docker/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -56,7 +56,7 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
-          source: "docker-compose.local.yml"
+          source: "deployments/docker/docker-compose.local.yml"
           target: "~/app"
 
       - name: Deploy to server
@@ -90,8 +90,8 @@ jobs:
               || echo "DJANGO_IMAGE=$DJANGO_IMAGE" >> envs/.env
 
             # 최신 이미지 Pull & 재시작
-            sudo docker compose -f docker-compose.local.yml --env-file envs/.env pull django
-            sudo docker compose -f docker-compose.local.yml --env-file envs/.env up -d
+            sudo docker compose -f deployments/docker/docker-compose.local.yml --env-file envs/.env pull django
+            sudo docker compose -f deployments/docker/docker-compose.local.yml --env-file envs/.env up -d
 
             # 안 쓰는 이미지 정리
             sudo docker image prune -f

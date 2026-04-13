@@ -26,12 +26,9 @@ from rest_framework import permissions
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="My Project API",
+        title="Fragrance Recommendation API",
         default_version="v1",
-        description="API documentation for My Project",
-        terms_of_service="https://www.example.com/terms/",
-        contact=openapi.Contact(email="contact@example.com"),
-        license=openapi.License(name="BSD License"),
+        description="Fragrance Recommendation API",
     ),
     public=True,
     permission_classes=(permissions.AllowAny,),

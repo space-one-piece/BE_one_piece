@@ -2,7 +2,7 @@ COLOR_GREEN = \033[0;32m
 COLOR_BLUE  = \033[0;34m
 COLOR_NC    = \033[0m
 
-DOCKER_EXEC = docker-compose --env-file envs/.env -f docker-compose.local.yml exec django
+DOCKER_EXEC = docker-compose --env-file envs/.env -f deployments/docker/docker-compose.local.yml exec django
 
 .PHONY: setup run migrations migrate test ruff mypy superuser shell docker_up docker_up_build docker_down docker_down_v
 
@@ -50,13 +50,13 @@ shell:
 	$(DOCKER_EXEC) uv run python manage.py shell
 
 docker_up:
-	docker compose --env-file envs/.env -f docker-compose.local.yml up -d
+	docker compose --env-file envs/.env -f deployments/docker/docker-compose.local.yml up -d
 
 docker_up_build:
-	docker compose --env-file envs/.env -f docker-compose.local.yml up --build
+	docker compose --env-file envs/.env -f deployments/docker/docker-compose.local.yml up --build
 
 docker_down:
-	docker compose --env-file envs/.env -f docker-compose.local.yml down
+	docker compose --env-file envs/.env -f deployments/docker/docker-compose.local.yml down
 
 docker_down_v:
-	docker compose --env-file envs/.env -f docker-compose.local.yml down -v
+	docker compose --env-file envs/.env -f deployments/docker/docker-compose.local.yml down -v

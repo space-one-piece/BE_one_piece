@@ -17,20 +17,21 @@ services:
   django:
     container_name: django
     env_file:
-      - envs/.env
+      - ../../envs/.env
     build:
-      context: .
+      context: ../..
+      dockerfile: deployments/docker/Dockerfile
     image: ${DJANGO_IMAGE:-django}
     working_dir: /one_piece
     command: >
       sh -c "python manage.py migrate &&
              DJANGO_SETTINGS_MODULE=config.settings.prod python manage.py collectstatic --noinput &&
-             gunicorn -c gunicorn.conf.py config.wsgi:application "
+             gunicorn -c deployments/ng/gunicorn.conf.py config.wsgi:application "
     ports:
       - "8000:8000"
     volumes:
-      - ./static:/one_piece/static
-      - ./media:/one_piece/media
+      - ../../resource/static:/one_piece/static
+      - ../../resource/media:/one_piece/media
     networks:
       - ws
     depends_on:
@@ -43,7 +44,7 @@ services:
     image: postgres:14
     container_name: postgres
     env_file:
-      - envs/.env
+      - ../../envs/.env
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}

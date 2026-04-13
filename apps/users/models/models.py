@@ -2,7 +2,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 from django.db import models
 
 from apps.core.models import TimeStampModel
-from apps.user.choices import SocialTypeChoice, UserGender, UserStatus, WithdrawalReason
+from apps.users.choices import SocialTypeChoice, UserGender, UserStatus, WithdrawalReason
 
 
 class UserManager(BaseUserManager["User"]):
@@ -71,7 +71,6 @@ class UserWithdrawal(TimeStampModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="user_withdrawal")
     reason = models.CharField(max_length=30, choices=WithdrawalReason, verbose_name="탈퇴 사유")
     other_reason = models.TextField(null=True, blank=True, verbose_name="기타 사유")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="탈퇴 신청일")
     scheduled_delete_at = models.DateTimeField(verbose_name="데이터 실제 삭제 예정일")
 
     def __str__(self) -> str:

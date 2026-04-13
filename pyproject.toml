@@ -31,6 +31,7 @@ dependencies = [
     "drf-yasg>=1.21.15",
     "mypy==1.11.2",
     "django-stubs[compatible-mypy]==5.1.0",
+    "pre-commit>=4.5.1",
 ]
 
 [dependency-groups]

@@ -2,7 +2,7 @@ from django.db import models
 
 from apps.analysis.models import Scent
 from apps.core.models import TimeStampModel
-from apps.user.models.models import User
+from apps.users.models.models import User
 
 
 class Keyword(TimeStampModel):
@@ -61,15 +61,15 @@ class QuestionsResults(TimeStampModel):
     ]
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
     scent = models.ForeignKey(Scent, on_delete=models.CASCADE)
     division = models.CharField(null=False, blank=False, max_length=2, choices=TYPE_CHOICES)
     questions_json = models.JSONField(null=False, blank=False)
-    answer = models.CharField(null=False, blank=False, max_length=20)
-    image_key = models.CharField(null=False, blank=False, max_length=30)
+    answer_ai = models.CharField(null=False, blank=False, max_length=20)
+    image_key = models.CharField(null=True, blank=True, max_length=30)
+    results_review = models.TextField(null=True, blank=True)
 
     def __str__(self) -> str:
-        return f"결과는{self.scent.name} 향이고 이유는 {self.answer}"
+        return f"결과는{self.scent.name} 향이고 이유는 {self.answer_ai}"
 
     class Meta:
         db_table = "questions_results"

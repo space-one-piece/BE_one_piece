@@ -1,20 +1,34 @@
+from django.contrib.postgres.fields import ArrayField
 from django.contrib.postgres.indexes import GinIndex
 from django.db import models
 
 from apps.core.models import TimeStampModel
-from apps.user.models.models import User
+from apps.users.models.models import User
 
 
 class Scent(TimeStampModel):
     name = models.CharField(max_length=100)
+    eng_name = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)
-    categories = models.JSONField(null=True)
-    intensity = models.IntegerField(null=True)
-    keywords = models.JSONField(null=True)
-    is_bestseller = models.BooleanField(default=False)
+
+    categories = models.CharField(max_length=255)
+    tags = models.JSONField(default=list)
+    keywords = models.JSONField(default=list)
+
+    intensity = models.IntegerField()
+    is_bestseller = models.BooleanField(null=True, blank=True)
     scent_notes = models.JSONField(null=True, blank=True)
-    thumbnail_url = models.CharField(null=True, blank=True, max_length=500)
-    season = models.CharField(null=True, blank=True, max_length=20)
+    profile = models.JSONField(null=True, blank=True)
+
+    season = ArrayField(models.CharField(max_length=50), null=True, blank=True)
+    recommended_places = models.JSONField(default=list, null=True, blank=True)
+    similar_scents = ArrayField(
+        models.IntegerField(),
+        null=True,
+        blank=True,
+    )
+
+    thumbnail_url = models.CharField(max_length=500, null=True, blank=True)
 
     class Meta:
         db_table = "scent"
@@ -22,7 +36,8 @@ class Scent(TimeStampModel):
         indexes = [
             models.Index(fields=["is_bestseller"]),
             models.Index(fields=["season"]),
-            GinIndex(fields=["categories"], name="scent_categories_gin"),
+            models.Index(fields=["categories"]),
+            GinIndex(fields=["tags"], name="scent_tags_gin"),
             GinIndex(fields=["keywords"], name="scent_keywords_gin"),
             GinIndex(fields=["scent_notes"], name="scent_notes_gin"),
         ]
