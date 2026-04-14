@@ -32,6 +32,7 @@ urlpatterns = [
     path("", RedirectView.as_view(url="/api/docs/", permanent=False)),
     path("api/v1/question", include("apps.question.urls")),
     path("api/v1/chatbot/", include("apps.chatbot.urls")),
+    path("api/v1/accounts/", include("apps.users.urls.urls")),
 ]
 
 if settings.DEBUG:
