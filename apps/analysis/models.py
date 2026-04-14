@@ -69,7 +69,7 @@ class ImageAnalysis(TimeStampModel):
 
 
 class ImageColorAnalysis(TimeStampModel):
-    analysis = models.OneToOneField(ImageAnalysis, on_delete=models.CASCADE)
+    analysis = models.OneToOneField(ImageAnalysis, on_delete=models.CASCADE, related_name="image_metadata")
     dominant_color_hex = models.JSONField(null=True, blank=True)
     contrast_ratio = models.FloatField(null=True, blank=True)
     avg_brightness = models.FloatField(null=True, blank=True)

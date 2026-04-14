@@ -37,7 +37,7 @@ class SerializerOutputTest(TestCase):
     @classmethod
     def setUpTestData(cls) -> None:
         """1:1 역참조 테스트 데이터 세팅"""
-        cls.user = User.objects.create_user(email="test@test.com", password="password")
+        cls.user = User.objects.create_user(email="test@test.com", password="password", birthday="1995-01-01")
         cls.scent = Scent.objects.create(name="우디 샌달우드", eng_name="Woody Sandalwood", intensity=4)
 
         cls.analysis = ImageAnalysis.objects.create(
@@ -55,8 +55,8 @@ class SerializerOutputTest(TestCase):
 
         self.assertIn("recommended_scent", data)
         self.assertEqual(data["recommended_scent"]["name"], "우디 샌달우드")
-
         self.assertIn("image_metadata", data)
+
         self.assertIsInstance(data["image_metadata"], dict)
         self.assertEqual(data["image_metadata"]["avg_brightness"], 80.0)
         self.assertEqual(data["image_metadata"]["dominant_color_hex"][0], "#FFFFFF")

@@ -13,7 +13,9 @@ class AnalysisModelsTest(TestCase):
         """
         테스트 유저,향 데이터
         """
-        cls.user = User.objects.create_user(email="testuser@example.com", password="testpassword123!")
+        cls.user = User.objects.create_user(
+            email="testuser@example.com", password="testpassword123!", birthday="1995-01-01"
+        )
 
         cls.scent = Scent.objects.create(
             name="테스트 향수",
