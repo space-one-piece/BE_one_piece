@@ -53,6 +53,7 @@ class ImageAnalysis(TimeStampModel):
     ai_comment = models.TextField(null=True, blank=True)
     match_score = models.FloatField(null=True, blank=True)
     review = models.TextField(null=True, blank=True)
+    rating = models.IntegerField(null=True, blank=True)
     is_helpful = models.BooleanField(default=False)
     is_fallback = models.BooleanField(default=False)
 
@@ -74,7 +75,7 @@ class ImageColorAnalysis(TimeStampModel):
     avg_brightness = models.FloatField(null=True, blank=True)
     avg_saturation = models.FloatField(null=True, blank=True)
     is_failed = models.BooleanField(default=False, blank=True)
-    error_log = models.JSONField(null=True, blank=True)
+    error_log = models.TextField(null=True, blank=True)
 
     class Meta:
         db_table = "image_color_analysis"
