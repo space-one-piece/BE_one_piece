@@ -166,6 +166,7 @@ REST_FRAMEWORK = {
         "rest_framework.parsers.JSONParser",
     ],
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "EXCEPTION_HANDLER": "apps.core.utils.exception_handler.custom_exception_handler",
 }
 
 AUTH_USER_MODEL = "users.User"
