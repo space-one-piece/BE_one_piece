@@ -20,25 +20,16 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 from django.views.generic import RedirectView
-from drf_yasg import openapi  # type: ignore
-from drf_yasg.views import get_schema_view  # type: ignore
-from rest_framework import permissions
-
-schema_view = get_schema_view(
-    openapi.Info(
-        title="Fragrance Recommendation API",
-        default_version="v1",
-        description="Fragrance Recommendation API",
-    ),
-    public=True,
-    permission_classes=(permissions.AllowAny,),
-)
+from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("docs/", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"),
-    path("swagger/", schema_view.with_ui("swagger", cache_timeout=0), name="schema-swagger-ui"),
-    path("", RedirectView.as_view(url="/swagger/", permanent=False)),
+    path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
+    # Swagger UI
+    path("api/docs/", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),
+    # Redoc UI
+    path("api/redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
+    path("", RedirectView.as_view(url="/api/docs/", permanent=False)),
     path("api/v1/question", include("apps.question.urls")),
     path("api/v1/chatbot/", include("apps.chatbot.urls")),
 ]
