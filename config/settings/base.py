@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "apps.question",
     "apps.users",
     "drf_yasg",
+    "apps.core",
     "drf_spectacular",
 ]
 
@@ -166,6 +167,11 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 APPEND_SLASH = False
 
+# AWS S3 settings
+AWS_S3_REGION = os.getenv("AWS_S3_REGION", "")
+AWS_S3_ACCESS_KEY_ID = os.getenv("AWS_S3_ACCESS_KEY_ID", "")
+AWS_S3_SECRET_ACCESS_KEY = os.getenv("AWS_S3_SECRET_ACCESS_KEY", "")
+AWS_S3_BUCKET_NAME = os.getenv("AWS_S3_BUCKET_NAME", "")
 SPECTACULAR_SETTINGS = {
     "TITLE": "Fragrance Recommendation API",
     "DESCRIPTION": "Fragrance Recommendation API",

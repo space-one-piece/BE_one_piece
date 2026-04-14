@@ -31,6 +31,7 @@ urlpatterns = [
     path("api/redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
     path("", RedirectView.as_view(url="/api/docs/", permanent=False)),
     path("api/v1/question", include("apps.question.urls")),
+    path("api/v1/chatbot/", include("apps.chatbot.urls")),
 ]
 
 if settings.DEBUG:

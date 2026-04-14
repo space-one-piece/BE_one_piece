@@ -1,1 +1,6 @@
-# Create your tests here.
+from django.test import TestCase
+
+
+class ChatbotTest(TestCase):
+    def test_placeholder(self) -> None:
+        pass
