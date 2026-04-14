@@ -35,22 +35,35 @@ ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
-INSTALLED_APPS = [
+DJANGO_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "rest_framework",
-    "apps.analysis",
-    "apps.chatbot",
-    "apps.question",
-    "apps.users",
-    "drf_yasg",
-    "apps.core",
-    "drf_spectacular",
 ]
+
+THIRD_PARTY_APPS = [
+    "rest_framework_simplejwt",
+    "rest_framework_simplejwt.token_blacklist",
+    "rest_framework",
+    "corsheaders",
+    "drf_spectacular",
+    "django_filters",
+    "admin_auto_filters",
+]
+
+# 추가한 도메인별 앱을 줄바꿈, 쉼표를 사용하여 나열.
+CUSTOM_APPS: list[str] = [
+    "apps.question",
+    "apps.analysis",
+    "apps.users",
+    "apps.chatbot",
+    "apps.core",
+]
+
+INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + CUSTOM_APPS
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
