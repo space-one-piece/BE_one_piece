@@ -1,9 +1,21 @@
-from django.urls import path
+from django.urls import include, path
 
 from apps.users.views.signup_views import SignUpView
+from apps.users.views.verification_views import EmailConfirmView, EmailSendView, SmsConfirmView, SmsSendView
 
 app_name = "users"
 
+verification_patterns = [
+    # 이메일 인증 (이미지: verification/send-email, verify-email)
+    path("send-email", EmailSendView.as_view(), name="email-send"),
+    path("verify-email", EmailConfirmView.as_view(), name="email-confirm"),
+    # 휴대폰 인증 (이미지: verification/send-sms, verify-sms)
+    path("send-sms", SmsSendView.as_view(), name="sms-send"),
+    path("verify-sms", SmsConfirmView.as_view(), name="sms-confirm"),
+]
+
 urlpatterns = [
+    # 회원가입
     path("signup", SignUpView.as_view(), name="signup"),
+    path("verification/", include(verification_patterns)),
 ]
