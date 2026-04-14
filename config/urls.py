@@ -24,10 +24,6 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, Spec
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("api/v1/accounts/", include("apps.users.urls.urls")),
-    path("docs/", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"),
-    path("swagger/", schema_view.with_ui("swagger", cache_timeout=0), name="schema-swagger-ui"),
-    path("", RedirectView.as_view(url="/swagger/", permanent=False)),
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     # Swagger UI
     path("api/docs/", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),
@@ -35,8 +31,11 @@ urlpatterns = [
     path("api/redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
     path("", RedirectView.as_view(url="/api/docs/", permanent=False)),
     path("api/v1/question", include("apps.question.urls")),
+    path("api/v1/chatbot/", include("apps.chatbot.urls")),
+    path("api/v1/accounts/", include("apps.users.urls.urls")),
 ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
