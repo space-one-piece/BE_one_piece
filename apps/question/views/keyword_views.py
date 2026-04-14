@@ -8,8 +8,6 @@ from apps.question.extend_schema import value_list
 
 
 class KeywordAPIView(APIView):
-    """질문 키워드 형식 조회 출력 API"""
-
     permission_classes = [IsAuthenticated]
 
     @extend_schema(

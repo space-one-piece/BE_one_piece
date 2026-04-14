@@ -8,8 +8,6 @@ from apps.question.extend_schema import value_list
 
 
 class ResultsCreateUrlAPIView(APIView):
-    """결과 url 생성 API"""
-
     permission_classes = [IsAuthenticated]
 
     @extend_schema(
@@ -23,8 +21,6 @@ class ResultsCreateUrlAPIView(APIView):
 
 
 class ResultsViewAPIView(APIView):
-    """결과 url 조회 API"""
-
     permission_classes = [AllowAny]
 
     @extend_schema(

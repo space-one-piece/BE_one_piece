@@ -1,20 +1,17 @@
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from apps.question.extend_schema import value_list
 from apps.question.serializers.quset_serializers import QuestionSerializer
 from apps.question.service.quest_serializers import quest_select
 
-from apps.question.extend_schema import value_list
-
 
 class QuestAPIView(APIView):
-    """질문 설문지 형식 조회 출력 API"""
-
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     @extend_schema(
         tags=["quest"],
