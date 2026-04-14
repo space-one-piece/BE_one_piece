@@ -45,6 +45,8 @@ jobs:
           echo "${{ secrets.DJANGO_ENVS }}" >> envs/.env
 
       - name: Run Mypy
+        env:
+          DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
         run: uv run mypy .
 
 #  test:
