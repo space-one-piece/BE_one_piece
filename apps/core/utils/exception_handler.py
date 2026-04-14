@@ -22,5 +22,5 @@ def custom_exception_handler(exc: Exception, context: dict[str, Any]) -> Respons
     status_code = response.status_code
     message = ERROR_MESSAGES.get(status_code)
 
-    response.data = {"status_code": response.status_code, "error_detail": message}
+    response.data = {"error_detail": message}
     return response
