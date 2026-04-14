@@ -1,8 +1,12 @@
 from drf_spectacular.utils import extend_schema
+from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from apps.question.serializers.quset_serializers import QuestionSerializer
+from apps.question.service.quest_serializers import quest_select
 
 from apps.question.extend_schema import value_list
 
@@ -19,7 +23,9 @@ class QuestAPIView(APIView):
         responses={200: value_list["200_question_get"], 401: value_list["401"]},
     )
     def get(self, request: Request, *args: object, **kwargs: object) -> Response:
-        return Response({"message": "질문 조회"})
+        data = quest_select()
+        serializer = QuestionSerializer(data, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     @extend_schema(
         tags=["quest"],
