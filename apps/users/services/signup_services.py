@@ -1,7 +1,7 @@
 from typing import Any
 
-from django.db import transaction
 from django.core.cache import cache
+from django.db import transaction
 from rest_framework.exceptions import ValidationError
 
 from apps.users.models.models import User
@@ -25,12 +25,7 @@ class SignUpService:
 
         password = validated_data.pop("password")
 
-        user = User.objects.create(
-            email=email,
-            password=password,
-            social_type="GENERAL",
-            **validated_data
-        )
+        user = User.objects.create(email=email, password=password, social_type="GENERAL", **validated_data)
 
         cache.delete(f"email_token:{email_token}")
         return user
