@@ -65,13 +65,13 @@ class ImageColorAnalysisSerializer(serializers.ModelSerializer["ImageColorAnalys
         model = ImageColorAnalysis
         fields = [
             "id",
-            "analysis",  # 분석 ID
-            "dominant_color_hex",  # 주요 색상 배열(JSON)
-            "contrast_ratio",  # 대비 비율
-            "avg_brightness",  # 평균 밝기
-            "avg_saturation",  # 평균 채도
-            "is_failed",  # 분석 실패 여부
-            "error_log",  # 에러 로그
+            "analysis",
+            "dominant_color_hex",
+            "contrast_ratio",
+            "avg_brightness",
+            "avg_saturation",
+            "is_failed",
+            "error_log",
         ]
         read_only_fields = fields
 
@@ -94,7 +94,7 @@ class AnalysisListSerializer(serializers.ModelSerializer["ImageAnalysis"]):
 # 분석 히스토리 상세 조회용
 class AnalysisDetailSerializer(serializers.ModelSerializer["ImageAnalysis"]):
     recommended_scent = ScentDetailSerializer(read_only=True)
-    image_metadata = ImageColorAnalysisSerializer(source="imagecoloranalysis_set", many=True, read_only=True)
+    image_metadata = ImageColorAnalysisSerializer(read_only=True)
 
     class Meta:
         model = ImageAnalysis
