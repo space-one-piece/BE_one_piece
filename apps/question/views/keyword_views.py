@@ -12,6 +12,7 @@ class KeywordAPIView(APIView):
 
     @extend_schema(
         tags=["quest"],
+        summary="키워드 조회 API",
         description="키워드 조회 API",
         examples=[value_list["200_keyword_get"], value_list["401"], value_list["404"]],
         responses={200: value_list["200_keyword_get"], 401: value_list["401"], 404: value_list["404"]},
@@ -21,6 +22,7 @@ class KeywordAPIView(APIView):
 
     @extend_schema(
         tags=["quest"],
+        summary="키워드 답변 API",
         description="키워드 답변 API",
         examples=[value_list["201"], value_list["400_question"], value_list["401"]],
         responses={201: value_list["201"], 400: value_list["400_question"], 401: value_list["401"]},

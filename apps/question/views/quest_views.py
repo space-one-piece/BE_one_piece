@@ -1,6 +1,6 @@
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -11,10 +11,11 @@ from apps.question.service.quest_serializers import quest_select
 
 
 class QuestAPIView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     @extend_schema(
         tags=["quest"],
+        summary="설문 조회 API",
         description="설문 조회 API",
         examples=[value_list["200_question_get"], value_list["401"]],
         responses={200: value_list["200_question_get"], 401: value_list["401"]},
@@ -26,6 +27,7 @@ class QuestAPIView(APIView):
 
     @extend_schema(
         tags=["quest"],
+        summary="설문 답변 API",
         description="설문 답변 API",
         examples=[value_list["201"], value_list["400_question"], value_list["401"]],
         responses={201: value_list["201"], 400: value_list["400_question"], 401: value_list["401"]},
