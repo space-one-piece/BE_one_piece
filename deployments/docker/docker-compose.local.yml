@@ -27,6 +27,8 @@ services:
       sh -c "python manage.py migrate &&
              DJANGO_SETTINGS_MODULE=config.settings.prod python manage.py collectstatic --noinput &&
              gunicorn -c deployments/ng/gunicorn.conf.py config.wsgi:application "
+
+#    command: tail -f /dev/null
     ports:
       - "8000:8000"
     volumes:
