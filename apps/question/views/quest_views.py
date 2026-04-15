@@ -1,4 +1,4 @@
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
@@ -17,8 +17,11 @@ class QuestAPIView(APIView):
         tags=["quest"],
         summary="설문 조회 API",
         description="설문 조회 API",
-        examples=[value_list["200_question_get"], value_list["401"]],
-        responses={200: value_list["200_question_get"], 401: value_list["401"]},
+        request=QuestionSerializer,
+        responses={
+            200: OpenApiResponse(response=QuestionSerializer, examples=[value_list["200_question_get"]]),
+            401: OpenApiResponse(examples=[value_list["401"]]),
+        },
     )
     def get(self, request: Request, *args: object, **kwargs: object) -> Response:
         data = quest_select()
@@ -29,8 +32,12 @@ class QuestAPIView(APIView):
         tags=["quest"],
         summary="설문 답변 API",
         description="설문 답변 API",
-        examples=[value_list["201"], value_list["400_question"], value_list["401"]],
-        responses={201: value_list["201"], 400: value_list["400_question"], 401: value_list["401"]},
+        request=QuestionSerializer,
+        responses={
+            201: OpenApiResponse(response=QuestionSerializer, examples=[value_list["201"]]),
+            400: OpenApiResponse(examples=[value_list["400_question"]]),
+            401: OpenApiResponse(examples=[value_list["401"]]),
+        },
     )
     def post(self, request: Request, *args: object, **kwargs: object) -> Response:
         return Response({"message": "결과 조회"})

@@ -1,6 +1,7 @@
 from urllib.request import Request
 
-from drf_spectacular.utils import OpenApiResponse, extend_schema
+from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
+from rest_framework import serializers
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -90,6 +91,10 @@ class AnalysisFeedbackAPIView(APIView):
     @extend_schema(
         tags=["image_analysis"],
         summary="분석 결과 저장",
+        request=inline_serializer(
+            name="FeedbackInput",
+            fields={"is_helpful": serializers.BooleanField(help_text="도움이 되었는지 여부 (true/false)")},
+        ),
         responses={
             200: OpenApiResponse(description="분석 저장 성공"),
             400: OpenApiResponse(description="필수값 이상"),
