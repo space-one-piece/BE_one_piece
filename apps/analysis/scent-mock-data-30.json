@@ -1,0 +1,1802 @@
+[
+  {
+    "id": 1,
+    "name": "블라썸 드림",
+    "englishName": "Blossom Dream",
+    "category": "floral",
+    "description": "체리 블라썸과 머스크, 바닐라가 부드럽게 어우러진 향입니다. 사랑스럽고 포근한 분위기를 더해 주며, 공간 안에 로맨틱한 여운을 남깁니다.",
+    "imageUrl": "https://example.com/scents/blossom-dream-detail.jpg",
+    "intensity": 76,
+    "profile": {
+      "freshness": 21,
+      "warmth": 68,
+      "softness": 48,
+      "depth": 78,
+      "sweetness": 82
+    },
+    "notes": {
+      "top": {
+        "title": "탑 노트",
+        "description": "첫 인상을 밝고 은은하게 열어주는 향",
+        "items": ["체리블라썸", "핑크 페퍼", "베르가못"]
+      },
+      "middle": {
+        "title": "미들 노트",
+        "description": "꽃잎처럼 부드럽게 이어지는 중심 향",
+        "items": ["피오니", "아이리스", "로즈"]
+      },
+      "base": {
+        "title": "베이스 노트",
+        "description": "따뜻하고 달콤한 잔향을 남기는 향",
+        "items": ["머스크", "바닐라", "샌달우드"]
+      }
+    },
+    "tags": ["따뜻한", "부드러운", "달콤한", "로맨틱"],
+    "keywords": ["봄꽃", "데이트", "로맨틱무드"],
+    "season": ["spring", "autumn"],
+    "recommendedPlaces": [
+      {
+        "name": "Bedroom",
+        "description": "포근하게 하루를 마무리하는 침실",
+        "imageUrl": "https://example.com/places/bedroom-01.jpg",
+        "matchScore": 95
+      },
+      {
+        "name": "Dressing Room",
+        "description": "섬세한 무드를 더해주는 드레스룸",
+        "imageUrl": "https://example.com/places/dressing-room-01.jpg",
+        "matchScore": 92
+      },
+      {
+        "name": "Living Room",
+        "description": "따뜻한 조명 아래 머무는 거실",
+        "imageUrl": "https://example.com/places/living-room-01.jpg",
+        "matchScore": 89
+      }
+    ],
+    "similarScents": [2, 4, 6],
+    "isBestseller": true,
+    "createdAt": "2026-04-13T00:00:00Z",
+    "updatedAt": "2026-04-13T00:00:00Z"
+  },
+  {
+    "id": 2,
+    "name": "로즈 미스트",
+    "englishName": "Rose Mist",
+    "category": "floral",
+    "description": "이슬 맺힌 장미 정원을 떠올리게 하는 향입니다. 우아하고 차분한 플로럴 톤이 공간을 정돈된 분위기로 채워 줍니다.",
+    "imageUrl": "https://example.com/scents/rose-mist-detail.jpg",
+    "intensity": 64,
+    "profile": {
+      "freshness": 42,
+      "warmth": 54,
+      "softness": 72,
+      "depth": 61,
+      "sweetness": 46
+    },
+    "notes": {
+      "top": {
+        "title": "탑 노트",
+        "description": "가볍고 깨끗하게 퍼지는 첫 향",
+        "items": ["로즈워터", "베르가못", "그린 리프"]
+      },
+      "middle": {
+        "title": "미들 노트",
+        "description": "우아함을 중심에 두는 플로럴 향",
+        "items": ["로즈", "제라늄", "피오니"]
+      },
+      "base": {
+        "title": "베이스 노트",
+        "description": "잔잔한 깊이를 남기는 마무리 향",
+        "items": ["화이트 머스크", "시더우드", "앰버"]
+      }
+    },
+    "tags": ["우아한", "잔잔한", "플로럴", "정돈된"],
+    "keywords": ["생화", "우아함", "장미정원"],
+    "season": ["spring", "summer"],
+    "recommendedPlaces": [
+      {
+        "name": "Powder Room",
+        "description": "깨끗하고 우아한 인상을 주는 공간",
+        "imageUrl": "https://example.com/places/powder-room-01.jpg",
+        "matchScore": 94
+      },
+      {
+        "name": "Bedroom",
+        "description": "잔잔한 휴식을 돕는 침실",
+        "imageUrl": "https://example.com/places/bedroom-02.jpg",
+        "matchScore": 90
+      },
+      {
+        "name": "Reading Room",
+        "description": "조용히 머무르기 좋은 작은 방",
+        "imageUrl": "https://example.com/places/reading-room-01.jpg",
+        "matchScore": 88
+      }
+    ],
+    "similarScents": [1, 3, 4],
+    "isBestseller": false,
+    "createdAt": "2026-04-13T00:00:00Z",
+    "updatedAt": "2026-04-13T00:00:00Z"
+  },
+  {
+    "id": 3,
+    "name": "화이트 피오니",
+    "englishName": "White Peony",
+    "category": "floral",
+    "description": "깨끗한 화이트 페탈의 느낌을 담은 플로럴 향입니다. 가볍고 맑은 분위기가 공간에 부드럽게 스며들어 산뜻한 인상을 남깁니다.",
+    "imageUrl": "https://example.com/scents/white-peony-detail.jpg",
+    "intensity": 58,
+    "profile": {
+      "freshness": 56,
+      "warmth": 38,
+      "softness": 74,
+      "depth": 45,
+      "sweetness": 41
+    },
+    "notes": {
+      "top": {
+        "title": "탑 노트",
+        "description": "맑고 깨끗하게 시작되는 향",
+        "items": ["배", "프리지아", "베르가못"]
+      },
+      "middle": {
+        "title": "미들 노트",
+        "description": "부드럽고 투명한 꽃향의 중심",
+        "items": ["피오니", "화이트 로즈", "자스민"]
+      },
+      "base": {
+        "title": "베이스 노트",
+        "description": "은은하게 남는 깨끗한 잔향",
+        "items": ["머스크", "캐시미어 우드", "아이보리 앰버"]
+      }
+    },
+    "tags": ["맑은", "가벼운", "산뜻한", "깨끗한"],
+    "keywords": ["아침햇살", "순수", "산뜻함"],
+    "season": ["spring", "summer"],
+    "recommendedPlaces": [
+      {
+        "name": "Entryway",
+        "description": "첫인상을 맑게 정리해주는 현관",
+        "imageUrl": "https://example.com/places/entryway-01.jpg",
+        "matchScore": 93
+      },
+      {
+        "name": "Living Room",
+        "description": "햇살이 들어오는 밝은 거실",
+        "imageUrl": "https://example.com/places/living-room-02.jpg",
+        "matchScore": 91
+      },
+      {
+        "name": "Powder Room",
+        "description": "산뜻함을 더해주는 작은 공간",
+        "imageUrl": "https://example.com/places/powder-room-02.jpg",
+        "matchScore": 87
+      }
+    ],
+    "similarScents": [2, 5, 17],
+    "isBestseller": false,
+    "createdAt": "2026-04-13T00:00:00Z",
+    "updatedAt": "2026-04-13T00:00:00Z"
+  },
+  {
+    "id": 4,
+    "name": "벨벳 블룸",
+    "englishName": "Velvet Bloom",
+    "category": "floral",
+    "description": "짙은 꽃잎의 질감처럼 매끄럽고 풍부한 향입니다. 지나치게 화려하지 않지만 분명한 존재감을 지녀 공간을 우아하게 채워 줍니다.",
+    "imageUrl": "https://example.com/scents/velvet-bloom-detail.jpg",
+    "intensity": 73,
+    "profile": {
+      "freshness": 24,
+      "warmth": 66,
+      "softness": 70,
+      "depth": 75,
+      "sweetness": 57
+    },
+    "notes": {
+      "top": {
+        "title": "탑 노트",
+        "description": "부드럽게 열리는 플로럴 시작",
+        "items": ["블랙커런트", "핑크 페퍼", "만다린"]
+      },
+      "middle": {
+        "title": "미들 노트",
+        "description": "풍성한 꽃잎이 중심을 이루는 향",
+        "items": ["로즈", "오키드", "피오니"]
+      },
+      "base": {
+        "title": "베이스 노트",
+        "description": "벨벳처럼 잔잔하고 깊은 마무리",
+        "items": ["앰버", "머스크", "패출리"]
+      }
+    },
+    "tags": ["우아한", "깊이감 있는", "풍부한", "성숙한"],
+    "keywords": ["성숙함", "고급스러움", "가을밤"],
+    "season": ["autumn", "winter"],
+    "recommendedPlaces": [
+      {
+        "name": "Living Room",
+        "description": "정제된 무드를 완성하는 메인 공간",
+        "imageUrl": "https://example.com/places/living-room-03.jpg",
+        "matchScore": 94
+      },
+      {
+        "name": "Lounge",
+        "description": "조용한 저녁 분위기와 잘 어울리는 공간",
+        "imageUrl": "https://example.com/places/lounge-01.jpg",
+        "matchScore": 91
+      },
+      {
+        "name": "Bedroom",
+        "description": "차분한 감성을 더해주는 침실",
+        "imageUrl": "https://example.com/places/bedroom-03.jpg",
+        "matchScore": 88
+      }
+    ],
+    "similarScents": [1, 2, 30],
+    "isBestseller": true,
+    "createdAt": "2026-04-13T00:00:00Z",
+    "updatedAt": "2026-04-13T00:00:00Z"
+  },
+  {
+    "id": 5,
+    "name": "체리 베일",
+    "englishName": "Cherry Veil",
+    "category": "floral",
+    "description": "은은한 과실감과 꽃잎의 부드러움이 함께 감도는 향입니다. 발랄함보다는 섬세하고 여린 인상에 가까워 작은 공간에 잘 어울립니다.",
+    "imageUrl": "https://example.com/scents/cherry-veil-detail.jpg",
+    "intensity": 62,
+    "profile": {
+      "freshness": 47,
+      "warmth": 42,
+      "softness": 69,
+      "depth": 53,
+      "sweetness": 63
+    },
+    "notes": {
+      "top": {
+        "title": "탑 노트",
+        "description": "가볍게 퍼지는 달콤한 시작",
+        "items": ["체리", "레드 베리", "베르가못"]
+      },
+      "middle": {
+        "title": "미들 노트",
+        "description": "부드러운 꽃향으로 이어지는 중심",
+        "items": ["체리블라썸", "로즈", "바이올렛"]
+      },
+      "base": {
+        "title": "베이스 노트",
+        "description": "달콤함을 잡아주는 잔향",
+        "items": ["머스크", "샌달우드", "바닐라"]
+      }
+    },
+    "tags": ["달콤한", "사랑스러운", "섬세한", "은은한"],
+    "keywords": ["소녀감성", "여리여리", "달콤함"],
+    "season": ["spring", "autumn"],
+    "recommendedPlaces": [
+      {
+        "name": "Bedroom",
+        "description": "여리고 아늑한 무드를 더하는 침실",
+        "imageUrl": "https://example.com/places/bedroom-04.jpg",
+        "matchScore": 93
+      },
+      {
+        "name": "Vanity",
+        "description": "부드러운 인상을 완성하는 개인 공간",
+        "imageUrl": "https://example.com/places/vanity-01.jpg",
+        "matchScore": 90
+      },
+      {
+        "name": "Reading Room",
+        "description": "조용한 취향이 머무는 공간",
+        "imageUrl": "https://example.com/places/reading-room-02.jpg",
+        "matchScore": 86
+      }
+    ],
+    "similarScents": [1, 3, 29],
+    "isBestseller": false,
+    "createdAt": "2026-04-13T00:00:00Z",
+    "updatedAt": "2026-04-13T00:00:00Z"
+  },
+  {
+    "id": 6,
+    "name": "아이리스 페탈",
+    "englishName": "Iris Petal",
+    "category": "floral",
+    "description": "파우더리한 아이리스와 투명한 꽃향이 만나 차분하고 고급스러운 인상을 만들어 줍니다. 과하지 않게 정갈한 공간감이 돋보이는 향입니다.",
+    "imageUrl": "https://example.com/scents/iris-petal-detail.jpg",
+    "intensity": 59,
+    "profile": {
+      "freshness": 31,
+      "warmth": 49,
+      "softness": 80,
+      "depth": 58,
+      "sweetness": 32
+    },
+    "notes": {
+      "top": {
+        "title": "탑 노트",
+        "description": "잔잔하게 열리는 맑은 향",
+        "items": ["네롤리", "바이올렛 리프", "알데하이드"]
+      },
+      "middle": {
+        "title": "미들 노트",
+        "description": "섬세하고 고운 꽃잎의 결을 담은 향",
+        "items": ["아이리스", "헬리오트로프", "화이트 플라워"]
+      },
+      "base": {
+        "title": "베이스 노트",
+        "description": "부드럽고 차분하게 남는 잔향",
+        "items": ["파우더 머스크", "시더우드", "캐시미어"]
+      }
+    },
+    "tags": ["차분한", "고급스러운", "부드러운", "정갈한"],
+    "keywords": ["단정함", "파우더리", "오피스"],
+    "season": ["spring", "winter"],
+    "recommendedPlaces": [
+      {
+        "name": "Study",
+        "description": "조용한 집중과 잘 어울리는 공간",
+        "imageUrl": "https://example.com/places/study-01.jpg",
+        "matchScore": 92
+      },
+      {
+        "name": "Bedroom",
+        "description": "정돈된 휴식을 돕는 침실",
+        "imageUrl": "https://example.com/places/bedroom-05.jpg",
+        "matchScore": 89
+      },
+      {
+        "name": "Powder Room",
+        "description": "깔끔한 인상을 더하는 공간",
+        "imageUrl": "https://example.com/places/powder-room-03.jpg",
+        "matchScore": 87
+      }
+    ],
+    "similarScents": [2, 24, 25],
+    "isBestseller": false,
+    "createdAt": "2026-04-13T00:00:00Z",
+    "updatedAt": "2026-04-13T00:00:00Z"
+  },
+  {
+    "id": 7,
+    "name": "세린 우즈",
+    "englishName": "Serene Woods",
+    "category": "woody",
+    "description": "깊은 숲속을 천천히 거닐 때 느껴지는 고요함을 닮은 향입니다. 묵직하지만 답답하지 않고, 공간에 차분한 중심을 만들어 줍니다.",
+    "imageUrl": "https://example.com/scents/serene-woods-detail.jpg",
+    "intensity": 72,
+    "profile": {
+      "freshness": 28,
+      "warmth": 86,
+      "softness": 74,
+      "depth": 88,
+      "sweetness": 36
+    },
+    "notes": {
+      "top": {
+        "title": "탑 노트",
+        "description": "상쾌하게 숲의 문을 여는 향",
+        "items": ["베르가못", "사이프러스", "주니퍼"]
+      },
+      "middle": {
+        "title": "미들 노트",
+        "description": "나무결의 차분함이 드러나는 향",
+        "items": ["시더우드", "아이리스", "세이지"]
+      },
+      "base": {
+        "title": "베이스 노트",
+        "description": "깊고 따뜻한 잔향을 남기는 향",
+        "items": ["샌달우드", "앰버", "머스크"]
+      }
+    },
+    "tags": ["차분한", "깊이감 있는", "내추럴", "안정적인"],
+    "keywords": ["명상", "휴식", "숲길"],
+    "season": ["autumn", "winter"],
+    "recommendedPlaces": [
+      {
+        "name": "Study",
+        "description": "고요한 집중이 필요한 서재",
+        "imageUrl": "https://example.com/places/study-02.jpg",
+        "matchScore": 96
+      },
+      {
+        "name": "Reading Room",
+        "description": "정적인 몰입감을 더하는 공간",
+        "imageUrl": "https://example.com/places/reading-room-03.jpg",
+        "matchScore": 93
+      },
+      {
+        "name": "Living Room",
+        "description": "차분한 중심을 만들어 주는 거실",
+        "imageUrl": "https://example.com/places/living-room-04.jpg",
+        "matchScore": 88
+      }
+    ],
+    "similarScents": [8, 9, 11],
+    "isBestseller": true,
+    "createdAt": "2026-04-13T00:00:00Z",
+    "updatedAt": "2026-04-13T00:00:00Z"
+  },
+  {
+    "id": 8,
+    "name": "샌달 콰이어트",
+    "englishName": "Sandal Quiet",
+    "category": "woody",
+    "description": "부드러운 샌달우드가 중심이 되는 향으로, 과하게 무겁지 않고 따뜻한 안정감을 오래 남깁니다. 편안한 휴식 공간에 잘 어울립니다.",
+    "imageUrl": "https://example.com/scents/sandal-quiet-detail.jpg",
+    "intensity": 68,
+    "profile": {
+      "freshness": 18,
+      "warmth": 84,
+      "softness": 81,
+      "depth": 79,
+      "sweetness": 29
+    },
+    "notes": {
+      "top": {
+        "title": "탑 노트",
+        "description": "부드럽게 시작되는 잔잔한 향",
+        "items": ["무화과잎", "베르가못", "카다멈"]
+      },
+      "middle": {
+        "title": "미들 노트",
+        "description": "크리미한 우디 중심을 이루는 향",
+        "items": ["샌달우드", "밀크 노트", "아이리스"]
+      },
+      "base": {
+        "title": "베이스 노트",
+        "description": "편안한 온기를 남기는 향",
+        "items": ["머스크", "시더우드", "앰버"]
+      }
+    },
+    "tags": ["포근한", "부드러운", "차분한", "따뜻한"],
+    "keywords": ["수면", "안정감", "크리미우디"],
+    "season": ["autumn", "winter"],
+    "recommendedPlaces": [
+      {
+        "name": "Bedroom",
+        "description": "몸과 마음을 편안하게 하는 침실",
+        "imageUrl": "https://example.com/places/bedroom-06.jpg",
+        "matchScore": 96
+      },
+      {
+        "name": "Living Room",
+        "description": "포근한 무드를 더하는 거실",
+        "imageUrl": "https://example.com/places/living-room-05.jpg",
+        "matchScore": 91
+      },
+      {
+        "name": "Lounge",
+        "description": "느긋한 휴식이 어울리는 공간",
+        "imageUrl": "https://example.com/places/lounge-02.jpg",
+        "matchScore": 88
+      }
+    ],
+    "similarScents": [7, 10, 25],
+    "isBestseller": true,
+    "createdAt": "2026-04-13T00:00:00Z",
+    "updatedAt": "2026-04-13T00:00:00Z"
+  },
+  {
+    "id": 9,
+    "name": "시더 아워",
+    "englishName": "Cedar Hour",
+    "category": "woody",
+    "description": "건조한 나무결과 은은한 허브가 조화롭게 이어지는 향입니다. 단정하고 절제된 분위기가 공간을 안정적으로 정리해 줍니다.",
+    "imageUrl": "https://example.com/scents/cedar-hour-detail.jpg",
+    "intensity": 66,
+    "profile": {
+      "freshness": 33,
+      "warmth": 72,
+      "softness": 51,
+      "depth": 80,
+      "sweetness": 18
+    },
+    "notes": {
+      "top": {
+        "title": "탑 노트",
+        "description": "맑고 드라이하게 시작되는 향",
+        "items": ["사이프러스", "유칼립투스", "주니퍼"]
+      },
+      "middle": {
+        "title": "미들 노트",
+        "description": "정돈된 우디 중심을 잡아주는 향",
+        "items": ["시더우드", "세이지", "라벤더"]
+      },
+      "base": {
+        "title": "베이스 노트",
+        "description": "고요하고 깊은 잔향을 남기는 향",
+        "items": ["베티버", "머스크", "오크"]
+      }
+    },
+    "tags": ["드라이한", "정돈된", "깊은", "고요한"],
+    "keywords": ["서재", "몰입", "드라이우드"],
+    "season": ["autumn", "winter"],
+    "recommendedPlaces": [
+      {
+        "name": "Study",
+        "description": "절제된 분위기를 만드는 작업 공간",
+        "imageUrl": "https://example.com/places/study-03.jpg",
+        "matchScore": 95
+      },
+      {
+        "name": "Office",
+        "description": "집중감을 높여주는 데스크 주변",
+        "imageUrl": "https://example.com/places/office-01.jpg",
+        "matchScore": 90
+      },
+      {
+        "name": "Entryway",
+        "description": "단정한 인상을 남기는 현관",
+        "imageUrl": "https://example.com/places/entryway-02.jpg",
+        "matchScore": 86
+      }
+    ],
+    "similarScents": [7, 11, 12],
+    "isBestseller": false,
+    "createdAt": "2026-04-13T00:00:00Z",
+    "updatedAt": "2026-04-13T00:00:00Z"
+  },
+  {
+    "id": 10,
+    "name": "앰버 우드",
+    "englishName": "Amber Wood",
+    "category": "woody",
+    "description": "나무의 단단한 결 위로 앰버의 따뜻한 빛이 얹힌 향입니다. 공간을 깊고 안정적으로 감싸면서도 지나치게 무겁지 않은 균형이 특징입니다.",
+    "imageUrl": "https://example.com/scents/amber-wood-detail.jpg",
+    "intensity": 74,
+    "profile": {
+      "freshness": 17,
+      "warmth": 88,
+      "softness": 59,
+      "depth": 85,
+      "sweetness": 40
+    },
+    "notes": {
+      "top": {
+        "title": "탑 노트",
+        "description": "가볍게 향의 입구를 여는 향",
+        "items": ["만다린", "핑크 페퍼", "카다멈"]
+      },
+      "middle": {
+        "title": "미들 노트",
+        "description": "따뜻한 우디 중심을 드러내는 향",
+        "items": ["시더우드", "앰버우드", "세이지"]
+      },
+      "base": {
+        "title": "베이스 노트",
+        "description": "은근한 온기와 깊이를 남기는 향",
+        "items": ["앰버", "샌달우드", "머스크"]
+      }
+    },
+    "tags": ["따뜻한", "묵직한", "고급스러운", "안정적인"],
+    "keywords": ["호텔라운지", "온기", "저녁무드"],
+    "season": ["autumn", "winter"],
+    "recommendedPlaces": [
+      {
+        "name": "Living Room",
+        "description": "무게감 있는 분위기를 완성하는 거실",
+        "imageUrl": "https://example.com/places/living-room-06.jpg",
+        "matchScore": 95
+      },
+      {
+        "name": "Lounge",
+        "description": "저녁 시간과 잘 어울리는 라운지",
+        "imageUrl": "https://example.com/places/lounge-03.jpg",
+        "matchScore": 92
+      },
+      {
+        "name": "Bedroom",
+        "description": "따뜻한 잔향이 머무는 침실",
+        "imageUrl": "https://example.com/places/bedroom-07.jpg",
+        "matchScore": 87
+      }
+    ],
+    "similarScents": [8, 11, 30],
+    "isBestseller": true,
+    "createdAt": "2026-04-13T00:00:00Z",
+    "updatedAt": "2026-04-13T00:00:00Z"
+  },
+  {
+    "id": 11,
+    "name": "오크 리추얼",
+    "englishName": "Oak Ritual",
+    "category": "woody",
+    "description": "오크와 베티버의 묵직한 구조감이 공간을 차분하게 눌러 주는 향입니다. 조용한 성찰과 몰입이 필요한 순간에 특히 잘 어울립니다.",
+    "imageUrl": "https://example.com/scents/oak-ritual-detail.jpg",
+    "intensity": 79,
+    "profile": {
+      "freshness": 15,
+      "warmth": 76,
+      "softness": 43,
+      "depth": 91,
+      "sweetness": 14
+    },
+    "notes": {
+      "top": {
+        "title": "탑 노트",
+        "description": "단정하게 시작되는 차가운 숲의 향",
+        "items": ["주니퍼", "블랙 페퍼", "베르가못"]
+      },
+      "middle": {
+        "title": "미들 노트",
+        "description": "단단한 목재의 중심감을 주는 향",
+        "items": ["오크", "시더우드", "클라리 세이지"]
+      },
+      "base": {
+        "title": "베이스 노트",
+        "description": "깊고 오래 남는 묵직한 잔향",
+        "items": ["베티버", "패출리", "머스크"]
+      }
+    },
+    "tags": ["묵직한", "깊은", "절제된", "집중되는"],
+    "keywords": ["사색", "비오는날", "절제미"],
+    "season": ["autumn", "winter"],
+    "recommendedPlaces": [
+      {
+        "name": "Study",
+        "description": "몰입을 끌어올리는 깊은 향의 공간",
+        "imageUrl": "https://example.com/places/study-04.jpg",
+        "matchScore": 97
+      },
+      {
+        "name": "Library",
+        "description": "오랜 종이 냄새와 잘 어울리는 공간",
+        "imageUrl": "https://example.com/places/library-01.jpg",
+        "matchScore": 93
+      },
+      {
+        "name": "Office",
+        "description": "무게감 있는 집중이 필요한 공간",
+        "imageUrl": "https://example.com/places/office-02.jpg",
+        "matchScore": 89
+      }
+    ],
+    "similarScents": [7, 9, 12],
+    "isBestseller": false,
+    "createdAt": "2026-04-13T00:00:00Z",
+    "updatedAt": "2026-04-13T00:00:00Z"
+  },
+  {
+    "id": 12,
+    "name": "스모크드 팀버",
+    "englishName": "Smoked Timber",
+    "category": "woody",
+    "description": "나무의 그을린 결 위에 은은한 스파이스가 더해진 향입니다. 지나치게 강하지 않지만 분명한 존재감으로 공간의 인상을 또렷하게 바꿔 줍니다.",
+    "imageUrl": "https://example.com/scents/smoked-timber-detail.jpg",
+    "intensity": 83,
+    "profile": {
+      "freshness": 12,
+      "warmth": 79,
+      "softness": 34,
+      "depth": 94,
+      "sweetness": 16
+    },
+    "notes": {
+      "top": {
+        "title": "탑 노트",
+        "description": "스파이시하게 시작되는 강한 첫 향",
+        "items": ["블랙 페퍼", "일렉미", "주니퍼"]
+      },
+      "middle": {
+        "title": "미들 노트",
+        "description": "스모키한 나무결이 중심이 되는 향",
+        "items": ["스모크드 우드", "시더", "가이악우드"]
+      },
+      "base": {
+        "title": "베이스 노트",
+        "description": "잔잔하지만 오래 남는 짙은 향",
+        "items": ["앰버", "베티버", "가죽"]
+      }
+    },
+    "tags": ["스모키한", "강렬한", "깊은", "묵직한"],
+    "keywords": ["캠프파이어", "스모키", "밤공기"],
+    "season": ["autumn", "winter"],
+    "recommendedPlaces": [
+      {
+        "name": "Lounge",
+        "description": "존재감 있는 분위기를 만드는 공간",
+        "imageUrl": "https://example.com/places/lounge-04.jpg",
+        "matchScore": 95
+      },
+      {
+        "name": "Living Room",
+        "description": "어두운 톤의 인테리어와 잘 어울리는 거실",
+        "imageUrl": "https://example.com/places/living-room-07.jpg",
+        "matchScore": 90
+      },
+      {
+        "name": "Studio",
+        "description": "개성이 드러나는 작업 공간",
+        "imageUrl": "https://example.com/places/studio-01.jpg",
+        "matchScore": 87
+      }
+    ],
+    "similarScents": [9, 11, 27],
+    "isBestseller": false,
+    "createdAt": "2026-04-13T00:00:00Z",
+    "updatedAt": "2026-04-13T00:00:00Z"
+  },
+  {
+    "id": 13,
+    "name": "시트러스 던",
+    "englishName": "Citrus Dawn",
+    "category": "citrus",
+    "description": "이른 아침의 깨끗한 공기처럼 밝고 선명한 시트러스 향입니다. 공간을 산뜻하게 환기시키며 가벼운 에너지를 더해 줍니다.",
+    "imageUrl": "https://example.com/scents/citrus-dawn-detail.jpg",
+    "intensity": 57,
+    "profile": {
+      "freshness": 91,
+      "warmth": 18,
+      "softness": 36,
+      "depth": 28,
+      "sweetness": 34
+    },
+    "notes": {
+      "top": {
+        "title": "탑 노트",
+        "description": "반짝이듯 상쾌하게 시작되는 향",
+        "items": ["레몬", "오렌지", "그레이프프루트"]
+      },
+      "middle": {
+        "title": "미들 노트",
+        "description": "맑은 허브감이 이어지는 향",
+        "items": ["버베나", "프티그레인", "네롤리"]
+      },
+      "base": {
+        "title": "베이스 노트",
+        "description": "깨끗하게 마무리되는 가벼운 향",
+        "items": ["화이트 머스크", "시더", "클린 앰버"]
+      }
+    },
+    "tags": ["상쾌한", "밝은", "가벼운", "깨끗한"],
+    "keywords": ["모닝루틴", "상쾌함", "에너지"],
+    "season": ["spring", "summer"],
+    "recommendedPlaces": [
+      {
+        "name": "Kitchen",
+        "description": "공기를 산뜻하게 정리해주는 주방",
+        "imageUrl": "https://example.com/places/kitchen-01.jpg",
+        "matchScore": 96
+      },
+      {
+        "name": "Entryway",
+        "description": "밝은 첫인상을 주는 현관",
+        "imageUrl": "https://example.com/places/entryway-03.jpg",
+        "matchScore": 92
+      },
+      {
+        "name": "Workspace",
+        "description": "기분 좋은 리듬을 만드는 작업 공간",
+        "imageUrl": "https://example.com/places/workspace-01.jpg",
+        "matchScore": 88
+      }
+    ],
+    "similarScents": [14, 15, 16],
+    "isBestseller": true,
+    "createdAt": "2026-04-13T00:00:00Z",
+    "updatedAt": "2026-04-13T00:00:00Z"
+  },
+  {
+    "id": 14,
+    "name": "레몬 리넨",
+    "englishName": "Lemon Linen",
+    "category": "citrus",
+    "description": "막 세탁한 리넨에 레몬 껍질의 산뜻함이 얹힌 듯한 향입니다. 깨끗하고 가벼운 분위기로 일상 공간을 환하게 정돈해 줍니다.",
+    "imageUrl": "https://example.com/scents/lemon-linen-detail.jpg",
+    "intensity": 52,
+    "profile": {
+      "freshness": 88,
+      "warmth": 16,
+      "softness": 58,
+      "depth": 24,
+      "sweetness": 26
+    },
+    "notes": {
+      "top": {
+        "title": "탑 노트",
+        "description": "청량하고 깨끗하게 퍼지는 향",
+        "items": ["레몬", "유자", "알데하이드"]
+      },
+      "middle": {
+        "title": "미들 노트",
+        "description": "클린한 섬유감이 중심이 되는 향",
+        "items": ["린넨 어코드", "네롤리", "라벤더"]
+      },
+      "base": {
+        "title": "베이스 노트",
+        "description": "깨끗함을 오래 남기는 향",
+        "items": ["화이트 머스크", "시더우드", "앰버"]
+      }
+    },
+    "tags": ["깨끗한", "가벼운", "산뜻한", "정돈된"],
+    "keywords": ["런드리", "햇볕", "기분전환"],
+    "season": ["spring", "summer"],
+    "recommendedPlaces": [
+      {
+        "name": "Laundry Room",
+        "description": "섬유의 깨끗함과 잘 어울리는 공간",
+        "imageUrl": "https://example.com/places/laundry-room-01.jpg",
+        "matchScore": 95
+      },
+      {
+        "name": "Bedroom",
+        "description": "상쾌한 기분을 더하는 침실",
+        "imageUrl": "https://example.com/places/bedroom-08.jpg",
+        "matchScore": 91
+      },
+      {
+        "name": "Entryway",
+        "description": "반듯하고 깔끔한 인상을 주는 현관",
+        "imageUrl": "https://example.com/places/entryway-04.jpg",
+        "matchScore": 88
+      }
+    ],
+    "similarScents": [13, 17, 20],
+    "isBestseller": false,
+    "createdAt": "2026-04-13T00:00:00Z",
+    "updatedAt": "2026-04-13T00:00:00Z"
+  },
+  {
+    "id": 15,
+    "name": "베르가못 에어",
+    "englishName": "Bergamot Air",
+    "category": "citrus",
+    "description": "베르가못의 투명한 시트러스가 공기처럼 가볍게 퍼지는 향입니다. 밝고 맑은 인상으로 답답한 공간을 환기해 줍니다.",
+    "imageUrl": "https://example.com/scents/bergamot-air-detail.jpg",
+    "intensity": 54,
+    "profile": {
+      "freshness": 86,
+      "warmth": 22,
+      "softness": 44,
+      "depth": 31,
+      "sweetness": 23
+    },
+    "notes": {
+      "top": {
+        "title": "탑 노트",
+        "description": "선명하고 가볍게 시작되는 향",
+        "items": ["베르가못", "만다린", "그린티"]
+      },
+      "middle": {
+        "title": "미들 노트",
+        "description": "맑고 투명한 허브감이 이어지는 향",
+        "items": ["네롤리", "티 리프", "버베나"]
+      },
+      "base": {
+        "title": "베이스 노트",
+        "description": "깔끔하게 사라지는 잔향",
+        "items": ["머스크", "시더", "클린 우드"]
+      }
+    },
+    "tags": ["맑은", "산뜻한", "투명한", "가벼운"],
+    "keywords": ["티타임", "여유", "환기"],
+    "season": ["spring", "summer"],
+    "recommendedPlaces": [
+      {
+        "name": "Workspace",
+        "description": "맑은 리듬을 만드는 작업 공간",
+        "imageUrl": "https://example.com/places/workspace-02.jpg",
+        "matchScore": 94
+      },
+      {
+        "name": "Living Room",
+        "description": "공기를 가볍게 바꿔주는 거실",
+        "imageUrl": "https://example.com/places/living-room-08.jpg",
+        "matchScore": 89
+      },
+      {
+        "name": "Kitchen",
+        "description": "산뜻하게 정리되는 주방",
+        "imageUrl": "https://example.com/places/kitchen-02.jpg",
+        "matchScore": 87
+      }
+    ],
+    "similarScents": [13, 14, 21],
+    "isBestseller": false,
+    "createdAt": "2026-04-13T00:00:00Z",
+    "updatedAt": "2026-04-13T00:00:00Z"
+  },
+  {
+    "id": 16,
+    "name": "그레이프프루트 글로우",
+    "englishName": "Grapefruit Glow",
+    "category": "citrus",
+    "description": "그레이프프루트 특유의 쌉싸름한 상큼함이 공간에 생기를 더하는 향입니다. 밝고 경쾌한 무드가 필요한 낮 시간에 특히 잘 어울립니다.",
+    "imageUrl": "https://example.com/scents/grapefruit-glow-detail.jpg",
+    "intensity": 56,
+    "profile": {
+      "freshness": 93,
+      "warmth": 15,
+      "softness": 29,
+      "depth": 22,
+      "sweetness": 31
+    },
+    "notes": {
+      "top": {
+        "title": "탑 노트",
+        "description": "청량하게 터지는 첫 향",
+        "items": ["그레이프프루트", "라임", "레몬"]
+      },
+      "middle": {
+        "title": "미들 노트",
+        "description": "은은한 허브감이 뒤따르는 향",
+        "items": ["민트", "네롤리", "프티그레인"]
+      },
+      "base": {
+        "title": "베이스 노트",
+        "description": "가볍고 깨끗하게 끝나는 향",
+        "items": ["화이트 머스크", "시더우드", "앰버"]
+      }
+    },
+    "tags": ["경쾌한", "밝은", "상쾌한", "활기 있는"],
+    "keywords": ["생기", "비타민", "운동"],
+    "season": ["spring", "summer"],
+    "recommendedPlaces": [
+      {
+        "name": "Kitchen",
+        "description": "산뜻한 생기를 더하는 주방",
+        "imageUrl": "https://example.com/places/kitchen-03.jpg",
+        "matchScore": 95
+      },
+      {
+        "name": "Home Gym",
+        "description": "에너지를 올려주는 공간",
+        "imageUrl": "https://example.com/places/home-gym-01.jpg",
+        "matchScore": 90
+      },
+      {
+        "name": "Workspace",
+        "description": "낮 시간의 집중을 돕는 공간",
+        "imageUrl": "https://example.com/places/workspace-03.jpg",
+        "matchScore": 86
+      }
+    ],
+    "similarScents": [13, 15, 28],
+    "isBestseller": false,
+    "createdAt": "2026-04-13T00:00:00Z",
+    "updatedAt": "2026-04-13T00:00:00Z"
+  },
+  {
+    "id": 17,
+    "name": "소프트 리넨",
+    "englishName": "Soft Linen",
+    "category": "musk",
+    "description": "깨끗한 머스크와 막 마른 리넨의 포근함이 중심인 향입니다. 과하지 않게 부드러운 존재감으로 일상 공간을 편안하게 만들어 줍니다.",
+    "imageUrl": "https://example.com/scents/soft-linen-detail.jpg",
+    "intensity": 49,
+    "profile": {
+      "freshness": 63,
+      "warmth": 41,
+      "softness": 88,
+      "depth": 36,
+      "sweetness": 19
+    },
+    "notes": {
+      "top": {
+        "title": "탑 노트",
+        "description": "깨끗하게 열리는 맑은 향",
+        "items": ["알데하이드", "레몬", "화이트 티"]
+      },
+      "middle": {
+        "title": "미들 노트",
+        "description": "부드러운 섬유감이 중심인 향",
+        "items": ["린넨 어코드", "아이리스", "코튼 플라워"]
+      },
+      "base": {
+        "title": "베이스 노트",
+        "description": "포근하게 남는 잔향",
+        "items": ["화이트 머스크", "캐시미어", "클린 앰버"]
+      }
+    },
+    "tags": ["깨끗한", "포근한", "부드러운", "은은한"],
+    "keywords": ["이불속", "비누향", "순수"],
+    "season": ["spring", "summer", "autumn"],
+    "recommendedPlaces": [
+      {
+        "name": "Bedroom",
+        "description": "편안하고 깨끗한 침실 분위기",
+        "imageUrl": "https://example.com/places/bedroom-09.jpg",
+        "matchScore": 96
+      },
+      {
+        "name": "Laundry Room",
+        "description": "섬유의 산뜻함을 더하는 공간",
+        "imageUrl": "https://example.com/places/laundry-room-02.jpg",
+        "matchScore": 93
+      },
+      {
+        "name": "Living Room",
+        "description": "잔잔하게 머무는 데일리 무드",
+        "imageUrl": "https://example.com/places/living-room-09.jpg",
+        "matchScore": 88
+      }
+    ],
+    "similarScents": [14, 18, 20],
+    "isBestseller": true,
+    "createdAt": "2026-04-13T00:00:00Z",
+    "updatedAt": "2026-04-13T00:00:00Z"
+  },
+  {
+    "id": 18,
+    "name": "코튼 베일",
+    "englishName": "Cotton Veil",
+    "category": "musk",
+    "description": "얇은 코튼 천처럼 가볍고 부드러운 머스크 향입니다. 눈에 띄기보다 배경처럼 공간을 편안하게 감싸 주는 데 강점이 있습니다.",
+    "imageUrl": "https://example.com/scents/cotton-veil-detail.jpg",
+    "intensity": 44,
+    "profile": {
+      "freshness": 58,
+      "warmth": 36,
+      "softness": 91,
+      "depth": 29,
+      "sweetness": 17
+    },
+    "notes": {
+      "top": {
+        "title": "탑 노트",
+        "description": "맑게 스치는 첫 향",
+        "items": ["네롤리", "레몬 블라썸", "알데하이드"]
+      },
+      "middle": {
+        "title": "미들 노트",
+        "description": "솜처럼 가벼운 부드러움의 향",
+        "items": ["코튼 플라워", "아이리스", "화이트 플라워"]
+      },
+      "base": {
+        "title": "베이스 노트",
+        "description": "은은하고 깨끗한 잔향",
+        "items": ["화이트 머스크", "캐시미어", "시더"]
+      }
+    },
+    "tags": ["은은한", "부드러운", "깨끗한", "가벼운"],
+    "keywords": ["살냄새", "섬유유연제", "수면"],
+    "season": ["spring", "summer"],
+    "recommendedPlaces": [
+      {
+        "name": "Bedroom",
+        "description": "부드러운 무드를 만드는 침실",
+        "imageUrl": "https://example.com/places/bedroom-10.jpg",
+        "matchScore": 95
+      },
+      {
+        "name": "Nursery",
+        "description": "편안하고 자극이 적은 공간감",
+        "imageUrl": "https://example.com/places/nursery-01.jpg",
+        "matchScore": 90
+      },
+      {
+        "name": "Powder Room",
+        "description": "가볍고 깨끗한 인상을 주는 공간",
+        "imageUrl": "https://example.com/places/powder-room-04.jpg",
+        "matchScore": 86
+      }
+    ],
+    "similarScents": [17, 19, 24],
+    "isBestseller": false,
+    "createdAt": "2026-04-13T00:00:00Z",
+    "updatedAt": "2026-04-13T00:00:00Z"
+  },
+  {
+    "id": 19,
+    "name": "퓨어 허시",
+    "englishName": "Pure Hush",
+    "category": "musk",
+    "description": "소리 없이 가까워지는 듯한 깨끗한 머스크 향입니다. 미니멀하고 정제된 공간에 잘 어울리며, 존재감은 적지만 분위기를 확실히 다듬어 줍니다.",
+    "imageUrl": "https://example.com/scents/pure-hush-detail.jpg",
+    "intensity": 41,
+    "profile": {
+      "freshness": 54,
+      "warmth": 33,
+      "softness": 84,
+      "depth": 32,
+      "sweetness": 12
+    },
+    "notes": {
+      "top": {
+        "title": "탑 노트",
+        "description": "맑고 투명하게 열리는 향",
+        "items": ["화이트 티", "알데하이드", "배"]
+      },
+      "middle": {
+        "title": "미들 노트",
+        "description": "절제된 부드러움이 중심인 향",
+        "items": ["아이리스", "린넨 어코드", "화이트 플라워"]
+      },
+      "base": {
+        "title": "베이스 노트",
+        "description": "깨끗하게 남는 여운",
+        "items": ["머스크", "시더", "클린 앰버"]
+      }
+    },
+    "tags": ["미니멀한", "깨끗한", "조용한", "절제된"],
+    "keywords": ["미니멀", "무채색", "고요함"],
+    "season": ["spring", "summer", "autumn"],
+    "recommendedPlaces": [
+      {
+        "name": "Minimal Living Room",
+        "description": "군더더기 없는 분위기와 잘 어울리는 공간",
+        "imageUrl": "https://example.com/places/minimal-living-room-01.jpg",
+        "matchScore": 95
+      },
+      {
+        "name": "Bedroom",
+        "description": "정제된 휴식이 필요한 침실",
+        "imageUrl": "https://example.com/places/bedroom-11.jpg",
+        "matchScore": 90
+      },
+      {
+        "name": "Workspace",
+        "description": "깔끔한 몰입감을 더해주는 공간",
+        "imageUrl": "https://example.com/places/workspace-04.jpg",
+        "matchScore": 87
+      }
+    ],
+    "similarScents": [17, 18, 20],
+    "isBestseller": false,
+    "createdAt": "2026-04-13T00:00:00Z",
+    "updatedAt": "2026-04-13T00:00:00Z"
+  },
+  {
+    "id": 20,
+    "name": "클린 베일",
+    "englishName": "Clean Veil",
+    "category": "musk",
+    "description": "깨끗한 비누 향과 머스크가 가볍게 겹쳐지는 향입니다. 무난하지만 지루하지 않은 인상으로 어떤 공간에도 편안하게 어울립니다.",
+    "imageUrl": "https://example.com/scents/clean-veil-detail.jpg",
+    "intensity": 46,
+    "profile": {
+      "freshness": 67,
+      "warmth": 29,
+      "softness": 78,
+      "depth": 27,
+      "sweetness": 18
+    },
+    "notes": {
+      "top": {
+        "title": "탑 노트",
+        "description": "깨끗하게 퍼지는 비누 같은 향",
+        "items": ["솝 어코드", "레몬", "알데하이드"]
+      },
+      "middle": {
+        "title": "미들 노트",
+        "description": "부드러운 플로럴 클린 무드",
+        "items": ["화이트 플라워", "아이리스", "코튼"]
+      },
+      "base": {
+        "title": "베이스 노트",
+        "description": "잔잔하고 편안한 잔향",
+        "items": ["머스크", "캐시미어", "앰버"]
+      }
+    },
+    "tags": ["깨끗한", "데일리", "부드러운", "편안한"],
+    "keywords": ["데일리", "샤워코롱", "호불호없는"],
+    "season": ["spring", "summer"],
+    "recommendedPlaces": [
+      {
+        "name": "Bathroom",
+        "description": "청결한 인상을 극대화하는 공간",
+        "imageUrl": "https://example.com/places/bathroom-01.jpg",
+        "matchScore": 96
+      },
+      {
+        "name": "Bedroom",
+        "description": "가볍고 산뜻한 침실 무드",
+        "imageUrl": "https://example.com/places/bedroom-12.jpg",
+        "matchScore": 91
+      },
+      {
+        "name": "Entryway",
+        "description": "깔끔한 첫인상을 주는 현관",
+        "imageUrl": "https://example.com/places/entryway-05.jpg",
+        "matchScore": 87
+      }
+    ],
+    "similarScents": [14, 17, 19],
+    "isBestseller": true,
+    "createdAt": "2026-04-13T00:00:00Z",
+    "updatedAt": "2026-04-13T00:00:00Z"
+  },
+  {
+    "id": 21,
+    "name": "그린 포즈",
+    "englishName": "Green Pause",
+    "category": "green",
+    "description": "잠시 창문을 열고 식물의 숨을 들이마시는 순간을 닮은 향입니다. 생기 있지만 과하게 날카롭지 않아 공간에 자연스러운 여유를 만들어 줍니다.",
+    "imageUrl": "https://example.com/scents/green-pause-detail.jpg",
+    "intensity": 61,
+    "profile": {
+      "freshness": 79,
+      "warmth": 28,
+      "softness": 46,
+      "depth": 43,
+      "sweetness": 17
+    },
+    "notes": {
+      "top": {
+        "title": "탑 노트",
+        "description": "싱그럽게 열리는 초록빛 향",
+        "items": ["그린 리프", "바질", "베르가못"]
+      },
+      "middle": {
+        "title": "미들 노트",
+        "description": "식물의 결이 살아 있는 향",
+        "items": ["무화과잎", "세이지", "갈바넘"]
+      },
+      "base": {
+        "title": "베이스 노트",
+        "description": "자연스럽게 잔향을 남기는 향",
+        "items": ["시더우드", "머스크", "모스"]
+      }
+    },
+    "tags": ["싱그러운", "자연스러운", "환기되는", "편안한"],
+    "keywords": ["플랜테리어", "산책", "싱그러움"],
+    "season": ["spring", "summer"],
+    "recommendedPlaces": [
+      {
+        "name": "Living Room",
+        "description": "식물이 많은 거실과 잘 어울리는 향",
+        "imageUrl": "https://example.com/places/living-room-10.jpg",
+        "matchScore": 95
+      },
+      {
+        "name": "Sunroom",
+        "description": "햇살과 초록빛이 머무는 공간",
+        "imageUrl": "https://example.com/places/sunroom-01.jpg",
+        "matchScore": 92
+      },
+      {
+        "name": "Workspace",
+        "description": "숨이 트이는 느낌을 주는 작업 공간",
+        "imageUrl": "https://example.com/places/workspace-05.jpg",
+        "matchScore": 88
+      }
+    ],
+    "similarScents": [15, 22, 23],
+    "isBestseller": false,
+    "createdAt": "2026-04-13T00:00:00Z",
+    "updatedAt": "2026-04-13T00:00:00Z"
+  },
+  {
+    "id": 22,
+    "name": "피그 가든",
+    "englishName": "Fig Garden",
+    "category": "green",
+    "description": "무화과잎의 싱그러움과 크리미한 과육 느낌이 조화로운 향입니다. 자연스럽고 세련된 무드로 공간에 여유로운 결을 더해 줍니다.",
+    "imageUrl": "https://example.com/scents/fig-garden-detail.jpg",
+    "intensity": 67,
+    "profile": {
+      "freshness": 65,
+      "warmth": 47,
+      "softness": 62,
+      "depth": 55,
+      "sweetness": 28
+    },
+    "notes": {
+      "top": {
+        "title": "탑 노트",
+        "description": "초록빛과 과실감이 함께 열리는 향",
+        "items": ["무화과", "그린 리프", "베르가못"]
+      },
+      "middle": {
+        "title": "미들 노트",
+        "description": "크리미한 식물감이 중심이 되는 향",
+        "items": ["무화과잎", "코코넛 밀크", "아이리스"]
+      },
+      "base": {
+        "title": "베이스 노트",
+        "description": "자연스럽고 따뜻한 잔향",
+        "items": ["시더우드", "머스크", "샌달우드"]
+      }
+    },
+    "tags": ["싱그러운", "세련된", "내추럴", "여유로운"],
+    "keywords": ["무화과", "오후의휴식", "세련됨"],
+    "season": ["spring", "summer", "autumn"],
+    "recommendedPlaces": [
+      {
+        "name": "Living Room",
+        "description": "자연스러운 감도를 높여주는 거실",
+        "imageUrl": "https://example.com/places/living-room-11.jpg",
+        "matchScore": 95
+      },
+      {
+        "name": "Dining Room",
+        "description": "따뜻한 식사 공간과 잘 어울리는 향",
+        "imageUrl": "https://example.com/places/dining-room-01.jpg",
+        "matchScore": 90
+      },
+      {
+        "name": "Sunroom",
+        "description": "식물과 채광이 많은 공간",
+        "imageUrl": "https://example.com/places/sunroom-02.jpg",
+        "matchScore": 88
+      }
+    ],
+    "similarScents": [21, 23, 8],
+    "isBestseller": true,
+    "createdAt": "2026-04-13T00:00:00Z",
+    "updatedAt": "2026-04-13T00:00:00Z"
+  },
+  {
+    "id": 23,
+    "name": "바질 셰이드",
+    "englishName": "Basil Shade",
+    "category": "green",
+    "description": "바질과 허브의 선명한 초록향이 공간을 시원하게 정리해 줍니다. 개운하고 또렷한 분위기를 좋아하는 취향에 잘 맞는 향입니다.",
+    "imageUrl": "https://example.com/scents/basil-shade-detail.jpg",
+    "intensity": 63,
+    "profile": {
+      "freshness": 82,
+      "warmth": 24,
+      "softness": 34,
+      "depth": 40,
+      "sweetness": 12
+    },
+    "notes": {
+      "top": {
+        "title": "탑 노트",
+        "description": "허브가 선명하게 터지는 향",
+        "items": ["바질", "레몬", "민트"]
+      },
+      "middle": {
+        "title": "미들 노트",
+        "description": "차분한 허브 중심의 향",
+        "items": ["세이지", "그린티", "무화과잎"]
+      },
+      "base": {
+        "title": "베이스 노트",
+        "description": "드라이하게 정리되는 잔향",
+        "items": ["시더", "머스크", "모스"]
+      }
+    },
+    "tags": ["허브한", "선명한", "환기되는", "드라이한"],
+    "keywords": ["리프레시", "개운함", "허브"],
+    "season": ["spring", "summer"],
+    "recommendedPlaces": [
+      {
+        "name": "Kitchen",
+        "description": "허브의 싱그러움과 잘 맞는 주방",
+        "imageUrl": "https://example.com/places/kitchen-04.jpg",
+        "matchScore": 96
+      },
+      {
+        "name": "Workspace",
+        "description": "개운한 집중을 돕는 공간",
+        "imageUrl": "https://example.com/places/workspace-06.jpg",
+        "matchScore": 91
+      },
+      {
+        "name": "Dining Room",
+        "description": "산뜻한 식사 분위기를 만드는 공간",
+        "imageUrl": "https://example.com/places/dining-room-02.jpg",
+        "matchScore": 87
+      }
+    ],
+    "similarScents": [21, 22, 13],
+    "isBestseller": false,
+    "createdAt": "2026-04-13T00:00:00Z",
+    "updatedAt": "2026-04-13T00:00:00Z"
+  },
+  {
+    "id": 24,
+    "name": "소프트 파우더",
+    "englishName": "Soft Powder",
+    "category": "powdery",
+    "description": "고운 파우더가 살짝 흩날리는 듯한 부드럽고 정적인 향입니다. 피부 가까이에 머무는 듯한 포근함이 있어 침실이나 개인 공간에 잘 어울립니다.",
+    "imageUrl": "https://example.com/scents/soft-powder-detail.jpg",
+    "intensity": 51,
+    "profile": {
+      "freshness": 22,
+      "warmth": 52,
+      "softness": 92,
+      "depth": 44,
+      "sweetness": 27
+    },
+    "notes": {
+      "top": {
+        "title": "탑 노트",
+        "description": "부드럽게 피어오르는 가벼운 향",
+        "items": ["알데하이드", "바이올렛", "네롤리"]
+      },
+      "middle": {
+        "title": "미들 노트",
+        "description": "고운 질감을 만드는 중심 향",
+        "items": ["아이리스", "헬리오트로프", "파우더 어코드"]
+      },
+      "base": {
+        "title": "베이스 노트",
+        "description": "포근하고 조용한 잔향",
+        "items": ["머스크", "캐시미어", "바닐라"]
+      }
+    },
+    "tags": ["포근한", "파우더리", "부드러운", "조용한"],
+    "keywords": ["파우더룸", "살냄새", "보송보송"],
+    "season": ["autumn", "winter"],
+    "recommendedPlaces": [
+      {
+        "name": "Bedroom",
+        "description": "조용하고 포근한 침실 분위기",
+        "imageUrl": "https://example.com/places/bedroom-13.jpg",
+        "matchScore": 95
+      },
+      {
+        "name": "Vanity",
+        "description": "개인적인 무드를 완성하는 공간",
+        "imageUrl": "https://example.com/places/vanity-02.jpg",
+        "matchScore": 91
+      },
+      {
+        "name": "Powder Room",
+        "description": "부드러운 질감이 어울리는 공간",
+        "imageUrl": "https://example.com/places/powder-room-05.jpg",
+        "matchScore": 89
+      }
+    ],
+    "similarScents": [6, 18, 25],
+    "isBestseller": false,
+    "createdAt": "2026-04-13T00:00:00Z",
+    "updatedAt": "2026-04-13T00:00:00Z"
+  },
+  {
+    "id": 25,
+    "name": "캐시미어 더스트",
+    "englishName": "Cashmere Dust",
+    "category": "powdery",
+    "description": "캐시미어 니트의 포근한 촉감과 잔잔한 파우더 향을 닮은 향입니다. 부드럽고 따뜻한 인상이 차분한 공간을 천천히 채워 줍니다.",
+    "imageUrl": "https://example.com/scents/cashmere-dust-detail.jpg",
+    "intensity": 57,
+    "profile": {
+      "freshness": 18,
+      "warmth": 66,
+      "softness": 89,
+      "depth": 52,
+      "sweetness": 33
+    },
+    "notes": {
+      "top": {
+        "title": "탑 노트",
+        "description": "잔잔하게 열리는 부드러운 향",
+        "items": ["아이리스", "네롤리", "코튼 플라워"]
+      },
+      "middle": {
+        "title": "미들 노트",
+        "description": "포근함의 중심을 잡아주는 향",
+        "items": ["캐시미어", "헬리오트로프", "밀크 노트"]
+      },
+      "base": {
+        "title": "베이스 노트",
+        "description": "따뜻한 여운을 남기는 향",
+        "items": ["바닐라", "머스크", "샌달우드"]
+      }
+    },
+    "tags": ["포근한", "따뜻한", "부드러운", "아늑한"],
+    "keywords": ["캐시미어니트", "온기", "아늑함"],
+    "season": ["autumn", "winter"],
+    "recommendedPlaces": [
+      {
+        "name": "Bedroom",
+        "description": "온기 있는 침실과 잘 어울리는 향",
+        "imageUrl": "https://example.com/places/bedroom-14.jpg",
+        "matchScore": 96
+      },
+      {
+        "name": "Living Room",
+        "description": "포근한 패브릭이 많은 거실",
+        "imageUrl": "https://example.com/places/living-room-12.jpg",
+        "matchScore": 90
+      },
+      {
+        "name": "Reading Room",
+        "description": "차분한 휴식이 필요한 공간",
+        "imageUrl": "https://example.com/places/reading-room-04.jpg",
+        "matchScore": 88
+      }
+    ],
+    "similarScents": [8, 24, 30],
+    "isBestseller": true,
+    "createdAt": "2026-04-13T00:00:00Z",
+    "updatedAt": "2026-04-13T00:00:00Z"
+  },
+  {
+    "id": 26,
+    "name": "핑크 페퍼 데이",
+    "englishName": "Pink Pepper Day",
+    "category": "spicy",
+    "description": "핑크 페퍼의 가벼운 스파이스가 공간에 활기와 긴장감을 동시에 더하는 향입니다. 무겁지 않으면서도 분명한 개성을 드러냅니다.",
+    "imageUrl": "https://example.com/scents/pink-pepper-day-detail.jpg",
+    "intensity": 65,
+    "profile": {
+      "freshness": 48,
+      "warmth": 57,
+      "softness": 33,
+      "depth": 49,
+      "sweetness": 21
+    },
+    "notes": {
+      "top": {
+        "title": "탑 노트",
+        "description": "경쾌한 자극으로 시작되는 향",
+        "items": ["핑크 페퍼", "베르가못", "만다린"]
+      },
+      "middle": {
+        "title": "미들 노트",
+        "description": "살짝 매콤한 중심을 이루는 향",
+        "items": ["제라늄", "세이지", "코리앤더"]
+      },
+      "base": {
+        "title": "베이스 노트",
+        "description": "밝고 선명하게 남는 잔향",
+        "items": ["시더우드", "머스크", "베티버"]
+      }
+    },
+    "tags": ["활기 있는", "개성 있는", "스파이시한", "선명한"],
+    "keywords": ["트렌디", "유니크", "활력"],
+    "season": ["spring", "autumn"],
+    "recommendedPlaces": [
+      {
+        "name": "Studio",
+        "description": "창의적인 에너지가 필요한 공간",
+        "imageUrl": "https://example.com/places/studio-02.jpg",
+        "matchScore": 94
+      },
+      {
+        "name": "Workspace",
+        "description": "리듬감 있는 집중을 돕는 공간",
+        "imageUrl": "https://example.com/places/workspace-07.jpg",
+        "matchScore": 90
+      },
+      {
+        "name": "Entryway",
+        "description": "첫인상을 또렷하게 만드는 현관",
+        "imageUrl": "https://example.com/places/entryway-06.jpg",
+        "matchScore": 86
+      }
+    ],
+    "similarScents": [12, 27, 15],
+    "isBestseller": false,
+    "createdAt": "2026-04-13T00:00:00Z",
+    "updatedAt": "2026-04-13T00:00:00Z"
+  },
+  {
+    "id": 27,
+    "name": "스파이스 베일",
+    "englishName": "Spice Veil",
+    "category": "spicy",
+    "description": "클로브와 앰버가 얇게 겹쳐지며 따뜻하고 이국적인 인상을 남기는 향입니다. 공간을 단숨에 특별하게 바꿔 주는 존재감이 있습니다.",
+    "imageUrl": "https://example.com/scents/spice-veil-detail.jpg",
+    "intensity": 77,
+    "profile": {
+      "freshness": 16,
+      "warmth": 83,
+      "softness": 38,
+      "depth": 81,
+      "sweetness": 27
+    },
+    "notes": {
+      "top": {
+        "title": "탑 노트",
+        "description": "따뜻하게 퍼지는 스파이스 향",
+        "items": ["클로브", "카다멈", "오렌지 필"]
+      },
+      "middle": {
+        "title": "미들 노트",
+        "description": "이국적인 중심을 만드는 향",
+        "items": ["시나몬", "앰버", "라브다넘"]
+      },
+      "base": {
+        "title": "베이스 노트",
+        "description": "짙고 오래 남는 잔향",
+        "items": ["패출리", "머스크", "샌달우드"]
+      }
+    },
+    "tags": ["이국적인", "따뜻한", "강렬한", "특별한"],
+    "keywords": ["이국적", "오리엔탈", "연말무드"],
+    "season": ["autumn", "winter"],
+    "recommendedPlaces": [
+      {
+        "name": "Lounge",
+        "description": "짙은 무드가 잘 살아나는 공간",
+        "imageUrl": "https://example.com/places/lounge-05.jpg",
+        "matchScore": 95
+      },
+      {
+        "name": "Dining Room",
+        "description": "특별한 저녁 시간을 위한 공간",
+        "imageUrl": "https://example.com/places/dining-room-03.jpg",
+        "matchScore": 91
+      },
+      {
+        "name": "Living Room",
+        "description": "존재감 있는 향이 필요한 거실",
+        "imageUrl": "https://example.com/places/living-room-13.jpg",
+        "matchScore": 87
+      }
+    ],
+    "similarScents": [12, 26, 30],
+    "isBestseller": false,
+    "createdAt": "2026-04-13T00:00:00Z",
+    "updatedAt": "2026-04-13T00:00:00Z"
+  },
+  {
+    "id": 28,
+    "name": "오션 브레스",
+    "englishName": "Ocean Breath",
+    "category": "aquatic",
+    "description": "바닷바람이 창문을 스치듯 시원하고 깨끗한 향입니다. 무겁지 않은 청량감이 공간을 넓고 가볍게 느껴지도록 만들어 줍니다.",
+    "imageUrl": "https://example.com/scents/ocean-breath-detail.jpg",
+    "intensity": 53,
+    "profile": {
+      "freshness": 89,
+      "warmth": 12,
+      "softness": 35,
+      "depth": 26,
+      "sweetness": 14
+    },
+    "notes": {
+      "top": {
+        "title": "탑 노트",
+        "description": "시원하게 열리는 공기 같은 향",
+        "items": ["시 솔트", "베르가못", "민트"]
+      },
+      "middle": {
+        "title": "미들 노트",
+        "description": "청량한 워터리 무드의 중심",
+        "items": ["아쿠아 어코드", "세이지", "화이트 플라워"]
+      },
+      "base": {
+        "title": "베이스 노트",
+        "description": "맑게 마무리되는 잔향",
+        "items": ["머스크", "드리프트우드", "모스"]
+      }
+    },
+    "tags": ["청량한", "시원한", "넓은", "가벼운"],
+    "keywords": ["여름바다", "청량함", "시원함"],
+    "season": ["summer"],
+    "recommendedPlaces": [
+      {
+        "name": "Bathroom",
+        "description": "깨끗하고 시원한 분위기를 만드는 공간",
+        "imageUrl": "https://example.com/places/bathroom-02.jpg",
+        "matchScore": 95
+      },
+      {
+        "name": "Living Room",
+        "description": "공간을 넓게 느끼게 해주는 거실",
+        "imageUrl": "https://example.com/places/living-room-14.jpg",
+        "matchScore": 90
+      },
+      {
+        "name": "Entryway",
+        "description": "가벼운 첫인상을 주는 현관",
+        "imageUrl": "https://example.com/places/entryway-07.jpg",
+        "matchScore": 88
+      }
+    ],
+    "similarScents": [13, 16, 21],
+    "isBestseller": false,
+    "createdAt": "2026-04-13T00:00:00Z",
+    "updatedAt": "2026-04-13T00:00:00Z"
+  },
+  {
+    "id": 29,
+    "name": "페어 벨벳",
+    "englishName": "Pear Velvet",
+    "category": "fruity",
+    "description": "잘 익은 배의 은은한 과즙감과 부드러운 머스크가 만나 밝고 사랑스러운 무드를 연출하는 향입니다. 과하지 않게 기분을 환하게 바꿔 줍니다.",
+    "imageUrl": "https://example.com/scents/pear-velvet-detail.jpg",
+    "intensity": 60,
+    "profile": {
+      "freshness": 61,
+      "warmth": 34,
+      "softness": 66,
+      "depth": 39,
+      "sweetness": 58
+    },
+    "notes": {
+      "top": {
+        "title": "탑 노트",
+        "description": "맑고 달콤하게 시작되는 향",
+        "items": ["배", "베르가못", "화이트 피치"]
+      },
+      "middle": {
+        "title": "미들 노트",
+        "description": "과즙감 위에 꽃향이 얹히는 향",
+        "items": ["피오니", "프리지아", "자스민"]
+      },
+      "base": {
+        "title": "베이스 노트",
+        "description": "부드러운 잔향을 남기는 향",
+        "items": ["머스크", "시더", "앰버"]
+      }
+    },
+    "tags": ["사랑스러운", "밝은", "과즙감 있는", "부드러운"],
+    "keywords": ["과즙상", "달콤함", "파티무드"],
+    "season": ["spring", "summer"],
+    "recommendedPlaces": [
+      {
+        "name": "Bedroom",
+        "description": "밝고 부드러운 기분을 더하는 침실",
+        "imageUrl": "https://example.com/places/bedroom-15.jpg",
+        "matchScore": 94
+      },
+      {
+        "name": "Living Room",
+        "description": "가벼운 생기를 더하는 거실",
+        "imageUrl": "https://example.com/places/living-room-15.jpg",
+        "matchScore": 89
+      },
+      {
+        "name": "Vanity",
+        "description": "사랑스러운 무드가 잘 어울리는 공간",
+        "imageUrl": "https://example.com/places/vanity-03.jpg",
+        "matchScore": 87
+      }
+    ],
+    "similarScents": [1, 5, 3],
+    "isBestseller": false,
+    "createdAt": "2026-04-13T00:00:00Z",
+    "updatedAt": "2026-04-13T00:00:00Z"
+  },
+  {
+    "id": 30,
+    "name": "골든 앰버",
+    "englishName": "Golden Amber",
+    "category": "amber",
+    "description": "따뜻한 햇빛이 오래 머문 듯한 앰버 계열의 향입니다. 부드러운 온기와 깊은 여운이 함께 남아 공간에 고급스러운 무드를 더해 줍니다.",
+    "imageUrl": "https://example.com/scents/golden-amber-detail.jpg",
+    "intensity": 78,
+    "profile": {
+      "freshness": 14,
+      "warmth": 92,
+      "softness": 61,
+      "depth": 86,
+      "sweetness": 45
+    },
+    "notes": {
+      "top": {
+        "title": "탑 노트",
+        "description": "따뜻하게 열리는 첫 향",
+        "items": ["오렌지 필", "핑크 페퍼", "사프란"]
+      },
+      "middle": {
+        "title": "미들 노트",
+        "description": "빛나는 온기를 중심에 두는 향",
+        "items": ["앰버", "라브다넘", "시나몬"]
+      },
+      "base": {
+        "title": "베이스 노트",
+        "description": "깊고 오래 남는 따뜻한 잔향",
+        "items": ["바닐라", "샌달우드", "머스크"]
+      }
+    },
+    "tags": ["따뜻한", "고급스러운", "깊은", "포근한"],
+    "keywords": ["호텔라운지", "우아함", "황혼"],
+    "season": ["autumn", "winter"],
+    "recommendedPlaces": [
+      {
+        "name": "Living Room",
+        "description": "온기 있는 저녁 무드를 만드는 거실",
+        "imageUrl": "https://example.com/places/living-room-16.jpg",
+        "matchScore": 96
+      },
+      {
+        "name": "Lounge",
+        "description": "조도 낮은 공간과 잘 어울리는 향",
+        "imageUrl": "https://example.com/places/lounge-06.jpg",
+        "matchScore": 93
+      },
+      {
+        "name": "Bedroom",
+        "description": "따뜻한 잔향이 오래 머무는 침실",
+        "imageUrl": "https://example.com/places/bedroom-16.jpg",
+        "matchScore": 89
+      }
+    ],
+    "similarScents": [4, 10, 27],
+    "isBestseller": true,
+    "createdAt": "2026-04-13T00:00:00Z",
+    "updatedAt": "2026-04-13T00:00:00Z"
+  }
+]

@@ -34,8 +34,8 @@ urlpatterns = [
     path("api/v1/chatbot/", include("apps.chatbot.urls")),
     path("api/v1/accounts/", include("apps.users.urls.urls")),
     # 이미지 분석
-    path("api/v1/analyses", include("apps.analysis.urls.analysis_urls")),
-    path("api/v1/admin/analyses", include("apps.analysis.urls.admin_urls")),
+    path("api/v1/analyses/", include("apps.analysis.urls.analysis_urls")),
+    path("api/v1/admin/analyses/", include("apps.analysis.urls.admin_urls")),
 ]
 
 if settings.DEBUG:

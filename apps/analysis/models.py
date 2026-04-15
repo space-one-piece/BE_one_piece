@@ -12,8 +12,8 @@ class Scent(TimeStampModel):
     description = models.TextField(null=True, blank=True)
 
     categories = models.CharField(max_length=255)
-    tags = models.JSONField(default=list)
-    keywords = models.JSONField(default=list)
+    tags = ArrayField(models.CharField(max_length=20), default=list, blank=True)
+    keywords = ArrayField(models.CharField(max_length=20), default=list, blank=True)
 
     intensity = models.IntegerField()
     is_bestseller = models.BooleanField(null=True, blank=True)
