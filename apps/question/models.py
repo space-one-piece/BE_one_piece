@@ -7,12 +7,9 @@ from apps.users.models.models import User
 
 class Keyword(TimeStampModel):
     TYPE_CHOICES = [
-        ("EM", "emotion"),
-        ("MO", "mood"),
-        ("SP", "sporty"),
-        ("SE", "serene"),
-        ("TA", "tamed"),
-        ("PL", "place"),
+        ("MO", "MOOD"),
+        ("SP", "SPACE VIBE"),
+        ("SC", "SCENT IMPRESSION"),
     ]
 
     division = models.CharField(null=False, blank=False, max_length=2, choices=TYPE_CHOICES)

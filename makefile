@@ -55,6 +55,9 @@ docker_up:
 docker_up_build:
 	docker compose --env-file envs/.env -f deployments/docker/docker-compose.local.yml up --build -d
 
+docker_up_build_no-d:
+	docker compose --env-file envs/.env -f deployments/docker/docker-compose.local.yml up --build
+
 docker_down:
 	docker compose --env-file envs/.env -f deployments/docker/docker-compose.local.yml down
 

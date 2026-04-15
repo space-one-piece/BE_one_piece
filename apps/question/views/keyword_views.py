@@ -1,14 +1,17 @@
 from drf_spectacular.utils import extend_schema
-from rest_framework.permissions import IsAuthenticated
+from rest_framework import status
+from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.question.extend_schema import value_list
+from apps.question.serializers.keyword_serializers import KeywordSerializer
+from apps.question.service.keyword_service import keyword_select
 
 
 class KeywordAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     @extend_schema(
         tags=["quest"],
@@ -18,7 +21,9 @@ class KeywordAPIView(APIView):
         responses={200: value_list["200_keyword_get"], 401: value_list["401"], 404: value_list["404"]},
     )
     def get(self, request: Request, *args: object, **kwargs: object) -> Response:
-        return Response({"message": "질문 조회"})
+        data = keyword_select()
+        serializer = KeywordSerializer(data, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     @extend_schema(
         tags=["quest"],

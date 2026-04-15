@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 
 from apps.question.extend_schema import value_list
 from apps.question.serializers.quset_serializers import QuestionSerializer
-from apps.question.service.quest_serializers import quest_select
+from apps.question.service.quest_service import quest_select
 
 
 class QuestAPIView(APIView):
