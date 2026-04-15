@@ -7,10 +7,9 @@ from apps.question.extend_schema import value_list
 
 
 class ImageUserAPIView(APIView):
-    """향 프로필 저장 API"""
-
     @extend_schema(
         tags=["quest"],
+        summary="향기 결과 프로필 저장 API",
         description="향기 결과 프로필 저장 API",
         examples=[value_list["200"], value_list["400"], value_list["401"], value_list["403"], value_list["404"]],
         responses={

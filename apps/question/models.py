@@ -7,12 +7,9 @@ from apps.users.models.models import User
 
 class Keyword(TimeStampModel):
     TYPE_CHOICES = [
-        ("EM", "emotion"),
-        ("MO", "mood"),
-        ("SP", "sporty"),
-        ("SE", "serene"),
-        ("TA", "tamed"),
-        ("PL", "place"),
+        ("MO", "MOOD"),
+        ("SP", "SPACE VIBE"),
+        ("SC", "SCENT IMPRESSION"),
     ]
 
     division = models.CharField(null=False, blank=False, max_length=2, choices=TYPE_CHOICES)
@@ -45,13 +42,13 @@ class QuestionsAnswer(TimeStampModel):
     score = models.IntegerField(null=False, blank=False, default=0)
 
     def __str__(self) -> str:
-        return f"질문: {self.question.content} 답: {self.answer}"
+        return f"답: {self.answer}"
 
     class Meta:
         db_table = "questions_answer"
         verbose_name = "답변 정보"
         verbose_name_plural = "답변 목록"
-        indexes = [models.Index(fields=["question"], name="IDX_questions_questions_id")]
+        indexes = [models.Index(fields=["question"], name="IDX_questions_question_id")]
 
 
 class QuestionsResults(TimeStampModel):

@@ -30,7 +30,7 @@ urlpatterns = [
     # Redoc UI
     path("api/redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
     path("", RedirectView.as_view(url="/api/docs/", permanent=False)),
-    path("api/v1/question", include("apps.question.urls")),
+    path("api/v1/question/", include("apps.question.urls")),
     path("api/v1/chatbot/", include("apps.chatbot.urls")),
     path("api/v1/accounts/", include("apps.users.urls.urls")),
     # 이미지 분석
