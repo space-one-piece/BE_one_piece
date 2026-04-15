@@ -36,7 +36,7 @@ def load_scent_data(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("analysis", "0006_scent_keywords_scent_tags_scent_scent_tags_gin_and_more"),
+        ("analysis", "0001_initial"),
     ]
 
     operations = [
