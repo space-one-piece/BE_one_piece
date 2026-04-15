@@ -42,4 +42,8 @@ class KeywordAPIView(APIView):
         },
     )
     def post(self, request: Request, *args: object, **kwargs: object) -> Response:
+        serializer = KeywordSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        # instance = keyword_result(request.user, serializer.validated_data)
+
         return Response({"message": "결과 조회"})
