@@ -19,17 +19,14 @@ class LogoutView(APIView):
         summary="로그아웃",
         tags=["accounts"],
         description="전달받은 Refresh token을 블랙리스트에 추가하여 무효화합니다.",
-        request=LogoutSerializer, # 요청 시리얼라이저 명시
+        request=LogoutSerializer,  # 요청 시리얼라이저 명시
         responses={
             200: OpenApiResponse(
                 description="로그아웃 성공",
                 response={
                     "type": "object",
                     "properties": {
-                        "detail": {
-                            "type": "string",
-                            "example": "성공적으로 로그아웃 되었습니다."
-                        },
+                        "detail": {"type": "string", "example": "성공적으로 로그아웃 되었습니다."},
                     },
                 },
             ),
