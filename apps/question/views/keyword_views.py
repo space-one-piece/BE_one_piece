@@ -46,4 +46,5 @@ class KeywordAPIView(APIView):
         serializer.is_valid(raise_exception=True)
         serializer_data = keyword_result(request.user, serializer.validated_data)
 
-        return Response(serializer_data, status=status.HTTP_201_CREATED)
+        return Response({"message": serializer_data}, status=status.HTTP_201_CREATED)
+        # return Response(serializer_data, status=status.HTTP_201_CREATED)

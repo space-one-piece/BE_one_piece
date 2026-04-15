@@ -24,7 +24,7 @@ class KeywordPostSerializer(serializers.ModelSerializer[Keyword]):
         fields = ["keyword_id", "keyword_division", "keyword_name"]
 
 
-class KeywordOutSerializer(serializers.ModelSerializer[Keyword]):
+class KeywordOutSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField()
     recommended_scent = ScentDetailSerializer(read_only=True)
     reason = serializers.CharField()

@@ -10,6 +10,7 @@ from apps.question.serializers.results_serializers import ResultsSerializer
 
 class ResultsCreateUrlAPIView(APIView):
     permission_classes = [IsAuthenticated]
+    serializer_class = ResultsSerializer
 
     @extend_schema(
         tags=["quest"],
