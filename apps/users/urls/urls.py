@@ -1,5 +1,6 @@
 from django.urls import include, path
 
+from apps.users.views.login_views import LoginView
 from apps.users.views.signup_views import SignUpView
 from apps.users.views.verification_views import EmailConfirmView, EmailSendView, SmsConfirmView, SmsSendView
 
@@ -17,5 +18,8 @@ verification_patterns = [
 urlpatterns = [
     # 회원가입
     path("signup", SignUpView.as_view(), name="signup"),
+    # 로그인
+    path("login", LoginView.as_view(), name="login"),
+    # 인증 관련 include
     path("verification/", include(verification_patterns)),
 ]

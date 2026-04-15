@@ -8,6 +8,7 @@ from apps.users.models.models import User
 
 
 class DuplicateUserError(ValidationError):
+    status_code = 409
     pass
 
 
@@ -16,8 +17,10 @@ class SignUpService:
     def create_user(self, validated_data: dict[str, Any]) -> User:
         email_token: str = str(validated_data.pop("email_token"))
         input_email: str = validated_data.pop("email")
+        password: str = validated_data.pop("password")
 
-        verified_email: str | None = cache.get(f"signup_token_{email_token}")
+        cache_key: str = f"signup_token_{email_token}"
+        verified_email: str | None = cache.get(cache_key)
 
         if not verified_email:
             raise ValidationError("이메일 인증이 만료되었거나 유효하지 않습니다.")
@@ -28,9 +31,9 @@ class SignUpService:
         if User.objects.filter(email=input_email).exists():
             raise DuplicateUserError("이미 가입된 이메일입니다.")
 
-        password = validated_data.pop("password")
-
-        user = User.objects.create(email=input_email, password=password, social_type="GENERAL", **validated_data)
+        user = User.objects.create_user(
+            email=input_email, password=password, social_type="GENERAL", is_active=True, **validated_data
+        )
 
         cache.delete(f"email_token:{email_token}")
         return user

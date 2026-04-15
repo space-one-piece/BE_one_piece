@@ -1,5 +1,3 @@
-from typing import Any
-
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
@@ -31,18 +29,15 @@ class SignUpView(APIView):
     )
     def post(self, request: Request) -> Response:
         serializer = SignUpSerializer(data=request.data)
-        if not serializer.is_valid():
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
 
         service = SignUpService()
         try:
-            validated_data: dict[str, Any] = serializer.validated_data
-            service.create_user(validated_data)
-
+            service.create_user(serializer.validated_data)
             return Response({"message": "회원가입이 완료되었습니다."}, status=status.HTTP_201_CREATED)
-
-        except ValidationError as e:
-            return Response({"error_detail": e.detail}, status=status.HTTP_400_BAD_REQUEST)
 
         except DuplicateUserError as e:
             return Response({"error_detail": str(e)}, status=status.HTTP_409_CONFLICT)
+
+        except ValidationError as e:
+            return Response({"error_detail": e.detail}, status=status.HTTP_400_BAD_REQUEST)
