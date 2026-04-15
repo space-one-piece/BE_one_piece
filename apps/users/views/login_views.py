@@ -7,7 +7,11 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from apps.users.serializers.login_serializers import ErrorResponseSerializer, LoginResponseSerializer, LoginSerializer
+from apps.users.serializers.user_login_serializers import (
+    ErrorResponseSerializer,
+    LoginResponseSerializer,
+    LoginSerializer,
+)
 from apps.users.services.login_services import LoginService
 
 
