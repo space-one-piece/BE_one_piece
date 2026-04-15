@@ -24,7 +24,20 @@ class Keyword(TimeStampModel):
         verbose_name_plural = "키워드 목록"
 
 
+class Question(TimeStampModel):
+    content = models.TextField(null=False, blank=False)
+
+    def __str__(self) -> str:
+        return f"질문: {self.content}"
+
+    class Meta:
+        db_table = "question"
+        verbose_name = "질문"
+        verbose_name_plural = "질문 목록"
+
+
 class QuestionsAnswer(TimeStampModel):
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
     answer = models.CharField(null=False, blank=False, max_length=10)
     score = models.IntegerField(null=False, blank=False, default=0)
 
@@ -35,20 +48,7 @@ class QuestionsAnswer(TimeStampModel):
         db_table = "questions_answer"
         verbose_name = "답변 정보"
         verbose_name_plural = "답변 목록"
-
-
-class Question(TimeStampModel):
-    answer = models.ForeignKey(QuestionsAnswer, on_delete=models.CASCADE)
-    content = models.TextField(null=False, blank=False)
-
-    def __str__(self) -> str:
-        return f"질문: {self.content}"
-
-    class Meta:
-        db_table = "question"
-        verbose_name = "질문"
-        verbose_name_plural = "질문 목록"
-        indexes = [models.Index(fields=["answer"], name="IDX_questions_answer_id")]
+        indexes = [models.Index(fields=["question"], name="IDX_questions_question_id")]
 
 
 class QuestionsResults(TimeStampModel):

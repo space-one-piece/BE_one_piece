@@ -3,7 +3,7 @@ from rest_framework import serializers
 from apps.question.models import Question, QuestionsAnswer
 
 
-class QuestionsAnswerSerializer(serializers.ModelSerializer):
+class QuestionsAnswerSerializer(serializers.ModelSerializer[QuestionsAnswer]):
     content = serializers.CharField(source="answer")
     num = serializers.CharField(source="score")
 
@@ -12,8 +12,8 @@ class QuestionsAnswerSerializer(serializers.ModelSerializer):
         fields = ["content", "num"]
 
 
-class QuestionSerializer(serializers.ModelSerializer):
-    answer = QuestionsAnswerSerializer(read_only=True)
+class QuestionSerializer(serializers.ModelSerializer[Question]):
+    answer = QuestionsAnswerSerializer(read_only=True, many=True)
     title = serializers.CharField(source="content")
 
     class Meta:

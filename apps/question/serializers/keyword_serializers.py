@@ -3,7 +3,7 @@ from rest_framework import serializers
 from apps.question.models import Keyword
 
 
-class KeywordSerializer(serializers.ModelSerializer):
+class KeywordSerializer(serializers.ModelSerializer[Keyword]):
     keyword_id = serializers.IntegerField(source="id")
     keyword_division = serializers.CharField(source="division")
     keyword_name = serializers.CharField(source="name")
