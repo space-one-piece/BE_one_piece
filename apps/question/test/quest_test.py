@@ -27,7 +27,7 @@ class QuestionAPIViewTest(TestCase):
     def setUp(self) -> None:
         self.client = APIClient()
 
-    def test_question_list_return(self) -> None:
+    def test_question_list_success(self) -> None:
         self.client.force_login(user=self.user)
         url = reverse("question")
         response = self.client.get(url, content_type="application/json")
@@ -35,3 +35,15 @@ class QuestionAPIViewTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(get_data), 1)
         self.assertEqual(get_data[0]["title"], "아침에 선호하는 향")
+
+    def test_question_list_fail(self) -> None:
+        url = reverse("question")
+        response = self.client.get(url, content_type="application/json")
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_question_in_success(self) -> None:
+        self.client.force_login(user=self.user)
+        url = reverse("question")
+        data = [{"title": "갓 깎은 풀의 향", "results": "습한", "score": 2, "question_num": "string"}]
+        response = self.client.post(url, data, content_type="application/json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)

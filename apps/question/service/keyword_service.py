@@ -19,16 +19,16 @@ def keyword_select() -> QuerySet[Keyword]:
 def keyword_result(user_id: int, validated_data: list[dict[str, Any]]) -> KeywordOutSerializer:
     if validated_data is None:
         raise Http404()
-    keyword_strings = [f"{data['division']}: {data['name']}" for data in validated_data]
+    keyword_strings = [{"division": data["division"], "name": data["name"]} for data in validated_data]
 
     json_str = json.dumps(keyword_strings, ensure_ascii=False)
-    data = ask_gemini(json_str)
+    data = ask_gemini(result_prompt(json_str, "키워드"))
     if data is None:
         raise Http404()
 
-    dict_data = parse_gemini_response(result_prompt(data, "키워드"))
+    dict_data = parse_gemini_response(data)
     scent_data = result_data(dict_data)
-    result = keyword_save(user_id, dict_data["id"], dict_data["reason"], json_str)
+    result = keyword_save(user_id, dict_data["id"], dict_data["reason"], json_str, "K")
 
     filter_data = {"id": result.id, "recommended_scent": scent_data, "reason": dict_data["reason"]}
 

@@ -27,7 +27,7 @@ class QuestionAPIViewTest(TestCase):
     def setUp(self) -> None:
         self.client = APIClient()
 
-    def test_keyword_list_return(self) -> None:
+    def test_keyword_list_success(self) -> None:
         self.client.force_login(user=self.user)
         url = reverse("keyword")
         response = self.client.get(url, content_type="application/json")
@@ -36,12 +36,26 @@ class QuestionAPIViewTest(TestCase):
         self.assertEqual(len(get_data), 2)
         self.assertEqual(get_data[0]["name"], "포근한")
 
-    def test_keyword_input(self) -> None:
+    def test_keyword_list_fail(self) -> None:
+        url = reverse("keyword")
+        response = self.client.get(url, content_type="application/json")
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_keyword_input_success(self) -> None:
         self.client.force_login(user=self.user)
         url = reverse("keyword")
         data = [
-            {"keyword_id": 1, "keyword_division": "MO", "keyword_name": "포근한"},
-            {"keyword_id": 2, "keyword_division": "MO", "keyword_name": "산뜻한"},
+            {"keyword_id": 1, "keyword_division": "MOOD", "keyword_name": "포근한"},
+            {"keyword_id": 2, "keyword_division": "MOOD", "keyword_name": "산뜻한"},
         ]
         response = self.client.post(url, data, content_type="application/json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_keyword_input_fail(self) -> None:
+        url = reverse("keyword")
+        data = [
+            {"keyword_id": 1, "keyword_division": "MOOD", "keyword_name": "포근한"},
+            {"keyword_id": 2, "keyword_division": "MOOD", "keyword_name": "산뜻한"},
+        ]
+        response = self.client.post(url, data, content_type="application/json")
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)

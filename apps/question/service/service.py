@@ -32,13 +32,15 @@ def result_prompt(combined_keywords: str, check_type: str):
         1. 추천 향수 이름 (id 포함)
         2. 추천 이유 (데이터의 profile 수치나 tags를 인용)
         3. 추천 하는 향은 하나로 제한
-        4. 출력은 id 값과 추천 이유만 출력해줘
-        5. 출력 형식은 json 방식으로 하며 이유는 reason 으로 해줘
+        4. 출력은 id 값과 추천 이유는 reason 으로 해줘
+        5. 이유에서 사용자님 이라는 빼고 바로 향수 설명과(향수 데이터베이스 name값 그대로) profile, tags 정보를 선택한 데이터를 통해 설명을 넣어줘
+        6. profile, tags 설명을 넣을때 향수 데이터베이스 정보를 맘대로 수정 하지 말고 설명해줘
+        7. 출력 데이터는 데이터베이스 id 값과 이유인 reason 데이터를 json 방식으로 출력해줘
         """
     return prompt
 
 
-def keyword_save(user_id: int, scent_id: int, answer_ai: str, json_data: str) -> QuestionsResults:
+def keyword_save(user_id: int, scent_id: int, answer_ai: str, json_data: str, division: str) -> QuestionsResults:
     return QuestionsResults.objects.create(
-        user_id=user_id, scent_id=scent_id, division="K", questions_json=json_data, answer_ai=answer_ai
+        user_id=user_id, scent_id=scent_id, division=division, questions_json=json_data, answer_ai=answer_ai
     )

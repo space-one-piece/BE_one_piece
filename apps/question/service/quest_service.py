@@ -21,20 +21,19 @@ def quest_in(user_id: int, validated_data: list[dict[str, Any]]):
         raise Http404()
 
     keyword_strings = [
-        {"title": data["title"], "answer": data["answer"], "score": data["score"]} for data in validated_data
+        {"title": data["title"], "answer": data["results"], "score": data["score"]} for data in validated_data
     ]
 
     json_str = json.dumps(keyword_strings, ensure_ascii=False)
-    data = ask_gemini(json_str)
+    data = ask_gemini(result_prompt(json_str, "설문지"))
     if data is None:
         raise Http404()
-
-    dict_data = parse_gemini_response(result_prompt(data, "설문지"))
+    dict_data = parse_gemini_response(data)
     scent_data = result_data(dict_data)
-    result = keyword_save(user_id, dict_data["id"], dict_data["reason"], json_str)
+    result = keyword_save(user_id, dict_data["id"], dict_data["reason"], json_str, "S")
 
     filter_data = {"id": result.id, "recommended_scent": scent_data, "reason": dict_data["reason"]}
 
     serializer = KeywordOutSerializer(filter_data)
 
-    return serializer
+    return serializer.data

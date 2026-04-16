@@ -41,7 +41,7 @@ class QuestAPIView(APIView):
         },
     )
     def post(self, request: Request, *args: object, **kwargs: object) -> Response:
-        serializer = QuestionsInSerializer(request.data, many=True)
+        serializer = QuestionsInSerializer(data=request.data, many=True)
         serializer.is_valid(raise_exception=True)
         serializer_data = quest_in(request.user.id, serializer.validated_data)
 
