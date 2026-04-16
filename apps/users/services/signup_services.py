@@ -31,9 +31,12 @@ class SignUpService:
         if User.objects.filter(email=input_email).exists():
             raise DuplicateUserError("이미 가입된 이메일입니다.")
 
+        if User.objects.filter(phone_number=validated_data.get("phone_number")).exists():
+            raise ValidationError("이미 등록된 휴대전화 번호입니다.")
+
         user = User.objects.create_user(
             email=input_email, password=password, social_type="GENERAL", is_active=True, **validated_data
         )
 
-        cache.delete(f"email_token:{email_token}")
+        cache.delete(cache_key)
         return user
