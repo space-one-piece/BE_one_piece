@@ -1,23 +1,22 @@
+from typing import Any
+
 from django.test import TestCase
 from rest_framework import status
 from rest_framework.reverse import reverse
 from rest_framework.test import APIClient
+
 from apps.users.models.models import User
 
 
 class RefreshTokenTest(TestCase):
     client: APIClient
     user: User
-    email: str
-    password: str
-    logout_url: str
+    url: str
+    refresh_token_str: str
 
     @classmethod
     def setUpTestData(cls) -> None:
-        cls.user = User.objects.create_user(
-            email="test@test.com",
-            password="test1234!@"
-        )
+        cls.user = User.objects.create_user(email="test@test.com", password="test1234!@")
         cls.url = reverse("token_refresh")
 
     def setUp(self) -> None:
@@ -34,7 +33,7 @@ class RefreshTokenTest(TestCase):
 
     # 필수값(refresh_token)값 누락
     def test_refresh_missing_field(self) -> None:
-        data = {}
+        data: dict[str, Any] = {}
         response = self.client.post(self.url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
