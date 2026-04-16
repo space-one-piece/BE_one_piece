@@ -38,7 +38,7 @@ class Question(TimeStampModel):
 
 
 class QuestionsAnswer(TimeStampModel):
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name="answers")
     answer = models.CharField(null=False, blank=False, max_length=10)
     score = models.IntegerField(null=False, blank=False, default=0)
 
