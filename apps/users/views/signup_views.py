@@ -29,7 +29,9 @@ class SignUpView(APIView):
     )
     def post(self, request: Request) -> Response:
         serializer = SignUpSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         service = SignUpService()
         try:
