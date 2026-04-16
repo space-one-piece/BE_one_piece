@@ -2,8 +2,8 @@ from typing import Any
 
 from django.contrib.auth import get_user_model
 from django.utils.timezone import now
-from drf_spectacular.utils import OpenApiResponse, extend_schema
-from rest_framework import status
+from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
+from rest_framework import serializers, status
 from rest_framework.exceptions import NotAuthenticated, NotFound, ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
@@ -45,6 +45,7 @@ class ChatMessageView(APIView):
         tags=["Chatbot"],
         summary="메시지 전송",
         description="사용자 메시지를 전송하고 AI 응답을 받습니다",
+        request=inline_serializer(name="ChatMessageRequest", fields={"message": serializers.CharField()}),
         responses={
             200: OpenApiResponse(description="AI 응답 성공"),
             400: OpenApiResponse(description="메시지 없음 또는 잘못된 요청"),
