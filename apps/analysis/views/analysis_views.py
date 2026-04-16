@@ -2,6 +2,7 @@ from urllib.request import Request
 
 from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
 from rest_framework import serializers
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -9,17 +10,20 @@ from apps.analysis.serializers.analysis_serializers import (
     AnalysisCreateSerializer,
     AnalysisDetailSerializer,
     AnalysisListSerializer,
-    UploadURLSerializer,
 )
+from apps.core.serializers.presigned_url_serializer import PresignedUrlRequestSerializer
+from apps.core.services.presigned_url_service import PresignedUrlService
 
 
 # 이미지 프리사인 URL 요청
 class UploadURLAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
     @extend_schema(
         tags=["image_analysis"],
         summary="S3 프리사인 URL 발급 요청",
         description="프론트엔드에서 S3에 직접 이미지를 업로드하기 위한 프리사인 URL을 발급합니다.",
-        request=UploadURLSerializer,
+        request=PresignedUrlRequestSerializer,
         responses={
             200: OpenApiResponse(description="발급 성공"),
             400: OpenApiResponse(description="잘못된 파일 형식/이름"),
@@ -27,7 +31,12 @@ class UploadURLAPIView(APIView):
         },
     )
     def post(self, request: Request) -> Response:
-        return Response(...)
+        serializer = PresignedUrlRequestSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        result = PresignedUrlService.create(folder="analysis", file_name=serializer.validated_data["file_name"])
+
+        return Response(result)
 
 
 # 이미지 분석 / 리스트
