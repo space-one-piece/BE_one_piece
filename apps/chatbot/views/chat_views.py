@@ -89,7 +89,7 @@ class ChatMessageView(APIView):
             raise ValidationError()
 
         # 메시지 추가
-        store["messages"].append({"role": "user", "content": message})
+        store["messages"].append({"role": "user", "parts": [{"text": message}]})
         store["total_turns"] += 1
 
         # 의미있는 턴 카운트 및 context 업데이트
@@ -126,7 +126,7 @@ class ChatMessageView(APIView):
                 recommendation_id = recommendation.id
 
         # AI 응답 메모리에 추가
-        store["messages"].append({"role": "assistant", "content": reply})
+        store["messages"].append({"role": "model", "parts": [{"text": reply}]})
 
         return Response(
             {
