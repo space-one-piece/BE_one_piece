@@ -3,7 +3,7 @@ from typing import Any
 from rest_framework import serializers
 
 
-class questionsInputSerializer(serializers.Serializer[dict[str, Any]]):
+class QuestionsInputSerializer(serializers.Serializer[dict[str, Any]]):
     """설문조사 데이터 입력"""
 
     questions_id = serializers.IntegerField()

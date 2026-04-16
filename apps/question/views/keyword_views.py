@@ -1,3 +1,4 @@
+from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
@@ -7,7 +8,8 @@ from rest_framework.views import APIView
 
 from apps.question.extend_schema import value_list
 from apps.question.serializers.keyword_serializers import KeywordPostSerializer, KeywordSerializer
-from apps.question.service.keyword_service import keyword_select
+from apps.question.service.keyword_service import keyword_result, keyword_select
+from apps.users.models.models import User
 
 
 class KeywordAPIView(APIView):
@@ -37,9 +39,15 @@ class KeywordAPIView(APIView):
         request=KeywordPostSerializer(many=True),
         responses={
             201: OpenApiResponse(response=KeywordPostSerializer(many=True), examples=[value_list["201"]]),
-            400: OpenApiResponse(examples=[value_list["400_question"]]),
-            401: OpenApiResponse(examples=[value_list["401"]]),
+            400: OpenApiResponse(response=OpenApiTypes.OBJECT, examples=[value_list["400_question"]]),
+            401: OpenApiResponse(response=OpenApiTypes.OBJECT, examples=[value_list["401"]]),
+            404: OpenApiResponse(response=OpenApiTypes.OBJECT, examples=[value_list["404"]]),
         },
     )
     def post(self, request: Request, *args: object, **kwargs: object) -> Response:
-        return Response({"message": "결과 조회"})
+        test_user = User.objects.get(email="admin@example.com")
+        serializer = KeywordPostSerializer(data=request.data, many=True)
+        serializer.is_valid(raise_exception=True)
+        serializer_data = keyword_result(test_user.id, serializer.validated_data)
+
+        return Response(serializer_data.data, status=status.HTTP_201_CREATED)

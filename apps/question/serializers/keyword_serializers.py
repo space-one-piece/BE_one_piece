@@ -1,3 +1,5 @@
+from typing import Any
+
 from rest_framework import serializers
 
 from apps.analysis.serializers.analysis_serializers import ScentDetailSerializer
@@ -24,7 +26,7 @@ class KeywordPostSerializer(serializers.ModelSerializer[Keyword]):
         fields = ["keyword_id", "keyword_division", "keyword_name"]
 
 
-class KeywordOutSerializer(serializers.ModelSerializer[Keyword]):
+class KeywordOutSerializer(serializers.Serializer[Any]):
     id = serializers.IntegerField()
     recommended_scent = ScentDetailSerializer(read_only=True)
     reason = serializers.CharField()

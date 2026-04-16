@@ -1,3 +1,4 @@
+from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.request import Request
@@ -10,6 +11,7 @@ from apps.question.serializers.results_serializers import ResultsSerializer
 
 class ResultsCreateUrlAPIView(APIView):
     permission_classes = [IsAuthenticated]
+    serializer_class = ResultsSerializer
 
     @extend_schema(
         tags=["quest"],
@@ -18,8 +20,8 @@ class ResultsCreateUrlAPIView(APIView):
         request=ResultsSerializer,
         responses={
             200: OpenApiResponse(response=ResultsSerializer, examples=[value_list["200_web_get"]]),
-            401: OpenApiResponse(examples=[value_list["401"]]),
-            404: OpenApiResponse(examples=[value_list["404"]]),
+            401: OpenApiResponse(response=OpenApiTypes.OBJECT, examples=[value_list["401"]]),
+            404: OpenApiResponse(response=OpenApiTypes.OBJECT, examples=[value_list["404"]]),
         },
     )
     def post(self, request: Request, *args: object, **kwargs: object) -> Response:

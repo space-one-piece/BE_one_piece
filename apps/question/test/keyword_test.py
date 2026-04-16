@@ -21,8 +21,8 @@ class QuestionAPIViewTest(TestCase):
             email="test@naver.com",
             password="test1234!@",
         )
-        cls.keyword = Keyword.objects.create(division="MO", name="포근한")
-        cls.keyword = Keyword.objects.create(division="MO", name="산뜻한")
+        cls.keyword = Keyword.objects.create(division="MOOD", name="포근한")
+        cls.keyword = Keyword.objects.create(division="MOOD", name="산뜻한")
 
     def setUp(self) -> None:
         self.client = APIClient()
@@ -35,3 +35,13 @@ class QuestionAPIViewTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(get_data), 2)
         self.assertEqual(get_data[0]["name"], "포근한")
+
+    def test_keyword_input(self) -> None:
+        self.client.force_login(user=self.user)
+        url = reverse("keyword")
+        data = [
+            {"keyword_id": 1, "keyword_division": "MO", "keyword_name": "포근한"},
+            {"keyword_id": 2, "keyword_division": "MO", "keyword_name": "산뜻한"},
+        ]
+        response = self.client.post(url, data, content_type="application/json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
