@@ -21,7 +21,7 @@ class AnalysisReviewAPIView(APIView):
         },
     )
     def get(self, request: Request, id: int) -> Response:
-        review_data = ReviewService.get_review(analysis_id=id, user_id=request.user.id)
+        review_data = ReviewService.get_review(analysis_id=id, user=request.user)  # type: ignore
 
         output_serializer = AnalysisReviewSerializer(review_data)
 
@@ -45,7 +45,9 @@ class AnalysisReviewAPIView(APIView):
         input_serializer.is_valid(raise_exception=True)
 
         updated_analysis = ReviewService.patch_review(
-            analysis_id=id, user_id=request.user.id, data=input_serializer.validated_data
+            analysis_id=id,
+            user=request.user,  # type: ignore
+            data=input_serializer.validated_data,
         )
 
         output_serializer = AnalysisReviewSerializer(updated_analysis)
@@ -62,7 +64,7 @@ class AnalysisReviewAPIView(APIView):
         },
     )
     def delete(self, request: Request, id: int) -> Response:
-        ReviewService.delete_review(analysis_id=id, user_id=request.user.id)
+        ReviewService.delete_review(analysis_id=id, user=request.user)  # type: ignore
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
