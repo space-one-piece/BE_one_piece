@@ -7,7 +7,7 @@ from ..views.analysis_views import (
     AnalysisStatsAPIView,
     UploadURLAPIView,
 )
-from ..views.review_views import AnalysisReviewAPIView
+from ..views.review_views import AnalysisReviewAPIView, MyReviewListAPIView
 
 app_name = "analysis_user"
 
@@ -20,5 +20,6 @@ urlpatterns = [
     path("<int:id>", AnalysisDetailAPIView.as_view(), name="detail"),  # get,delete
     path("<int:id>/feedback", AnalysisFeedbackAPIView.as_view(), name="feedback"),  # patch
     # 3. 리뷰
-    path("<int:id>/review", AnalysisReviewAPIView.as_view(), name="review"),  # get,post,patch,delete
+    path("<int:id>/review", AnalysisReviewAPIView.as_view(), name="review"),  # get,patch,delete
+    path("reviews/me/", MyReviewListAPIView.as_view(), name="my-reviews"),
 ]
