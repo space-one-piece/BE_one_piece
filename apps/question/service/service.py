@@ -20,7 +20,7 @@ def parse_gemini_response(text: str) -> dict[str, Any]:
     return cast(dict[str, Any], json.loads(cleaned))
 
 
-def result_prompt(combined_keywords: str, check_type: str):
+def result_prompt(combined_keywords: str, check_type: str) -> str:
     prompt = f"""
         너는 인공지능 조향사야. 아래의 [향수 데이터베이스]를 기반으로 사용자의 [선택 {check_type}]에 가장 잘 어울리는 향수를 하나 추천해줘.
         [향수 데이터베이스]

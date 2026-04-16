@@ -16,7 +16,7 @@ def quest_select() -> QuerySet[Question]:
     return random_question
 
 
-def quest_in(user_id: int, validated_data: list[dict[str, Any]]):
+def quest_in(user_id: int, validated_data: list[dict[str, Any]]) -> KeywordOutSerializer:
     if validated_data is None:
         raise Http404()
 
@@ -36,4 +36,4 @@ def quest_in(user_id: int, validated_data: list[dict[str, Any]]):
 
     serializer = KeywordOutSerializer(filter_data)
 
-    return serializer.data
+    return serializer
