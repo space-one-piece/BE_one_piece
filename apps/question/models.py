@@ -26,6 +26,7 @@ class Keyword(TimeStampModel):
 
 class Question(TimeStampModel):
     content = models.TextField(null=False, blank=False)
+    additional = models.TextField(null=True, blank=True)
 
     def __str__(self) -> str:
         return f"질문: {self.content}"

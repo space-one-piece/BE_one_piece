@@ -1,0 +1,151 @@
+[
+  { "question_id": 1, "answer": "상쾌한", "score": 2 },
+  { "question_id": 1, "answer": "약간 상쾌한", "score": 1 },
+  { "question_id": 1, "answer": "약간 포근한", "score": 1 },
+  { "question_id": 1, "answer": "포근한", "score": 2 },
+
+  { "question_id": 2, "answer": "시원한", "score": 2 },
+  { "question_id": 2, "answer": "약간 시원한", "score": 1 },
+  { "question_id": 2, "answer": "약간 따뜻한", "score": 1 },
+  { "question_id": 2, "answer": "따뜻한", "score": 2 },
+
+  { "question_id": 3, "answer": "산뜻한", "score": 2 },
+  { "question_id": 3, "answer": "약간 산뜻한", "score": 1 },
+  { "question_id": 3, "answer": "약간 은은한", "score": 1 },
+  { "question_id": 3, "answer": "은은한", "score": 2 },
+
+  { "question_id": 4, "answer": "청량한", "score": 2 },
+  { "question_id": 4, "answer": "약간 청량한", "score": 1 },
+  { "question_id": 4, "answer": "약간 차분한", "score": 1 },
+  { "question_id": 4, "answer": "차분한", "score": 2 },
+
+  { "question_id": 5, "answer": "맑은", "score": 2 },
+  { "question_id": 5, "answer": "약간 맑은", "score": 1 },
+  { "question_id": 5, "answer": "약간 안락한", "score": 1 },
+  { "question_id": 5, "answer": "안락한", "score": 2 },
+
+  { "question_id": 6, "answer": "화사한", "score": 2 },
+  { "question_id": 6, "answer": "약간 화사한", "score": 1 },
+  { "question_id": 6, "answer": "약간 달콤한", "score": 1 },
+  { "question_id": 6, "answer": "달콤한", "score": 2 },
+
+  { "question_id": 7, "answer": "개운한", "score": 2 },
+  { "question_id": 7, "answer": "약간 개운한", "score": 1 },
+  { "question_id": 7, "answer": "약간 뜨거운", "score": 1 },
+  { "question_id": 7, "answer": "뜨거운", "score": 2 },
+
+  { "question_id": 8, "answer": "눈부신", "score": 2 },
+  { "question_id": 8, "answer": "약간 눈부신", "score": 1 },
+  { "question_id": 8, "answer": "약간 나른한", "score": 1 },
+  { "question_id": 8, "answer": "나른한", "score": 2 },
+
+  { "question_id": 9, "answer": "싱그러운", "score": 2 },
+  { "question_id": 9, "answer": "약간 싱그러운", "score": 1 },
+  { "question_id": 9, "answer": "약간 묵직한", "score": 1 },
+  { "question_id": 9, "answer": "묵직한", "score": 2 },
+
+  { "question_id": 10, "answer": "깨끗한", "score": 2 },
+  { "question_id": 10, "answer": "약간 깨끗한", "score": 1 },
+  { "question_id": 10, "answer": "약간 보들보들한", "score": 1 },
+  { "question_id": 10, "answer": "보들보들한", "score": 2 },
+
+  { "question_id": 11, "answer": "생기있는", "score": 2 },
+  { "question_id": 11, "answer": "약간 생기있는", "score": 1 },
+  { "question_id": 11, "answer": "약간 여유로운", "score": 1 },
+  { "question_id": 11, "answer": "여유로운", "score": 2 },
+
+  { "question_id": 12, "answer": "가벼운", "score": 2 },
+  { "question_id": 12, "answer": "약간 가벼운", "score": 1 },
+  { "question_id": 12, "answer": "약간 깊은", "score": 1 },
+  { "question_id": 12, "answer": "깊은", "score": 2 },
+
+  { "question_id": 13, "answer": "당당한", "score": 2 },
+  { "question_id": 13, "answer": "약간 당당한", "score": 1 },
+  { "question_id": 13, "answer": "약간 진중한", "score": 1 },
+  { "question_id": 13, "answer": "진중한", "score": 2 },
+
+  { "question_id": 14, "answer": "프레시한", "score": 2 },
+  { "question_id": 14, "answer": "약간 프레시한", "score": 1 },
+  { "question_id": 14, "answer": "약간 향긋한", "score": 1 },
+  { "question_id": 14, "answer": "향긋한", "score": 2 },
+
+  { "question_id": 15, "answer": "바스락거리는", "score": 2 },
+  { "question_id": 15, "answer": "약간 바스락거리는", "score": 1 },
+  { "question_id": 15, "answer": "약간 쓸쓸한", "score": 1 },
+  { "question_id": 15, "answer": "쓸쓸한", "score": 2 },
+
+  { "question_id": 16, "answer": "차가운", "score": 2 },
+  { "question_id": 16, "answer": "약간 차가운", "score": 1 },
+  { "question_id": 16, "answer": "약간 미지근한", "score": 1 },
+  { "question_id": 16, "answer": "미지근한", "score": 2 },
+
+  { "question_id": 17, "answer": "정갈한", "score": 2 },
+  { "question_id": 17, "answer": "약간 정갈한", "score": 1 },
+  { "question_id": 17, "answer": "약간 오래된", "score": 1 },
+  { "question_id": 17, "answer": "오래된", "score": 2 },
+
+  { "question_id": 18, "answer": "달큰한", "score": 2 },
+  { "question_id": 18, "answer": "약간 달큰한", "score": 1 },
+  { "question_id": 18, "answer": "약간 진득한", "score": 1 },
+  { "question_id": 18, "answer": "진득한", "score": 2 },
+
+  { "question_id": 19, "answer": "푸릇푸릇한", "score": 2 },
+  { "question_id": 19, "answer": "약간 푸릇푸릇한", "score": 1 },
+  { "question_id": 19, "answer": "약간 습한", "score": 1 },
+  { "question_id": 19, "answer": "습한", "score": 2 },
+
+  { "question_id": 20, "answer": "모던한", "score": 2 },
+  { "question_id": 20, "answer": "약간 모던한", "score": 1 },
+  { "question_id": 20, "answer": "약간 클래식한", "score": 1 },
+  { "question_id": 20, "answer": "클래식한", "score": 2 },
+
+  { "question_id": 21, "answer": "투명한", "score": 2 },
+  { "question_id": 21, "answer": "약간 투명한", "score": 1 },
+  { "question_id": 21, "answer": "약간 고요한", "score": 1 },
+  { "question_id": 21, "answer": "고요한", "score": 2 },
+
+  { "question_id": 22, "answer": "활기찬", "score": 2 },
+  { "question_id": 22, "answer": "약간 활기찬", "score": 1 },
+  { "question_id": 22, "answer": "약간 아늑한", "score": 1 },
+  { "question_id": 22, "answer": "아늑한", "score": 2 },
+
+  { "question_id": 23, "answer": "파워풀한", "score": 2 },
+  { "question_id": 23, "answer": "약간 파워풀한", "score": 1 },
+  { "question_id": 23, "answer": "약간 릴렉스한", "score": 1 },
+  { "question_id": 23, "answer": "릴렉스한", "score": 2 },
+
+  { "question_id": 24, "answer": "비워내는", "score": 2 },
+  { "question_id": 24, "answer": "약간 비워내는", "score": 1 },
+  { "question_id": 24, "answer": "약간 채워주는", "score": 1 },
+  { "question_id": 24, "answer": "채워주는", "score": 2 },
+
+  { "question_id": 25, "answer": "매끄러운", "score": 2 },
+  { "question_id": 25, "answer": "약간 매끄러운", "score": 1 },
+  { "question_id": 25, "answer": "약간 폭신한", "score": 1 },
+  { "question_id": 25, "answer": "폭신한", "score": 2 },
+
+  { "question_id": 26, "answer": "쌉쌀한", "score": 2 },
+  { "question_id": 26, "answer": "약간 쌉쌀한", "score": 1 },
+  { "question_id": 26, "answer": "약간 고소한", "score": 1 },
+  { "question_id": 26, "answer": "고소한", "score": 2 },
+
+  { "question_id": 27, "answer": "거친", "score": 2 },
+  { "question_id": 27, "answer": "약간 거친", "score": 1 },
+  { "question_id": 27, "answer": "약간 부드러운", "score": 1 },
+  { "question_id": 27, "answer": "부드러운", "score": 2 },
+
+  { "question_id": 28, "answer": "광활한", "score": 2 },
+  { "question_id": 28, "answer": "약간 광활한", "score": 1 },
+  { "question_id": 28, "answer": "약간 비밀스러운", "score": 1 },
+  { "question_id": 28, "answer": "비밀스러운", "score": 2 },
+
+  { "question_id": 29, "answer": "톡 쏘는", "score": 2 },
+  { "question_id": 29, "answer": "약간 톡 쏘는", "score": 1 },
+  { "question_id": 29, "answer": "약간 달콤상콤한", "score": 1 },
+  { "question_id": 29, "answer": "달콤상콤한", "score": 2 },
+
+  { "question_id": 30, "answer": "강렬한", "score": 2 },
+  { "question_id": 30, "answer": "약간 강렬한", "score": 1 },
+  { "question_id": 30, "answer": "약간 은근한", "score": 1 },
+  { "question_id": 30, "answer": "은근한", "score": 2 }
+]
