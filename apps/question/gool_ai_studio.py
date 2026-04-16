@@ -1,3 +1,5 @@
+import os
+
 from google import genai
 from google.genai.errors import ServerError
 from rest_framework.exceptions import APIException
@@ -12,7 +14,7 @@ class CustomBadRequest(APIException):
 
 
 def ask_gemini(combined_keywords: str) -> str | None:
-    client = genai.Client()
+    client = genai.Client(api_key=os.getenv("PJG_GEMINI_KEY"))
     prompt = f"""
         너는 인공지능 조향사야. 아래의 [향수 데이터베이스]를 기반으로 사용자의 [선택 키워드]에 가장 잘 어울리는 향수를 하나 추천해줘.
         [향수 데이터베이스]
@@ -29,7 +31,7 @@ def ask_gemini(combined_keywords: str) -> str | None:
         5. 출력 형식은 json 방식으로 하며 이유는 reason 으로 해줘
         """
     try:
-        response = client.models.generate_content(model="gemini-2.5-flash", contents=prompt)
+        response = client.models.generate_content(model=os.getenv("GEMINI_MODEL", "gemini-2.5-flash"), contents=prompt)
         return response.text
     except ServerError:
         raise CustomBadRequest()
