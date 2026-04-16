@@ -1,8 +1,10 @@
 from django.urls import path
 
-from .views.session_views import ChatSessionCreateView
+from .views.chat_views import ChatMessageView
+from .views.session_views import ChatSessionCreateView, ChatSessionEndView
 
 urlpatterns = [
-    # 세션 생성
     path("sessions/", ChatSessionCreateView.as_view(), name="chat-session-create"),
+    path("sessions/<int:session_id>/", ChatSessionEndView.as_view(), name="chat-session-end"),
+    path("sessions/<int:session_id>/messages/", ChatMessageView.as_view(), name="chat-message"),
 ]

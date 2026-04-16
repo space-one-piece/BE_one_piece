@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.utils.timezone import now
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import status
+from rest_framework.exceptions import NotAuthenticated, NotFound, PermissionDenied, ValidationError
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
@@ -18,6 +19,7 @@ class ChatSessionCreateView(GenericAPIView[ChatSession]):
     serializer_class = ChatSessionCreateSerializer
 
     @extend_schema(
+        tags=["Chatbot"],
         summary="세션 생성",
         description="첫 메시지 전송 시 채팅 세션을 생성합니다",
         responses={
@@ -29,18 +31,17 @@ class ChatSessionCreateView(GenericAPIView[ChatSession]):
     def post(self, request: Request) -> Response:
         serializer = self.get_serializer(data=request.data)
         if not serializer.is_valid():
-            return Response({"error_detail": "메시지를 입력해주세요."}, status=status.HTTP_400_BAD_REQUEST)
+            raise ValidationError()
 
         user = request.user
-        if not isinstance(user, User):  # IsAuthenticated가 비로그인 막아줘도 mypy는 모루ㅁ
-            return Response(
-                {"error_detail": "로그인한 사용자만 이용할 수 있습니다."}, status=status.HTTP_401_UNAUTHORIZED
-            )
+        if not isinstance(user, User):
+            raise NotAuthenticated()
 
         session = ChatSession.objects.create(user=user, status="active")
 
         return Response(
-            {"status": "success", "data": ChatSessionSerializer(session).data}, status=status.HTTP_201_CREATED
+            {"status": "success", "data": ChatSessionSerializer(session).data},
+            status=status.HTTP_201_CREATED,
         )
 
 
@@ -48,6 +49,7 @@ class ChatSessionEndView(GenericAPIView[ChatSession]):
     permission_classes = [IsAuthenticated]
 
     @extend_schema(
+        tags=["Chatbot"],
         summary="세션 종료",
         description="X버튼 클릭 또는 타임아웃 시 세션을 종료합니다",
         responses={
@@ -60,19 +62,15 @@ class ChatSessionEndView(GenericAPIView[ChatSession]):
     def patch(self, request: Request, session_id: int) -> Response:
         user = request.user
         if not isinstance(user, User):
-            return Response(
-                {"error_detail": "로그인한 사용자만 이용할 수 있습니다."}, status=status.HTTP_401_UNAUTHORIZED
-            )
+            raise NotAuthenticated()
 
         try:
-            session = ChatSession.objects.get(
-                id=session_id, user=user
-            )  # isinstance로 타입 확정된 user사용 (request.user은 타입에러)
+            session = ChatSession.objects.get(id=session_id, user=user)
         except ChatSession.DoesNotExist:
-            return Response({"error_detail": "등록된 세션이 없습니다."}, status=status.HTTP_404_NOT_FOUND)
+            raise NotFound()
 
         if session.user != user:
-            return Response({"error_detail": "해당 세션에 접근 권한이 없습니다."}, status=status.HTTP_403_FORBIDDEN)
+            raise PermissionDenied()
 
         session.status = "inactive"
         session.ended_at = now()
