@@ -1,3 +1,4 @@
+from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
@@ -18,10 +19,10 @@ class ImageUserAPIView(APIView):
         request=ImageSerializer,
         responses={
             200: OpenApiResponse(response=ImageSerializer, examples=[value_list["200"]]),
-            400: OpenApiResponse(examples=[value_list["400"]]),
-            401: OpenApiResponse(examples=[value_list["401"]]),
-            403: OpenApiResponse(examples=[value_list["403"]]),
-            404: OpenApiResponse(examples=[value_list["404"]]),
+            400: OpenApiResponse(response=OpenApiTypes.OBJECT, examples=[value_list["400"]]),
+            401: OpenApiResponse(response=OpenApiTypes.OBJECT, examples=[value_list["401"]]),
+            403: OpenApiResponse(response=OpenApiTypes.OBJECT, examples=[value_list["403"]]),
+            404: OpenApiResponse(response=OpenApiTypes.OBJECT, examples=[value_list["404"]]),
         },
     )
     def put(self, request: Request, *args: object, **kwargs: object) -> Response:

@@ -1,9 +1,17 @@
 from google import genai
+from google.genai.errors import ServerError
+from rest_framework.exceptions import APIException
 
 from apps.chatbot.prompts.support_context import SCENT_DATA
 
 
-def ask_gemini(combined_keywords: str) -> str:
+class CustomBadRequest(APIException):
+    status_code = 429
+    default_detail = "현재 AI 사용이 많아 잠시뒤 사용해주세요"
+    default_code = "Too Mony Requests"
+
+
+def ask_gemini(combined_keywords: str) -> str | None:
     client = genai.Client()
     prompt = f"""
         너는 인공지능 조향사야. 아래의 [향수 데이터베이스]를 기반으로 사용자의 [선택 키워드]에 가장 잘 어울리는 향수를 하나 추천해줘.
@@ -20,5 +28,8 @@ def ask_gemini(combined_keywords: str) -> str:
         4. 출력은 id 값과 추천 이유만 출력해줘
         5. 출력 형식은 json 방식으로 하며 이유는 reason 으로 해줘
         """
-    response = client.models.generate_content(model="gemini-2.5-flash", contents=prompt)
-    return response.text
+    try:
+        response = client.models.generate_content(model="gemini-2.5-flash", contents=prompt)
+        return response.text
+    except ServerError:
+        raise CustomBadRequest()

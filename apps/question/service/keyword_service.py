@@ -1,7 +1,8 @@
 import json
-from typing import Any
+from typing import Any, cast
 
 from django.db.models import QuerySet
+from django.http import Http404
 
 from apps.analysis.models import Scent
 from apps.question.gool_ai_studio import ask_gemini
@@ -14,25 +15,28 @@ def keyword_select() -> QuerySet[Keyword]:
     return keyword_data
 
 
-def keyword_result(user, validated_data: list[dict[str, Any]]) -> KeywordOutSerializer:
+def keyword_result(user_id: int, validated_data: list[dict[str, Any]]) -> KeywordOutSerializer:
     if validated_data is None:
-        return None
+        raise Http404()
     keyword_strings = [f"{data['division']}: {data['name']}" for data in validated_data]
 
     json_str = json.dumps(keyword_strings, ensure_ascii=False)
     data = ask_gemini(json_str)
+    if data is None:
+        raise Http404()
+
     dict_data = parse_gemini_response(data)
     scent_data = result_data(dict_data)
-    result = keyword_save(user, dict_data["id"], dict_data["reason"], json_str)
+    result = keyword_save(user_id, dict_data["id"], dict_data["reason"], json_str)
 
-    serializer = KeywordOutSerializer(scent_data)
-    serializer["id"] = result.id
-    serializer["reason"] = dict_data["reason"]
+    filter_data = {"id": result.id, "recommended_scent": scent_data, "reason": dict_data["reason"]}
+
+    serializer = KeywordOutSerializer(filter_data)
 
     return serializer
 
 
-def parse_gemini_response(text: str) -> dict:
+def parse_gemini_response(text: str) -> dict[str, Any]:
     cleaned = text.strip()
 
     if cleaned.startswith("```"):
@@ -44,15 +48,17 @@ def parse_gemini_response(text: str) -> dict:
 
     cleaned = cleaned.strip()
 
-    return json.loads(cleaned)
+    return cast(dict[str, Any], json.loads(cleaned))
 
 
-def result_data(dict_data: dict[str, Any]):
+def result_data(dict_data: dict[str, Any]) -> Scent:
     data = Scent.objects.get(pk=dict_data["id"])
+    if data is None:
+        raise Http404()
     return data
 
 
-def keyword_save(user_id: int, scent_id: int, answer_ai, json_data: str):
+def keyword_save(user_id: int, scent_id: int, answer_ai: str, json_data: str) -> QuestionsResults:
     return QuestionsResults.objects.create(
         user_id=user_id, scent_id=scent_id, division="K", questions_json=json_data, answer_ai=answer_ai
     )

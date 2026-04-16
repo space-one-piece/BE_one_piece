@@ -61,7 +61,7 @@ class QuestionsResults(TimeStampModel):
     scent = models.ForeignKey(Scent, on_delete=models.CASCADE)
     division = models.CharField(null=False, blank=False, max_length=2, choices=TYPE_CHOICES)
     questions_json = models.JSONField(null=False, blank=False)
-    answer_ai = models.CharField(null=False, blank=False, max_length=20)
+    answer_ai = models.TextField(null=False, blank=False)
     image_key = models.CharField(null=True, blank=True, max_length=30)
     results_review = models.TextField(null=True, blank=True)
 

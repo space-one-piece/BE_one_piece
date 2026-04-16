@@ -1,3 +1,4 @@
+from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
@@ -20,7 +21,7 @@ class QuestAPIView(APIView):
         request=QuestionSerializer,
         responses={
             200: OpenApiResponse(response=QuestionSerializer, examples=[value_list["200_question_get"]]),
-            401: OpenApiResponse(examples=[value_list["401"]]),
+            401: OpenApiResponse(response=OpenApiTypes.OBJECT, examples=[value_list["401"]]),
         },
     )
     def get(self, request: Request, *args: object, **kwargs: object) -> Response:
@@ -35,8 +36,8 @@ class QuestAPIView(APIView):
         request=QuestionSerializer,
         responses={
             201: OpenApiResponse(response=QuestionSerializer, examples=[value_list["201"]]),
-            400: OpenApiResponse(examples=[value_list["400_question"]]),
-            401: OpenApiResponse(examples=[value_list["401"]]),
+            400: OpenApiResponse(response=OpenApiTypes.OBJECT, examples=[value_list["400_question"]]),
+            401: OpenApiResponse(response=OpenApiTypes.OBJECT, examples=[value_list["401"]]),
         },
     )
     def post(self, request: Request, *args: object, **kwargs: object) -> Response:
