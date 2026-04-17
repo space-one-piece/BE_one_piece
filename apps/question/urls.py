@@ -4,7 +4,7 @@ from rest_framework import routers
 from apps.question.views.image_user import ImageUserAPIView
 from apps.question.views.keyword_views import KeywordAPIView
 from apps.question.views.quest_views import QuestAPIView
-from apps.question.views.results_views import ResultsCreateUrlAPIView, ReviewViewAPIView
+from apps.question.views.results_views import ResultListAPIView, ResultsCreateUrlAPIView, ReviewViewAPIView
 
 router = routers.DefaultRouter()
 
@@ -14,4 +14,5 @@ urlpatterns = [
     path("results/<int:results_id>/review", ReviewViewAPIView.as_view(), name="review_results"),
     path("keyword", KeywordAPIView.as_view(), name="keyword"),
     path("user-save", ImageUserAPIView.as_view(), name="user_save"),
+    path("<str:division>/results", ResultListAPIView.as_view(), name="results"),
 ]

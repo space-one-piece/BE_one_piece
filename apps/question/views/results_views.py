@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 
 from apps.question.extend_schema import value_list
 from apps.question.serializers.results_serializers import ResultsIntSerializer, ResultsSerializer
-from apps.question.service.results_service import new_web_share, review_save, select_web_share
+from apps.question.service.results_service import new_web_share, result_list, review_save, select_web_share
 
 
 class ResultsCreateUrlAPIView(APIView):
@@ -84,3 +84,29 @@ class ReviewViewAPIView(APIView):
             request.user.id, results_id, serializer.validated_data["review"], serializer.validated_data["rating"]
         )
         return Response(data.data, status=status.HTTP_200_OK)
+
+
+class ResultListAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(
+        tags=["quest"],
+        summary="web share 조회 API",
+        description="web share 조회 API",
+        request=None,
+        responses={
+            200: OpenApiResponse(
+                response=OpenApiTypes.OBJECT,
+                examples=[value_list["200_web_get"]],
+            ),
+            404: OpenApiResponse(
+                examples=[value_list["404"]],
+            ),
+            429: OpenApiResponse(
+                examples=[value_list["429"]],
+            ),
+        },
+    )
+    def get(self, request: Request, division: str) -> Response:
+        serializer_data = result_list(request.user.id, division)
+        return Response(serializer_data.data, status=status.HTTP_200_OK)

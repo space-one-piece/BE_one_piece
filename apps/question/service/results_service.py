@@ -6,7 +6,11 @@ from rest_framework.exceptions import PermissionDenied
 from apps.analysis.models import Scent
 from apps.core.utils.hashids import decode_id, encode_id
 from apps.question.models import QuestionsResults
-from apps.question.serializers.results_serializers import ResultsOutSerializer, ResultWebShareSerializer
+from apps.question.serializers.results_serializers import (
+    ResultListSerializer,
+    ResultsOutSerializer,
+    ResultWebShareSerializer,
+)
 
 
 def review_save(user_id: int, result_id: int, review: str, rating: int) -> ResultsOutSerializer:
@@ -49,3 +53,35 @@ def select_web_share(result_id: str) -> ResultWebShareSerializer:
         "rating": question_data.rating,
     }
     return ResultWebShareSerializer(data)
+
+
+def result_list(user_id: int, division: str) -> ResultListSerializer:
+    if division == "keywords":
+        questions_data = (
+            QuestionsResults.objects.filter(user_id=user_id, division="K")
+            .select_related("scent")
+            .order_by("-created_at")
+        )
+    else:
+        questions_data = (
+            QuestionsResults.objects.filter(user_id=user_id, division="S")
+            .select_related("scent")
+            .order_by("-created_at")
+        )
+
+    data = [
+        {
+            "id": item.id,
+            "recommended_scent": {
+                "id": item.scent.id,
+                "name": item.scent.name,
+                "eng_name": item.scent.eng_name,
+                "thumbnail_url": item.scent.thumbnail_url,
+            },
+            "type": division,
+            "created_at": item.created_at,
+        }
+        for item in questions_data
+    ]
+
+    return ResultListSerializer(data, many=True)
