@@ -52,3 +52,15 @@ class ProfileTests(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertEqual(response.data["error_detail"], "자격 인증 데이터가 제공되지 않았습니다.")
+
+    # 유저프로필 수정 성공
+    def test_user_profile_update(self) -> None:
+        self.client.force_authenticate(user=self.user)
+        update_data = {"name": "한조"}
+
+        response = self.client.patch(self.url, data=update_data)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["name"], "한조")
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.name, "한조")
