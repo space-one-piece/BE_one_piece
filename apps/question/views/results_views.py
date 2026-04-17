@@ -91,19 +91,22 @@ class ResultListAPIView(APIView):
 
     @extend_schema(
         tags=["quest"],
-        summary="web share 조회 API",
-        description="web share 조회 API",
+        summary=" 리뷰 목록 조회 API",
+        description="리뷰 목록 조회 API",
         request=None,
         responses={
             200: OpenApiResponse(
                 response=OpenApiTypes.OBJECT,
-                examples=[value_list["200_web_get"]],
+                examples=[value_list["200_list"]],
+            ),
+            401: OpenApiResponse(
+                examples=[value_list["401"]],
+            ),
+            403: OpenApiResponse(
+                examples=[value_list["403"]],
             ),
             404: OpenApiResponse(
                 examples=[value_list["404"]],
-            ),
-            429: OpenApiResponse(
-                examples=[value_list["429"]],
             ),
         },
     )
