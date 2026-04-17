@@ -53,8 +53,7 @@ class ChatMessageViewTest(TestCase):
             {"message": "향수 추천해줘"},
             format="json",
         )
-        # jwt되면 401로바꿀게요
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 401)
 
     def test_message_session_not_found(self) -> None:
         response: Response = self.client.post(
