@@ -212,5 +212,9 @@ TWILIO_PHONE_NUMBER = os.environ.get("TWILIO_PHONE_NUMBER")
 TWILIO_VERIFY_SERVICE_SID = os.environ.get("TWILIO_VERIFY_SERVICE_SID")
 
 # GEMINI
+PJG_GEMINI_KEY = os.environ.get("PJG_GEMINI_KEY", "")
 LGB_GEMINI_KEY = os.getenv("LGB_GEMINI_KEY", "")
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+
+# HASHIDS
+HASHIDS_SALT = os.getenv("HASHIDS_SALT", "")
