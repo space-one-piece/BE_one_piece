@@ -29,6 +29,7 @@ class User(TimeStampModel, AbstractBaseUser, PermissionsMixin):
     password = models.CharField(max_length=128, default="", verbose_name="비밀번호")
     name = models.CharField(max_length=30, verbose_name="이름")
     birthday = models.DateField(verbose_name="생년월일")
+    profile_image_url = models.CharField(max_length=255, null=True, blank=True)
     social_type = models.CharField(
         max_length=10,
         choices=SocialTypeChoice,
