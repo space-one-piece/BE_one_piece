@@ -16,11 +16,11 @@ class SignUpView(APIView):
     @extend_schema(
         summary="일반 회원가입",
         description="이메일 토큰을 검증한 후 회원가입을 처리합니다.",
-        request=SignUpSerializer,  # 이제 이게 정상 작동할 겁니다!
+        request=SignUpSerializer,
         responses={
             201: OpenApiResponse(
                 description="회원가입 성공",
-                response=SignUpSerializer,  # 혹은 {"message": "완료"} 형태의 dict도 가능
+                response=SignUpSerializer,
             ),
             400: OpenApiResponse(description="Bad Request (검증 실패)"),
             409: OpenApiResponse(description="Conflict (중복 가입)"),
