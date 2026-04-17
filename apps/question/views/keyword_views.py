@@ -9,7 +9,6 @@ from rest_framework.views import APIView
 from apps.question.extend_schema import value_list
 from apps.question.serializers.keyword_serializers import KeywordPostSerializer, KeywordSerializer
 from apps.question.service.keyword_service import keyword_result, keyword_select
-from apps.users.models.models import User
 
 
 class KeywordAPIView(APIView):
@@ -45,9 +44,8 @@ class KeywordAPIView(APIView):
         },
     )
     def post(self, request: Request, *args: object, **kwargs: object) -> Response:
-        test_user = User.objects.get(email="admin@example.com")
         serializer = KeywordPostSerializer(data=request.data, many=True)
         serializer.is_valid(raise_exception=True)
-        serializer_data = keyword_result(test_user.id, serializer.validated_data)
+        serializer_data = keyword_result(request.user.id, serializer.validated_data)
 
         return Response(serializer_data.data, status=status.HTTP_201_CREATED)

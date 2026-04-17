@@ -7,8 +7,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.question.extend_schema import value_list
-from apps.question.serializers.quset_serializers import QuestionSerializer
-from apps.question.service.quest_service import quest_select
+from apps.question.serializers.quset_serializers import QuestionSerializer, QuestionsInSerializer
+from apps.question.service.quest_service import quest_in, quest_select
 
 
 class QuestAPIView(APIView):
@@ -33,7 +33,7 @@ class QuestAPIView(APIView):
         tags=["quest"],
         summary="설문 답변 API",
         description="설문 답변 API",
-        request=QuestionSerializer,
+        request=QuestionsInSerializer(many=True),
         responses={
             201: OpenApiResponse(response=QuestionSerializer, examples=[value_list["201"]]),
             400: OpenApiResponse(response=OpenApiTypes.OBJECT, examples=[value_list["400_question"]]),
@@ -41,4 +41,8 @@ class QuestAPIView(APIView):
         },
     )
     def post(self, request: Request, *args: object, **kwargs: object) -> Response:
-        return Response({"message": "결과 조회"})
+        serializer = QuestionsInSerializer(data=request.data, many=True)
+        serializer.is_valid(raise_exception=True)
+        serializer_data = quest_in(request.user.id, serializer.validated_data)
+
+        return Response(serializer_data.data, status=status.HTTP_201_CREATED)

@@ -13,9 +13,7 @@ def extend_schema(name: str, value: dict[str, Any], status_code: str) -> OpenApi
 
 
 value_list = {
-    "200_question_get": extend_schema(
-        "Ok", {"id": 1, "title": "질문 내용", "answer": [{"content": "상쾌한", "num": 1}]}, "200"
-    ),
+    "200_question_get": extend_schema("Ok", {"id": 1, "title": "질문 내용", "answer": [{"content": "상쾌한"}]}, "200"),
     "201": extend_schema(
         "Created",
         {
