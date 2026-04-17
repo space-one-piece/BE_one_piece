@@ -10,6 +10,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from ..exceptions import SessionExpiredError
 from ..models import ChatbotRecommendation, ChatSession
 from ..services.chatbot_completion_policy import (
     is_meaningful_turn,
@@ -18,7 +19,6 @@ from ..services.chatbot_completion_policy import (
     validate_chatbot_input,
 )
 from ..services.chatbot_service import (
-    SessionExpiredError,
     extract_recommended_scent_id,
     get_ai_response,
     parse_context,

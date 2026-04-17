@@ -5,26 +5,13 @@ from typing import Any
 from django.conf import settings
 from google import genai
 from google.genai import types
-from rest_framework.exceptions import APIException
 
+from ..exceptions import GeminiUnavailableError
 from ..prompts.chatbot_prompts import CHATBOT_SYSTEM_PROMPT
 from ..prompts.support_context import SCENT_DATA
 from .context_service import Context, init_context, rule_based_extract
 
 client = genai.Client(api_key=settings.LGB_GEMINI_KEY)
-
-
-class GeminiUnavailableError(APIException):
-    status_code = 503
-    default_detail = "현재 AI 사용이 많아 잠시 뒤 사용해주세요."
-    default_code = "service_unavailable"
-
-
-class SessionExpiredError(APIException):
-    status_code = 410
-    default_detail = "대화 횟수를 초과했습니다. 새로운 세션을 시작해주세요."
-    default_code = "session_expired"
-
 
 PARSE_PROMPT = """
 사용자의 메시지에서 다음 4가지 정보를 추출해줘.
