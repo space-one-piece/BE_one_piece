@@ -20,9 +20,7 @@ def quest_in(user_id: int, validated_data: list[dict[str, Any]]) -> KeywordOutSe
     if validated_data is None:
         raise Http404()
 
-    keyword_strings = [
-        {"title": data["title"], "answer": data["results"], "score": data["score"]} for data in validated_data
-    ]
+    keyword_strings = [{"title": data["title"], "answer": data["results"]} for data in validated_data]
 
     json_str = json.dumps(keyword_strings, ensure_ascii=False)
     data = ask_gemini(result_prompt(json_str, "설문지"))

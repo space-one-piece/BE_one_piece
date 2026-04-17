@@ -20,9 +20,9 @@ class QuestionAPIViewTest(TestCase):
             email="test@naver.com",
             password="test1234!@",
         )
-        cls.question = Question.objects.create(content="아침에 선호하는 향")
-        QuestionsAnswer.objects.create(question=cls.question, answer="상쾌한", score=1)
-        QuestionsAnswer.objects.create(question=cls.question, answer="포근한", score=1)
+        cls.question = Question.objects.create(content="아침에 선호하는 향", left_label="포근한", right_label="산뜻한")
+        QuestionsAnswer.objects.create(question=cls.question, answer="상쾌한")
+        QuestionsAnswer.objects.create(question=cls.question, answer="포근한")
 
     def setUp(self) -> None:
         self.client = APIClient()
@@ -44,6 +44,6 @@ class QuestionAPIViewTest(TestCase):
     def test_question_in_success(self) -> None:
         self.client.force_login(user=self.user)
         url = reverse("question")
-        data = [{"title": "갓 깎은 풀의 향", "results": "습한", "score": 2, "question_num": "string"}]
+        data = [{"title": "갓 깎은 풀의 향", "results": "습한", "question_num": "string"}]
         response = self.client.post(url, data, content_type="application/json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)

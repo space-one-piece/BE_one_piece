@@ -6,14 +6,10 @@ from apps.users.models.models import User
 
 
 class Keyword(TimeStampModel):
-    TYPE_CHOICES = [
-        ("MO", "MOOD"),
-        ("SP", "SPACE VIBE"),
-        ("SC", "SCENT IMPRESSION"),
-    ]
+    TYPE_CHOICES = [("MO", "MOOD"), ("SN", "Scent Notes"), ("TS", "Time & Season"), ("PL", "Place"), ("TE", "Texture")]
 
     division = models.CharField(null=False, blank=False, max_length=2, choices=TYPE_CHOICES)
-    name = models.CharField(null=False, blank=False, max_length=10)
+    name = models.CharField(null=False, blank=False, max_length=30)
 
     def __str__(self) -> str:
         return f"{self.name}"
@@ -27,6 +23,8 @@ class Keyword(TimeStampModel):
 class Question(TimeStampModel):
     content = models.TextField(null=False, blank=False)
     additional = models.TextField(null=True, blank=True)
+    left_label = models.CharField(null=False, blank=False, max_length=15)
+    right_label = models.CharField(null=False, blank=False, max_length=15)
 
     def __str__(self) -> str:
         return f"질문: {self.content}"
@@ -40,7 +38,6 @@ class Question(TimeStampModel):
 class QuestionsAnswer(TimeStampModel):
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name="answers")
     answer = models.CharField(null=False, blank=False, max_length=10)
-    score = models.IntegerField(null=False, blank=False, default=0)
 
     def __str__(self) -> str:
         return f"답: {self.answer}"
@@ -64,7 +61,8 @@ class QuestionsResults(TimeStampModel):
     questions_json = models.JSONField(null=False, blank=False)
     answer_ai = models.TextField(null=False, blank=False)
     image_key = models.CharField(null=True, blank=True, max_length=30)
-    results_review = models.TextField(null=True, blank=True)
+    review = models.TextField(null=True, blank=True, max_length=300)
+    rating = models.IntegerField(null=True, blank=True)
 
     def __str__(self) -> str:
         return f"결과는{self.scent.name} 향이고 이유는 {self.answer_ai}"

@@ -33,7 +33,7 @@ class QuestAPIView(APIView):
         tags=["quest"],
         summary="설문 답변 API",
         description="설문 답변 API",
-        request=QuestionsInSerializer,
+        request=QuestionsInSerializer(many=True),
         responses={
             201: OpenApiResponse(response=QuestionSerializer, examples=[value_list["201"]]),
             400: OpenApiResponse(response=OpenApiTypes.OBJECT, examples=[value_list["400_question"]]),
@@ -45,4 +45,4 @@ class QuestAPIView(APIView):
         serializer.is_valid(raise_exception=True)
         serializer_data = quest_in(request.user.id, serializer.validated_data)
 
-        return Response(serializer_data, status=status.HTTP_201_CREATED)
+        return Response(serializer_data.data, status=status.HTTP_201_CREATED)

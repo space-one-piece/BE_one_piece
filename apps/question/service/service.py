@@ -35,7 +35,7 @@ def result_prompt(combined_keywords: str, check_type: str) -> str:
         4. 출력은 id 값과 추천 이유는 reason 으로 해줘
         5. 이유에서 사용자님 이라는 빼고 바로 향수 설명과(향수 데이터베이스 name값 그대로) profile, tags 정보를 선택한 데이터를 통해 설명을 넣어줘
         6. profile, tags 설명을 넣을때 향수 데이터베이스 정보를 맘대로 수정 하지 말고 설명해줘
-        7. 출력 데이터는 데이터베이스 id 값과 이유인 reason 데이터를 json 방식으로 출력해줘
+        7. 출력 데이터는 데이터베이스 id 값과 이유인 reason 데이터를 json 방식으로 출력하는데 마크다운 방식은 빼고 해줘
         """
     return prompt
 

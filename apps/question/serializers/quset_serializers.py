@@ -10,7 +10,7 @@ class QuestionsAnswerSerializer(serializers.ModelSerializer[QuestionsAnswer]):
 
     class Meta:
         model = QuestionsAnswer
-        fields = ["content", "score"]
+        fields = ["content"]
 
 
 class QuestionSerializer(serializers.ModelSerializer[Question]):
@@ -19,11 +19,10 @@ class QuestionSerializer(serializers.ModelSerializer[Question]):
 
     class Meta:
         model = Question
-        fields = ["title", "additional", "answer"]
+        fields = ["title", "additional", "left_label", "right_label", "answer"]
 
 
 class QuestionsInSerializer(serializers.Serializer[Any]):
     title = serializers.CharField()
     results = serializers.CharField()
-    score = serializers.IntegerField()
     question_num = serializers.CharField()
