@@ -53,7 +53,7 @@ def _validate_profanity(content: str) -> None:
         k1 = keyword.lower()
         k2 = _NORMALIZE_RE.sub("", k1)
         if k1 in raw_lower or (k2 and k2 in normalized):
-            raise ValidationError("부적절한 표현이 포함되어 있습니다.")
+            raise ValidationError("잘못된 요청입니다.")
 
 
 def is_meaningful_turn(content: str) -> bool:
