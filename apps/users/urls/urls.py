@@ -4,6 +4,7 @@ from apps.users.views.login_views import LoginView
 from apps.users.views.logout_views import LogoutView
 from apps.users.views.refresh_token_views import RefreshTokenView
 from apps.users.views.signup_views import SignUpView
+from apps.users.views.user_profile_views import ProfileView
 from apps.users.views.verification_views import EmailConfirmView, EmailSendView, SmsConfirmView, SmsSendView
 
 app_name = "users"
@@ -26,6 +27,8 @@ urlpatterns = [
     path("logout", LogoutView.as_view(), name="logout"),
     # JWT토큰 재발급
     path("me/refresh", RefreshTokenView.as_view(), name="token_refresh"),
+    # 내정보 조회
+    path("me/profile", ProfileView.as_view(), name="profile"),
     # 인증 관련 include
     path("verification/", include(verification_patterns)),
 ]
