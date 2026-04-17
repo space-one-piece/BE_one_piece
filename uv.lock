@@ -1026,6 +1026,15 @@ wheels = [
 ]
 
 [[package]]
+name = "hashids"
+version = "1.3.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/26/a2/6f38b1de47b41ad0420047ad03b0b8cd5d6572271a3e9c2ab70e373fe63a/hashids-1.3.1.tar.gz", hash = "sha256:6c3dc775e65efc2ce2c157a65acb776d634cb814598f406469abef00ae3f635c", size = 7884, upload-time = "2020-07-26T21:47:24.138Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/6e/46/ffdf25b1f6dbb1ce588ccb818e983df9e3d30594679f5a08c865a59cead7/hashids-1.3.1-py2.py3-none-any.whl", hash = "sha256:8bddd1acba501bfc9306e7e5a99a1667f4f2cacdc20cbd70bcc5ddfa5147c94c", size = 6556, upload-time = "2020-07-26T21:47:22.41Z" },
+]
+
+[[package]]
 name = "httpcore"
 version = "1.0.9"
 source = { registry = "https://pypi.org/simple" }
@@ -1371,6 +1380,7 @@ dependencies = [
     { name = "drf-yasg" },
     { name = "google-genai" },
     { name = "gunicorn" },
+    { name = "hashids" },
     { name = "mypy" },
     { name = "pillow" },
     { name = "pre-commit" },
@@ -1412,6 +1422,7 @@ requires-dist = [
     { name = "drf-yasg", specifier = ">=1.21.15" },
     { name = "google-genai", specifier = ">=1.67.0,<2.0.0" },
     { name = "gunicorn", specifier = ">=23.0.0,<24.0.0" },
+    { name = "hashids", specifier = ">=1.3.1" },
     { name = "mypy", specifier = "==1.11.2" },
     { name = "pillow", specifier = ">=11.3.0,<12.0.0" },
     { name = "pre-commit", specifier = ">=4.5.1" },
