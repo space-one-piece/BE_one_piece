@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from django.utils.timezone import now
 from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
 from rest_framework import serializers, status
-from rest_framework.exceptions import NotAuthenticated, NotFound, ValidationError
+from rest_framework.exceptions import NotAuthenticated, NotFound
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -18,6 +18,7 @@ from ..services.chatbot_completion_policy import (
     validate_chatbot_input,
 )
 from ..services.chatbot_service import (
+    SessionExpiredError,
     extract_recommended_scent_id,
     get_ai_response,
     parse_context,
@@ -86,7 +87,7 @@ class ChatMessageView(APIView):
             session.status = "inactive"
             session.ended_at = now()
             session.save()
-            raise ValidationError()
+            raise SessionExpiredError()
 
         # 메시지 추가
         store["messages"].append({"role": "user", "parts": [{"text": message}]})
@@ -135,6 +136,7 @@ class ChatMessageView(APIView):
                     "reply": reply,
                     "is_recommendation": is_recommendation,
                     "recommendation_id": recommendation_id,
+                    "source_type": "chatbot",
                 },
             },
             status=status.HTTP_200_OK,

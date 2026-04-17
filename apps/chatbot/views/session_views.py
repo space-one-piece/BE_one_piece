@@ -31,7 +31,7 @@ class ChatSessionCreateView(GenericAPIView[ChatSession]):
     def post(self, request: Request) -> Response:
         serializer = self.get_serializer(data=request.data)
         if not serializer.is_valid():
-            raise ValidationError()
+            raise ValidationError("메시지를 입력해주세요.")
 
         user = request.user
         if not isinstance(user, User):
