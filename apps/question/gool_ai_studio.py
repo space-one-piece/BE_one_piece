@@ -1,3 +1,5 @@
+import base64
+
 from google import genai
 from google.genai.errors import ServerError
 from rest_framework.exceptions import APIException
@@ -17,5 +19,25 @@ def ask_gemini(prompt: str) -> str | None:
     try:
         response = client.models.generate_content(model=GEMINI_MODEL, contents=prompt)
         return response.text
+    except ServerError:
+        raise CustomBadRequest()
+
+
+def image_gemini(prompt: str) -> str | None:
+    client = genai.Client(api_key=PJG_GEMINI_KEY)
+    try:
+        response = client.models.generate_content(model="gemini-2.5-flash-image", contents=prompt)
+
+        if response is not None and response.parts is not None:
+            for part in response.parts:
+                if part.inline_data is not None:
+                    image = part.as_image()
+                    if image is not None:
+                        image_byte = image.image_bytes
+                        if image_byte is not None:
+                            base64_data = base64.b64encode(image_byte).decode("utf-8")
+                            return f"data:image/jpg;base64,{base64_data}"
+
+        return None
     except ServerError:
         raise CustomBadRequest()
