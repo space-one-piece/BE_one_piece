@@ -1,6 +1,9 @@
+import json
 import re
 from typing import Any
 
+import redis
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.utils.timezone import now
 from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
@@ -14,6 +17,7 @@ from rest_framework.views import APIView
 from ..exceptions import SessionExpiredError, SessionInactiveError
 from ..models import ChatbotRecommendation, ChatSession
 from ..services.chatbot_completion_policy import (
+    is_impatient,
     is_meaningful_turn,
     should_force_end,
     should_force_fallback,
@@ -36,7 +40,34 @@ from ..services.scent_filter_service import (
 
 User = get_user_model()
 
-SESSION_STORE: dict[int, dict[str, Any]] = {}
+redis_client = redis.Redis(
+    host=settings.REDIS_HOST,
+    port=settings.REDIS_PORT,
+    decode_responses=True,
+)
+
+SESSION_TTL = 1200
+
+
+def get_session_store(session_id: int) -> dict[str, Any] | None:
+    data = redis_client.get(f"chatbot:session:{session_id}")
+    if data is None:
+        return None
+    assert isinstance(data, str)
+    result: dict[str, Any] = json.loads(data)
+    return result
+
+
+def set_session_store(session_id: int, store: dict[str, Any]) -> None:
+    redis_client.setex(
+        f"chatbot:session:{session_id}",
+        SESSION_TTL,
+        json.dumps(store),
+    )
+
+
+def delete_session_store(session_id: int) -> None:
+    redis_client.delete(f"chatbot:session:{session_id}")
 
 
 class ChatMessageView(APIView):
@@ -70,13 +101,14 @@ class ChatMessageView(APIView):
         except ChatSession.DoesNotExist:
             raise NotFound()
 
-        # 세션 상태 확인
+        # 세션 상태 체크
         if session.status == "inactive":
             raise SessionInactiveError()
 
-        # 메모리에서 세션 데이터 가져오기
-        if session_id not in SESSION_STORE:
-            SESSION_STORE[session_id] = {
+        # Redis에서 세션 데이터 가져오기
+        store = get_session_store(session_id)
+        if store is None:
+            store = {
                 "messages": [],
                 "context": init_context(),
                 "total_turns": 0,
@@ -84,15 +116,12 @@ class ChatMessageView(APIView):
                 "excluded_ids": [],
             }
 
-        store = SESSION_STORE[session_id]
-
         # 강제 종료 확인
         if should_force_end(store["total_turns"]):
             session.status = "inactive"
             session.ended_at = now()
             session.save()
-            if session_id in SESSION_STORE:
-                del SESSION_STORE[session_id]
+            delete_session_store(session_id)
             raise SessionExpiredError()
 
         # 메시지 추가
@@ -113,7 +142,7 @@ class ChatMessageView(APIView):
 
         if can_recommend(store["context"]):
             candidates = filter_scents(store["context"], store["excluded_ids"])
-        elif should_force_fallback(store["meaningful_turns"]):
+        elif should_force_fallback(store["meaningful_turns"]) or is_impatient(message):
             candidates = get_fallback_scents(store["excluded_ids"])
 
         # AI 응답 생성
@@ -134,8 +163,10 @@ class ChatMessageView(APIView):
                 )
                 recommendation_id = recommendation.id
 
-        # AI 응답 메모리에 추가
+        # AI 응답 Redis에 저장
         store["messages"].append({"role": "model", "parts": [{"text": reply}]})
+        store["messages"] = store["messages"][-10:]
+        set_session_store(session_id, store)
 
         return Response(
             {

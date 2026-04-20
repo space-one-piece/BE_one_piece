@@ -77,3 +77,16 @@ TIME_MAPPING: dict[str, str] = {
     "낮": "daytime",
     "오후": "daytime",
 }
+
+IMPATIENT_KEYWORDS: list[str] = [
+    "아무거나",
+    "그냥",
+    "빨리",
+    "뭐든",
+    "상관없어",
+    "아무거",
+    "뭐라도",
+    "대충",
+    "그냥추천",
+    "빠르게",
+]

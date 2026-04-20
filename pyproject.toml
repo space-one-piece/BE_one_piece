@@ -34,9 +34,11 @@ dependencies = [
     "pre-commit>=4.5.1",
     "drf-spectacular>=0.29.0",
     "hashids>=1.3.1",
+    "redis>=7.4.0",
     "numpy>=2.4.4",
     "colorthief>=0.2.1",
     "opencv-python-headless>=4.13.0.92",
+    "redis>=7.4.0",
 ]
 
 [dependency-groups]

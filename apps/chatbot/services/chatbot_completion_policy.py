@@ -7,10 +7,12 @@ from ..constants.blocked_keywords import (
     BLOCKED_PROFANITY_KEYWORDS,
     BLOCKED_PROMPT_KEYWORDS,
 )
+from ..constants.mapping_keywords import IMPATIENT_KEYWORDS
 
 MAX_INPUT_LENGTH = 500
 MAX_TOTAL_TURNS = 5
 MAX_MEANINGFUL_TURNS = 3
+MAX_RETRY_COUNT = 2
 
 _NORMALIZE_RE = re.compile(r"[\s\W_]+", re.UNICODE)
 
@@ -75,3 +77,7 @@ def should_force_fallback(meaningful_turns: int) -> bool:
 
 def should_force_end(total_turns: int) -> bool:
     return total_turns >= MAX_TOTAL_TURNS
+
+
+def is_impatient(text: str) -> bool:
+    return any(keyword in text for keyword in IMPATIENT_KEYWORDS)
