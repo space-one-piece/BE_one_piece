@@ -26,7 +26,7 @@ class ImageUserAPIView(APIView):
             404: OpenApiResponse(response=OpenApiTypes.OBJECT, examples=[value_list["404"]]),
         },
     )
-    def put(self, request: Request, requests_id: int) -> Response:
+    def patch(self, request: Request, requests_id: int) -> Response:
         return Response({"message": "이미지 저장"})
 
     @extend_schema(

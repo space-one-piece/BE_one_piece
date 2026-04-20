@@ -91,8 +91,8 @@ class ResultListAPIView(APIView):
 
     @extend_schema(
         tags=["quest"],
-        summary=" 리뷰 목록 조회 API",
-        description="리뷰 목록 조회 API",
+        summary=" 결과 목록 조회 API",
+        description="결과 목록 조회 API",
         request=None,
         responses={
             200: OpenApiResponse(
