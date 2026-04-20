@@ -47,7 +47,7 @@ class ImageAnalysis(TimeStampModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     recommended_scent = models.ForeignKey(Scent, on_delete=models.CASCADE)
     s3_image_url = models.CharField(null=True, blank=True, max_length=500)
-    ai_categories = models.JSONField(null=True, blank=True)
+    ai_tags = models.JSONField(null=True, blank=True)
     ai_intensity = models.IntegerField(null=True, blank=True)
     ai_keywords = models.JSONField(null=True, blank=True)
     ai_comment = models.TextField(null=True, blank=True)

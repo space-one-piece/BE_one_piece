@@ -1,8 +1,7 @@
-from urllib.request import Request
-
 from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
-from rest_framework import serializers
+from rest_framework import serializers, status
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -11,6 +10,7 @@ from apps.analysis.serializers.analysis_serializers import (
     AnalysisDetailSerializer,
     AnalysisListSerializer,
 )
+from apps.analysis.service.analysis_service import AnalysisService
 from apps.core.serializers.presigned_url_serializer import PresignedUrlRequestSerializer
 from apps.core.services.presigned_url_service import PresignedUrlService
 
@@ -41,16 +41,21 @@ class UploadURLAPIView(APIView):
 
 # 이미지 분석 / 리스트
 class AnalysisListCreateAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
     @extend_schema(
         tags=["image_analysis"],
         summary="내 분석 히스토리 목록 조회",
         responses={
             200: AnalysisListSerializer(many=True),
-            400: OpenApiResponse(description="요청값이 이상"),
+            403: OpenApiResponse(description="권한 없음"),
         },
     )
     def get(self, request: Request) -> Response:
-        return Response(...)
+        data_list = AnalysisService.get_analysis_list(user_id=request.user.id)
+
+        serializer = AnalysisListSerializer(data_list, many=True)
+        return Response(serializer.data)
 
     @extend_schema(
         tags=["image_analysis"],
@@ -66,11 +71,24 @@ class AnalysisListCreateAPIView(APIView):
         },
     )
     def post(self, request: Request) -> Response:
-        return Response(...)
+        input_serializer = AnalysisCreateSerializer(data=request.data)
+        input_serializer.is_valid(raise_exception=True)
+
+        image_key = input_serializer.validated_data["image_key"]
+        try:
+            analysis_record, _ = AnalysisService.image_analysis_process(user=request.user, img_key=image_key)  # type: ignore
+        except ValueError as e:
+            return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        output_serializer = AnalysisDetailSerializer(analysis_record)
+
+        return Response(output_serializer.data, status=status.HTTP_201_CREATED)
 
 
 # 이미지 분석 상세 조회
 class AnalysisDetailAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
     @extend_schema(
         tags=["image_analysis"],
         summary="특정 분석 결과 상세 조회",
@@ -80,6 +98,7 @@ class AnalysisDetailAPIView(APIView):
         },
     )
     def get(self, request: Request, id: int) -> Response:
+        # Todo:본인 소유 권한 제어
         return Response(...)
 
     @extend_schema(
@@ -92,11 +111,14 @@ class AnalysisDetailAPIView(APIView):
         },
     )
     def delete(self, request: Request, id: int) -> Response:
+        # Todo:본인 소유 권한 제어
         return Response(...)
 
 
 # 이미지 분석 결과 저장
 class AnalysisFeedbackAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
     @extend_schema(
         tags=["image_analysis"],
         summary="분석 결과 저장",
@@ -116,6 +138,8 @@ class AnalysisFeedbackAPIView(APIView):
 
 # 유저 분석 통계 반환
 class AnalysisStatsAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
     @extend_schema(
         tags=["image_analysis"],
         summary="유저의 전반적인 분석 통계 조회",
