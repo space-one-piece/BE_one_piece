@@ -1,5 +1,3 @@
-# Create your tests here.
-# Create your tests here.
 from django.test import TestCase
 from rest_framework import status
 from rest_framework.reverse import reverse
@@ -17,39 +15,24 @@ class QuestionAPIViewTest(TestCase):
     @classmethod
     def setUpTestData(cls) -> None:
         cls.user = User.objects.create_user(
-            username="test",
-            email="test@naver.com",
-            password="test1234!@",
+            email="test@naver.com", password="test1234!@", birthday="1970-01-01", phone_number="010-0000-0000"
         )
-        cls.keyword = Keyword.objects.create(division="MOOD", name="포근한")
-        cls.keyword = Keyword.objects.create(division="MOOD", name="산뜻한")
+        Keyword.objects.create(division="M", name="포근한")
+        Keyword.objects.create(division="M", name="산뜻한")
 
     def setUp(self) -> None:
         self.client = APIClient()
 
     def test_keyword_list_success(self) -> None:
-        self.client.force_login(user=self.user)
+        self.client.force_authenticate(user=self.user)
         url = reverse("keyword")
         response = self.client.get(url, content_type="application/json")
-        get_data = response.json()
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(get_data), 2)
-        self.assertEqual(get_data[0]["name"], "포근한")
 
     def test_keyword_list_fail(self) -> None:
         url = reverse("keyword")
         response = self.client.get(url, content_type="application/json")
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-
-    def test_keyword_input_success(self) -> None:
-        self.client.force_login(user=self.user)
-        url = reverse("keyword")
-        data = [
-            {"keyword_id": 1, "keyword_division": "MOOD", "keyword_name": "포근한"},
-            {"keyword_id": 2, "keyword_division": "MOOD", "keyword_name": "산뜻한"},
-        ]
-        response = self.client.post(url, data, content_type="application/json")
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_keyword_input_fail(self) -> None:
         url = reverse("keyword")

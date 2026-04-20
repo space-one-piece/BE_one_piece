@@ -100,12 +100,15 @@ class ResultListAPIView(APIView):
                 examples=[value_list["200_list"]],
             ),
             401: OpenApiResponse(
+                response=OpenApiTypes.OBJECT,
                 examples=[value_list["401"]],
             ),
             403: OpenApiResponse(
+                response=OpenApiTypes.OBJECT,
                 examples=[value_list["403"]],
             ),
             404: OpenApiResponse(
+                response=OpenApiTypes.OBJECT,
                 examples=[value_list["404"]],
             ),
         },
