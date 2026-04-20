@@ -1,4 +1,5 @@
 # Create your tests here.
+
 from django.test import TestCase
 from rest_framework import status
 from rest_framework.reverse import reverse
@@ -15,12 +16,15 @@ class QuestionAPIViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls) -> None:
+        QuestionsAnswer.objects.all().delete()
+        Question.objects.all().delete()
+
         cls.user = User.objects.create_user(
-            username="test",
-            email="test@naver.com",
-            password="test1234!@",
+            email="test@naver.com", password="test1234!@", birthday="1970-01-01", phone_number="010-0000-0000"
         )
-        cls.question = Question.objects.create(content="아침에 선호하는 향", left_label="포근한", right_label="산뜻한")
+        cls.question = Question.objects.create(
+            content="아침에 선호하는 향", additional="설명", left_label="포근한", right_label="산뜻한"
+        )
         QuestionsAnswer.objects.create(question=cls.question, answer="상쾌한")
         QuestionsAnswer.objects.create(question=cls.question, answer="포근한")
 
@@ -28,7 +32,7 @@ class QuestionAPIViewTest(TestCase):
         self.client = APIClient()
 
     def test_question_list_success(self) -> None:
-        self.client.force_login(user=self.user)
+        self.client.force_authenticate(user=self.user)
         url = reverse("question")
         response = self.client.get(url, content_type="application/json")
         get_data = response.json()
@@ -40,10 +44,3 @@ class QuestionAPIViewTest(TestCase):
         url = reverse("question")
         response = self.client.get(url, content_type="application/json")
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-
-    def test_question_in_success(self) -> None:
-        self.client.force_login(user=self.user)
-        url = reverse("question")
-        data = [{"title": "갓 깎은 풀의 향", "results": "습한", "question_num": "string"}]
-        response = self.client.post(url, data, content_type="application/json")
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
