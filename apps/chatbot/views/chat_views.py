@@ -1,3 +1,4 @@
+import re
 from typing import Any
 
 from django.contrib.auth import get_user_model
@@ -10,7 +11,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from ..exceptions import SessionExpiredError
+from ..exceptions import SessionExpiredError, SessionInactiveError
 from ..models import ChatbotRecommendation, ChatSession
 from ..services.chatbot_completion_policy import (
     is_meaningful_turn,
@@ -35,7 +36,6 @@ from ..services.scent_filter_service import (
 
 User = get_user_model()
 
-# 메모리 세션 저장쇼
 SESSION_STORE: dict[int, dict[str, Any]] = {}
 
 
@@ -70,6 +70,10 @@ class ChatMessageView(APIView):
         except ChatSession.DoesNotExist:
             raise NotFound()
 
+        # 세션 상태 확인
+        if session.status == "inactive":
+            raise SessionInactiveError()
+
         # 메모리에서 세션 데이터 가져오기
         if session_id not in SESSION_STORE:
             SESSION_STORE[session_id] = {
@@ -87,11 +91,14 @@ class ChatMessageView(APIView):
             session.status = "inactive"
             session.ended_at = now()
             session.save()
+            if session_id in SESSION_STORE:
+                del SESSION_STORE[session_id]
             raise SessionExpiredError()
 
         # 메시지 추가
         store["messages"].append({"role": "user", "parts": [{"text": message}]})
         store["total_turns"] += 1
+        store["messages"] = store["messages"][-10:]
 
         # 의미있는 턴 카운트 및 context 업데이트
         if is_meaningful_turn(message):
@@ -111,6 +118,7 @@ class ChatMessageView(APIView):
 
         # AI 응답 생성
         reply = get_ai_response(store["messages"], candidates)
+        clean_reply = re.sub(r"\[ID:\s*\d+\]\s*", "", reply)
 
         # 추천 결과 처리
         if candidates:
@@ -133,7 +141,7 @@ class ChatMessageView(APIView):
             {
                 "status": "success",
                 "data": {
-                    "reply": reply,
+                    "reply": clean_reply,
                     "is_recommendation": is_recommendation,
                     "recommendation_id": recommendation_id,
                     "source_type": "chatbot",

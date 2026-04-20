@@ -10,6 +10,7 @@ from rest_framework.response import Response
 
 from ..models import ChatSession
 from ..serializers import ChatSessionCreateSerializer, ChatSessionSerializer
+from .chat_views import SESSION_STORE
 
 User = get_user_model()
 
@@ -75,6 +76,9 @@ class ChatSessionEndView(GenericAPIView[ChatSession]):
         session.status = "inactive"
         session.ended_at = now()
         session.save()
+
+        if session_id in SESSION_STORE:
+            del SESSION_STORE[session_id]
 
         return Response(
             {"status": "success", "data": {"session_id": session.id, "ended_at": session.ended_at}},

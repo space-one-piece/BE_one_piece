@@ -1,4 +1,5 @@
 import json
+import re
 import time
 from typing import Any
 
@@ -8,7 +9,6 @@ from google.genai import types
 
 from ..exceptions import GeminiUnavailableError
 from ..prompts.chatbot_prompts import CHATBOT_SYSTEM_PROMPT
-from ..prompts.support_context import SCENT_DATA
 from .context_service import Context, init_context, rule_based_extract
 
 client = genai.Client(api_key=settings.LGB_GEMINI_KEY)
@@ -128,11 +128,7 @@ def get_ai_response(
 
 
 def extract_recommended_scent_id(response_text: str) -> int | None:
-    try:
-        for scent in SCENT_DATA:
-            if scent["name"] in response_text or scent["englishName"] in response_text:
-                return int(scent["id"])
-    except Exception as e:
-        print(f"[extract error] {e}")
-        return None
+    match = re.search(r"\[ID:\s*(\d+)\]", response_text)
+    if match:
+        return int(match.group(1))
     return None

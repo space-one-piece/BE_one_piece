@@ -29,5 +29,5 @@ def custom_exception_handler(exc: Exception, context: dict[str, Any]) -> Respons
     else:
         message = ERROR_MESSAGES.get(status_code, "알 수 없는 에러가 발생했습니다.")
 
-    response.data = {"error_detail": message}  # 이거 빠졌어요!
+    response.data = {"error_detail": message}
     return response
