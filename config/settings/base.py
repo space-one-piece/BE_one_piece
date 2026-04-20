@@ -66,6 +66,7 @@ CUSTOM_APPS: list[str] = [
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + CUSTOM_APPS
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",  # 장고가 직접 CSS, JS 파일을 이동하게 도와주는거
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -218,3 +219,9 @@ GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
 
 # HASHIDS
 HASHIDS_SALT = os.getenv("HASHIDS_SALT", "")
+
+# CORS
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+]
