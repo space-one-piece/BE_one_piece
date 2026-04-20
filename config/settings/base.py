@@ -215,7 +215,56 @@ TWILIO_VERIFY_SERVICE_SID = os.environ.get("TWILIO_VERIFY_SERVICE_SID")
 # GEMINI
 PJG_GEMINI_KEY = os.environ.get("PJG_GEMINI_KEY", "")
 LGB_GEMINI_KEY = os.getenv("LGB_GEMINI_KEY", "")
+HHJ_GEMINI_KEY = os.getenv("HHJ_GEMINI_KEY", "")
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+SUB_GEMINI_MODEL = os.getenv("SUB_GEMINI_MODEL", "gemini-2.0-flash")
+
+
+LOG_DIR = os.path.join(BASE_DIR, "logs")
+if not os.path.exists(LOG_DIR):
+    os.makedirs(LOG_DIR)
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "[{asctime}] {levelname} [{name}:{lineno}] {message}",
+            "style": "{",
+        },
+        "simple": {
+            "format": "[{levelname}] {message}",
+            "style": "{",
+        },
+    },
+    "handlers": {
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        },
+        "file_error": {
+            "level": "WARNING",
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": os.path.join(LOG_DIR, "error.log"),
+            "maxBytes": 1024 * 1024 * 10,
+            "backupCount": 5,
+            "formatter": "verbose",
+        },
+    },
+    "loggers": {
+        "apps": {
+            "handlers": ["console", "file_error"],
+            "level": "INFO",
+            "propagate": False,
+        },
+        "django": {
+            "handlers": ["console", "file_error"],
+            "level": "INFO",
+            "propagate": False,
+        },
+    },
+}
 
 # HASHIDS
 HASHIDS_SALT = os.getenv("HASHIDS_SALT", "")

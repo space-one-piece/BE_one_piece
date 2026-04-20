@@ -26,6 +26,7 @@ class ScentListSerializer(serializers.ModelSerializer["Scent"]):
         fields = [
             "id",
             "name",
+            "description",
             "eng_name",
             "thumbnail_url",
         ]
@@ -65,7 +66,6 @@ class ImageColorAnalysisSerializer(serializers.ModelSerializer["ImageColorAnalys
         model = ImageColorAnalysis
         fields = [
             "id",
-            "analysis",
             "dominant_color_hex",
             "contrast_ratio",
             "avg_brightness",
@@ -80,14 +80,19 @@ class ImageColorAnalysisSerializer(serializers.ModelSerializer["ImageColorAnalys
 # 분석 히스토리 목록 조회용
 class AnalysisListSerializer(serializers.ModelSerializer["ImageAnalysis"]):
     recommended_scent = ScentListSerializer(read_only=True)
+    type = serializers.CharField(default="image", read_only=True)
 
     class Meta:
         model = ImageAnalysis
         fields = [
             "id",
+            "type",
             "recommended_scent",
+            "review",
+            "rating",
             "created_at",
         ]
+        read_only_fields = fields
 
 
 # 출력

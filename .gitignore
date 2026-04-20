@@ -12,3 +12,6 @@ static/
 staticfiles/
 celerybeat-schedule*
 .venv
+
+logs/
+*.log
