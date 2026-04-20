@@ -34,11 +34,13 @@ class ResultWebShareSerializer(serializers.Serializer[Any]):
 class ResultRecommendedScentSerializer(serializers.ModelSerializer[Scent]):
     class Meta:
         model = Scent
-        fields = ["id", "name", "eng_name", "thumbnail_url"]
+        fields = ["id", "name", "description", "eng_name", "thumbnail_url"]
 
 
 class ResultListSerializer(serializers.Serializer[Any]):
     id = serializers.IntegerField()
-    recommended_scent = ResultRecommendedScentSerializer(read_only=True)
     type = serializers.CharField()
+    recommended_scent = ResultRecommendedScentSerializer(read_only=True)
+    review = serializers.CharField()
+    rating = serializers.IntegerField()
     created_at = serializers.DateTimeField()

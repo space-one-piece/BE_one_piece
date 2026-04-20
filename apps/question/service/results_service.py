@@ -72,13 +72,16 @@ def result_list(user_id: int, division: str) -> ResultListSerializer:
     data = [
         {
             "id": item.id,
+            "type": division,
             "recommended_scent": {
                 "id": item.scent.id,
                 "name": item.scent.name,
+                "description": item.scent.description,
                 "eng_name": item.scent.eng_name,
                 "thumbnail_url": item.scent.thumbnail_url,
             },
-            "type": division,
+            "review": item.review,
+            "rating": item.rating,
             "created_at": item.created_at,
         }
         for item in questions_data
