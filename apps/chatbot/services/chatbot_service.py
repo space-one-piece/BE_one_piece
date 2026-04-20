@@ -120,7 +120,7 @@ def get_ai_response(
 
     try:
         print("[Gemini fallback] switching to gemini-2.0-flash")
-        return _call_gemini(contents, system_prompt, "gemini-2.0-flash")
+        return _call_gemini(contents, system_prompt, "gemini-2.0-flash-lite")
     except Exception as e:
         print(f"[Gemini fallback error] {e}")
 
