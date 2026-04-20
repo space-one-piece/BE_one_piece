@@ -12,21 +12,32 @@ def extend_schema(name: str, value: dict[str, Any], status_code: str) -> OpenApi
     )
 
 
+def extend_schemas(name: str, value: list[dict[str, Any]], status_code: str) -> OpenApiExample:
+    return OpenApiExample(
+        name,
+        value,
+        status_codes=[status_code],
+        response_only=True,
+    )
+
+
 value_list = {
-    "200_question_get": extend_schema(
+    "200_question_get": extend_schemas(
         "Ok",
-        {
-            "id": 1,
-            "title": "질문 내용",
-            "left_label": "상쾌한",
-            "right_label": "포근한",
-            "answer": [
-                {"content": "상쾌한"},
-                {"content": "약간 상쾌한"},
-                {"content": "약간 포근한"},
-                {"content": "포근한"},
-            ],
-        },
+        [
+            {
+                "id": 1,
+                "title": "질문 내용",
+                "left_label": "상쾌한",
+                "right_label": "포근한",
+                "answer": [
+                    {"content": "상쾌한"},
+                    {"content": "약간 상쾌한"},
+                    {"content": "약간 포근한"},
+                    {"content": "포근한"},
+                ],
+            }
+        ],
         "200",
     ),
     "201": extend_schema(
@@ -89,6 +100,22 @@ value_list = {
             "reason": "사용자님의 '산뜻한' 무드에 맞춰, '레몬 리넨'은 태그에 '산뜻한', '깨끗한', '가벼운'을 포함하고 있어 완벽하게 부합합니다. 특히, Freshness 수치가 88로 매우 높아 탁월한 상쾌함을 선사하며, Warmth와 Depth가 각각 16과 24로 낮아 가볍고 맑은 느낌을 더욱 강조합니다.",
         },
         "201",
+    ),
+    "200_list": extend_schemas(
+        "OK",
+        [
+            {
+                "id": 1,
+                "recommended_scent": {
+                    "id": 14,
+                    "name": "레몬 리넨",
+                    "eng_name": "Lemon Linen",
+                    "thumbnail_url": "",
+                },
+                "created_at": "2026-04-15T05:41:54.846985Z",
+            }
+        ],
+        "200",
     ),
     "200_review": extend_schema(
         "OK",
@@ -168,8 +195,8 @@ value_list = {
         "200",
     ),
     "200_web_post": extend_schema("OK", {"web_share_url": "https://one_piece/api/v1/question/share/uuid"}, "200"),
-    "200_keyword_get": extend_schema(
-        "OK", {"keyword_id": 1, "keyword_division": "분위기", "keyword_name": "시원함"}, "200"
+    "200_keyword_get": extend_schemas(
+        "OK", [{"keyword_id": 1, "keyword_division": "분위기", "keyword_name": "시원함"}], "200"
     ),
     "200": extend_schema("OK", {"message": "저장 되었습니다."}, "200"),
     "400_question": extend_schema("Bad Request", {"error_detail": {"results": ["Q1번 답변이 없습니다."]}}, "400"),

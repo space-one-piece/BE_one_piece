@@ -2,6 +2,7 @@ from typing import Any
 
 from rest_framework import serializers
 
+from apps.analysis.models import Scent
 from apps.analysis.serializers.analysis_serializers import ScentDetailSerializer
 
 
@@ -28,3 +29,16 @@ class ResultWebShareSerializer(serializers.Serializer[Any]):
     reason = serializers.CharField()
     review = serializers.CharField()
     rating = serializers.IntegerField()
+
+
+class ResultRecommendedScentSerializer(serializers.ModelSerializer[Scent]):
+    class Meta:
+        model = Scent
+        fields = ["id", "name", "eng_name", "thumbnail_url"]
+
+
+class ResultListSerializer(serializers.Serializer[Any]):
+    id = serializers.IntegerField()
+    recommended_scent = ResultRecommendedScentSerializer(read_only=True)
+    type = serializers.CharField()
+    created_at = serializers.DateTimeField()
