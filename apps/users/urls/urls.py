@@ -3,6 +3,7 @@ from django.urls import include, path
 from apps.users.views.login_views import LoginView
 from apps.users.views.logout_views import LogoutView
 from apps.users.views.refresh_token_views import RefreshTokenView
+from apps.users.views.reset_passwor_views import PasswordResetView
 from apps.users.views.signup_views import SignUpView
 from apps.users.views.social_login_views import (
     GoogleSocialLoginCallbackView,
@@ -44,6 +45,8 @@ urlpatterns = [
     path("social-login/kakao/callback", KakaoSocialLoginCallbackView.as_view(), name="kakao_social_callback"),
     path("social-login/google", GoogleSocialLoginView.as_view(), name="google_social_login"),
     path("social-login/google/callback", GoogleSocialLoginCallbackView.as_view(), name="google_social_callback"),
+    # 비밀번호 재설정
+    path("chang-password", PasswordResetView.as_view(), name="change_password"),
     # 인증 관련 include
     path("verification/", include(verification_patterns)),
 ]

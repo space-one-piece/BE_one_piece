@@ -29,7 +29,7 @@ class ProfileTests(TestCase):
             "name": "겐지",
         }
         cls.user = User.objects.create(**cls.user_data)
-        cls.url = reverse("profile")
+        cls.url = reverse("users:profile")
 
     def setUp(self) -> None:
         self.client = APIClient()
@@ -51,14 +51,14 @@ class ProfileTests(TestCase):
         response = self.client.get(self.url)
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-        self.assertEqual(response.data["error_detail"], "자격 인증 데이터가 제공되지 않았습니다.")
+        self.assertIn("Authentication credentials were not provided", str(response.data["error_detail"]))
 
     # 유저프로필 수정 성공
     def test_user_profile_update(self) -> None:
         self.client.force_authenticate(user=self.user)
         update_data = {"name": "한조"}
 
-        response = self.client.patch(self.url, data=update_data)
+        response = self.client.patch(self.url, data=update_data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["name"], "한조")

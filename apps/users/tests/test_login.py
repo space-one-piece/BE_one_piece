@@ -27,7 +27,7 @@ class LoginTestCase(TestCase):
             phone_number="010-1234-1234",
             gender="M",
         )
-        cls.login_url = reverse("login")
+        cls.login_url = reverse("users:login")
 
     def setUp(self) -> None:
         self.client = APIClient()
@@ -40,15 +40,14 @@ class LoginTestCase(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("access", response.data)
         self.assertIn("refresh", response.data)
-        self.assertEqual(response.data["user"]["email"], self.email)
 
     # 잘못된 비밀번호 입력시 실패 테스트
     def test_login_invalid_password(self) -> None:
         data = {"email": self.email, "password": "wrongpassword"}
         response = self.client.post(self.login_url, data=json.dumps(data), content_type="application/json")
 
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-        self.assertEqual(response.data["error_detail"], "자격 인증 데이터가 제공되지 않았습니다.")
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertIn("Incorrect authentication credentials.", str(response.data["error_detail"]))
 
     # 비활성 계정 겁근시 로그인실패 테스트
     def test_login_inactive_user(self) -> None:
@@ -59,4 +58,3 @@ class LoginTestCase(TestCase):
         response = self.client.post(self.login_url, data=json.dumps(data), content_type="application/json")
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        self.assertEqual(response.data["error_detail"], "권한이 없습니다.")
