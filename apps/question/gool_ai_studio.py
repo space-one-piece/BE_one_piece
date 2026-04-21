@@ -1,4 +1,5 @@
 import base64
+import time
 
 from google import genai
 from google.genai.errors import ServerError
@@ -13,14 +14,19 @@ class CustomBadRequest(APIException):
     default_code = "Too Mony Requests"
 
 
-def ask_gemini(prompt: str) -> str | None:
+def ask_gemini(prompt: str, max_retries: int = 3) -> str | None:
+    if max_retries == 0:
+        raise CustomBadRequest()
+
     client = genai.Client(api_key=PJG_GEMINI_KEY)
 
     try:
         response = client.models.generate_content(model=GEMINI_MODEL, contents=prompt)
         return response.text
     except ServerError:
-        raise CustomBadRequest()
+        time.sleep(5)
+        max_retries = max_retries - 1
+        return ask_gemini(prompt, max_retries)
 
 
 def image_gemini(prompt: str) -> str | None:
