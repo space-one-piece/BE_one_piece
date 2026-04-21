@@ -153,3 +153,23 @@ class AnalysisStatsAPIView(APIView):
     )
     def get(self, request: Request) -> Response:
         return Response(...)
+
+
+class IntegratedHistoryListAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(
+        tags=["analysis_list"],
+        summary="유저의 분석/추천 결과 리스트",
+        responses={
+            200: OpenApiResponse(description="성공"),
+        },
+    )
+    def get(self, request: Request) -> Response:
+        history_list = AnalysisService.get_integrated_history_list(user_id=request.user.id)
+
+        paginator = StandardCustomPagination()
+        paginated_queryset = paginator.paginate_queryset(history_list, request, view=self)  # type: ignore
+
+        serializer = AnalysisListSerializer(paginated_queryset, many=True)
+        return Response(serializer.data)

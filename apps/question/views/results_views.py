@@ -115,7 +115,7 @@ class ResultListAPIView(APIView):
     )
     def get(self, request: Request, division: str) -> Response:
         serializer_data = result_list(request.user.id, division)
-        return Response(serializer_data.data, status=status.HTTP_200_OK)
+        return Response(serializer_data, status=status.HTTP_200_OK)
 
 
 class ResultDetailAPIView(APIView):

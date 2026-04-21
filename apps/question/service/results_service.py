@@ -96,7 +96,7 @@ def result_list(user_id: int, division: str) -> ResultListSerializer:
         for item in questions_data
     ]
 
-    return ResultListSerializer(data, many=True)
+    return data
 
 
 def out_results(user_id: int, requests_id: int, division: str) -> ResultWebShareSerializer:

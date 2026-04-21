@@ -13,7 +13,7 @@ def get_chatbot_recommendation_history(user_id: int) -> list[dict[str, Any]]:
         .order_by("-created_at")
     )
 
-    return [
+    data = [
         {
             "id": r.id,
             "type": "chatbot",
@@ -30,3 +30,5 @@ def get_chatbot_recommendation_history(user_id: int) -> list[dict[str, Any]]:
         }
         for r in recommendations
     ]
+
+    return data
