@@ -1,10 +1,9 @@
-from urllib.parse import urlparse
-
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 
 from apps.question.gool_ai_studio import image_gemini
 from apps.question.models import QuestionsResults
+from apps.question.service.service import image_url_edit
 from apps.users.models.models import User
 
 
@@ -29,11 +28,6 @@ def image_new(user_id: int, results_id: int) -> str | None:
         """
     image_data = image_gemini(prompt)
     return image_data
-
-
-def image_url_edit(image_url: str) -> str:
-    parsed = urlparse(image_url)
-    return parsed.path.lstrip("/") if parsed is not None else image_url
 
 
 def user_profile_save(user_id: int, image_url: str) -> None:

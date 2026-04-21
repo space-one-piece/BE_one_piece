@@ -1,8 +1,14 @@
 import json
 from typing import Any, cast
+from urllib.parse import urlparse
 
 from apps.chatbot.prompts.support_context import SCENT_DATA
 from apps.question.models import QuestionsResults
+
+
+def image_url_edit(image_url: str) -> str:
+    parsed = urlparse(image_url)
+    return parsed.path.lstrip("/") if parsed is not None else image_url
 
 
 def parse_gemini_response(text: str) -> dict[str, Any]:
