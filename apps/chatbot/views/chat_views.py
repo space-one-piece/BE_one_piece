@@ -128,7 +128,7 @@ class ChatMessageView(APIView):
         else:
             candidates = get_fallback_scents(store["excluded_ids"])
 
-        ai_response = get_ai_response(store["messages"], candidates)
+        ai_response = get_ai_response(store["messages"], candidates, store["excluded_ids"])
         reply = ai_response["reply"]
         scent_id_from_ai = ai_response["scent_id"]
 

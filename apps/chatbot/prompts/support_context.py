@@ -377,10 +377,10 @@ BESTSELLER_IDS: list[int] = [scent["id"] for scent in SCENT_DATA if scent["isBes
 
 # space 매핑
 SPACE_TO_PLACE: dict[str, list[str]] = {
-    "bedroom": ["Bedroom", "Dressing Room"],
-    "livingroom": ["Living Room", "Lounge", "Sunroom"],
+    "bedroom": ["Bedroom", "Dressing Room", "Vanity", "Nursery"],
+    "livingroom": ["Living Room", "Lounge", "Sunroom", "Dining Room"],
     "bathroom": ["Bathroom", "Powder Room"],
-    "study": ["Study", "Library", "Office"],
+    "study": ["Study", "Library", "Office", "Reading Room", "Workspace"],
     "kitchen": ["Kitchen", "Dining Room"],
     "office": ["Office", "Workspace", "Studio"],
     "entryway": ["Entryway"],
@@ -388,16 +388,15 @@ SPACE_TO_PLACE: dict[str, list[str]] = {
 
 # mood 매핑
 MOOD_TO_TAGS: dict[str, list[str]] = {
-    "calm": ["차분한", "잔잔한", "고요한", "안정적인"],
-    "cozy": ["포근한", "따뜻한", "아늑한", "부드러운"],
-    "fresh": ["상쾌한", "산뜻한", "청량한", "가벼운", "싱그러운"],
-    "romantic": ["로맨틱", "달콤한", "사랑스러운", "플로럴"],
-    "focus": ["드라이한", "절제된", "집중되는", "정돈된"],
-    "energetic": ["활기 있는", "경쾌한", "밝은", "선명한"],
-    "luxury": ["고급스러운", "우아한", "깊이감 있는", "성숙한"],
-    "sweet": ["달콤한", "사랑스러운", "과즙감 있는"],
+    "calm": ["차분한", "잔잔한", "고요한", "안정적인", "조용한", "정갈한"],
+    "cozy": ["포근한", "따뜻한", "아늑한", "부드러운", "온기있는"],
+    "fresh": ["상쾌한", "산뜻한", "청량한", "가벼운", "싱그러운", "맑은", "깨끗한", "투명한"],
+    "romantic": ["로맨틱", "달콤한", "사랑스러운", "플로럴", "섬세한"],
+    "focus": ["드라이한", "절제된", "집중되는", "정돈된", "미니멀한", "깊은"],
+    "energetic": ["활기 있는", "경쾌한", "밝은", "선명한", "활기있는"],
+    "luxury": ["고급스러운", "우아한", "깊이감 있는", "성숙한", "이국적인", "특별한"],
+    "sweet": ["달콤한", "사랑스러운", "과즙감 있는", "섬세한"],
 }
-
 # mood → 선호 카테고리 매핑
 MOOD_TO_CATEGORY: dict[str, list[str]] = {
     "calm": ["woody", "musk"],
