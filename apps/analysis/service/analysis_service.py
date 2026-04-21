@@ -1,5 +1,6 @@
 import logging
 import time
+from typing import Any
 
 import boto3
 from botocore.exceptions import BotoCoreError, ClientError
@@ -10,6 +11,8 @@ from django.db.models import QuerySet
 from apps.analysis.client import GeminiClient
 from apps.analysis.models import ImageAnalysis, ImageColorAnalysis, Scent
 from apps.analysis.service.color_serivce import ColorAnalysisUtil
+from apps.chatbot.services.recommendation_history_list import get_chatbot_recommendation_history
+from apps.question.service.results_service import result_list
 from apps.users.models.models import User
 
 logger = logging.getLogger(__name__)
@@ -148,6 +151,39 @@ class AnalysisService:
         return (
             ImageAnalysis.objects.filter(user_id=user_id)
             .select_related("recommended_scent")
-            .prefetch_related("image_metadata")
+            # .prefetch_related("image_metadata")
             .order_by("-created_at")
         )
+
+    @staticmethod
+    def get_integrated_history_list(user_id: int) -> list[dict[str, Any]]:
+        image_qs = (
+            ImageAnalysis.objects.filter(user_id=user_id).select_related("recommended_scent").order_by("-created_at")
+        )
+
+        image_data = [
+            {
+                "id": item.id,
+                "type": "analyses",
+                "recommended_scent": {
+                    "id": item.recommended_scent.id,
+                    "name": item.recommended_scent.name,
+                    "eng_name": item.recommended_scent.eng_name,
+                    "thumbnail_url": item.recommended_scent.thumbnail_url,
+                }
+                if item.recommended_scent
+                else None,
+                "review": item.review,
+                "rating": item.rating,
+                "created_at": item.created_at,
+            }
+            for item in image_qs
+        ]
+
+        survey_data = result_list(user_id, "survey")
+        keyword_data = result_list(user_id, "keywords")
+        chatbot_data = get_chatbot_recommendation_history(user_id)
+
+        combined = image_data + survey_data + keyword_data + chatbot_data
+
+        return sorted(combined, key=lambda x: x["created_at"], reverse=True)

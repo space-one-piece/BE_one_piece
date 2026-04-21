@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Any
 
 from django.shortcuts import get_object_or_404
 from rest_framework.exceptions import PermissionDenied
@@ -7,7 +8,6 @@ from apps.analysis.models import Scent
 from apps.core.utils.hashids import decode_id, encode_id
 from apps.question.models import QuestionsResults
 from apps.question.serializers.results_serializers import (
-    ResultListSerializer,
     ResultsOutSerializer,
     ResultWebShareSerializer,
 )
@@ -64,7 +64,7 @@ def select_web_share(result_id: str) -> ResultWebShareSerializer:
     return ResultWebShareSerializer(data)
 
 
-def result_list(user_id: int, division: str) -> ResultListSerializer:
+def result_list(user_id: int, division: str) -> list[dict[str, Any]]:
     if division == "keyword":
         questions_data = (
             QuestionsResults.objects.filter(user_id=user_id, division="K")
@@ -96,7 +96,7 @@ def result_list(user_id: int, division: str) -> ResultListSerializer:
         for item in questions_data
     ]
 
-    return ResultListSerializer(data, many=True)
+    return data
 
 
 def out_results(user_id: int, requests_id: int, division: str) -> ResultWebShareSerializer:
