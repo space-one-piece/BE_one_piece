@@ -4,6 +4,14 @@ from apps.users.views.login_views import LoginView
 from apps.users.views.logout_views import LogoutView
 from apps.users.views.refresh_token_views import RefreshTokenView
 from apps.users.views.signup_views import SignUpView
+from apps.users.views.social_login_views import (
+    GoogleSocialLoginCallbackView,
+    GoogleSocialLoginView,
+    KakaoSocialLoginCallbackView,
+    KakaoSocialLoginView,
+    NaverSocialLoginCallbackView,
+    NaverSocialLoginView,
+)
 from apps.users.views.user_profile_views import ProfileView
 from apps.users.views.verification_views import EmailConfirmView, EmailSendView, SmsConfirmView, SmsSendView
 
@@ -29,6 +37,13 @@ urlpatterns = [
     path("me/refresh", RefreshTokenView.as_view(), name="token_refresh"),
     # 내정보 조회
     path("me/profile", ProfileView.as_view(), name="profile"),
+    # 소셜 로그인
+    path("social-login/naver", NaverSocialLoginView.as_view(), name="naver_social_login"),
+    path("social-login/naver/callback", NaverSocialLoginCallbackView.as_view(), name="naver_social_callback"),
+    path("social-login/kakao", KakaoSocialLoginView.as_view(), name="kakao_social_login"),
+    path("social-login/kakao/callback", KakaoSocialLoginCallbackView.as_view(), name="kakao_social_callback"),
+    path("social-login/google", GoogleSocialLoginView.as_view(), name="google_social_login"),
+    path("social-login/google/callback", GoogleSocialLoginCallbackView.as_view(), name="google_social_callback"),
     # 인증 관련 include
     path("verification/", include(verification_patterns)),
 ]
