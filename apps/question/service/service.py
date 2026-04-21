@@ -1,14 +1,33 @@
 import json
+import logging
 from typing import Any, cast
 from urllib.parse import urlparse
 
+from botocore.exceptions import ClientError
+
 from apps.chatbot.prompts.support_context import SCENT_DATA
+from apps.core.utils.s3_handler import S3Handler
 from apps.question.models import QuestionsResults
+
+s3handler = S3Handler()
 
 
 def image_url_edit(image_url: str) -> str:
     parsed = urlparse(image_url)
     return parsed.path.lstrip("/") if parsed is not None else image_url
+
+
+def s3_image(image_url: str) -> str | None:
+    if image_url is not None:
+        image_key = image_url_edit(image_url)
+        try:
+            return s3handler.generate_get_presigned_url(image_key)
+        except ClientError as e:
+            logger = logging.getLogger(__name__)
+            logger.error(e)
+            return image_url
+
+    return None
 
 
 def parse_gemini_response(text: str) -> dict[str, Any]:
