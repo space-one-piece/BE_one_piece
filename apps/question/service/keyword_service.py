@@ -8,7 +8,7 @@ from apps.analysis.models import Scent
 from apps.question.gool_ai_studio import ask_gemini
 from apps.question.models import Keyword
 from apps.question.serializers.serializers import KeywordOutSerializer
-from apps.question.service.service import keyword_save, parse_gemini_response, result_prompt
+from apps.question.service.service import image_url_edit, keyword_save, parse_gemini_response, result_prompt
 
 
 def keyword_select() -> QuerySet[Keyword]:
@@ -39,6 +39,10 @@ def keyword_result(user_id: int, validated_data: list[dict[str, Any]]) -> Keywor
 
 def result_data(dict_data: dict[str, Any]) -> Scent:
     data = Scent.objects.get(pk=dict_data["id"])
+
+    if data.thumbnail_url is not None:
+        data.thumbnail_url = image_url_edit(data.thumbnail_url)
+
     if data is None:
         raise Http404()
     return data
