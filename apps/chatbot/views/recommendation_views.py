@@ -92,7 +92,7 @@ class ChatbotRecommendationRetryStatusView(APIView):
             raise NotFound()
 
         excluded_ids = store.get("excluded_ids", [])
-        # 첫 번째 excluded_id는 최초 추천이라 재추천 횟수에서 제외
+
         retry_count = max(len(excluded_ids) - 1, 0)
         retry_available = retry_count < MAX_RETRY_COUNT
 
@@ -137,7 +137,7 @@ class ChatbotRecommendationRetryView(APIView):
             raise NotFound()
 
         excluded_ids = store.get("excluded_ids", [])
-        # 첫 번째 excluded_id는 최초 추천이라 재추천 횟수에서 제외
+
         retry_count = max(len(excluded_ids) - 1, 0)
 
         if retry_count >= MAX_RETRY_COUNT:
@@ -152,7 +152,10 @@ class ChatbotRecommendationRetryView(APIView):
         else:
             candidates = get_fallback_scents(excluded_ids)
 
-        ai_response = get_ai_response(store["messages"], candidates)
+        retry_messages = store["messages"] + [
+            {"role": "user", "parts": [{"text": "방금 추천한 향수 말고 다른 향수로 재추천해주세요."}]}
+        ]
+        ai_response = get_ai_response(retry_messages, candidates, excluded_ids)
         reply = ai_response["reply"]
         scent_id_from_ai = ai_response["scent_id"]
 
@@ -169,6 +172,8 @@ class ChatbotRecommendationRetryView(APIView):
                 )
                 recommendation_id = recommendation.id
 
+        # 재추천 대화 흐름 저장 (user 재추천 요청 + model 응답)
+        store["messages"].append({"role": "user", "parts": [{"text": "다른 향수로 재추천해줘"}]})
         store["messages"].append({"role": "model", "parts": [{"text": reply}]})
         store["messages"] = store["messages"][-10:]
         set_session_store(session_id, store)

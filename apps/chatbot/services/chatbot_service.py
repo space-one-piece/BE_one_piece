@@ -93,12 +93,18 @@ def _call_gemini(
 def get_ai_response(
     messages: list[dict[str, Any]],
     candidates: list[dict[str, Any]] | None = None,
+    excluded_ids: list[int] | None = None,
 ) -> dict[str, Any]:
     system_prompt = CHATBOT_SYSTEM_PROMPT
 
     if candidates:
         scent_context = build_scent_context(candidates)
         system_prompt += f"\n\n## 추천 가능한 향수 후보\n{scent_context}"
+
+    if excluded_ids:
+        system_prompt += "\n\n## 이미 추천한 향수 ID (절대 다시 추천 금지)\n"
+        system_prompt += f"다음 ID의 향수는 절대로 추천하지 마세요: {excluded_ids}\n"
+        system_prompt += "위 ID가 scent_id로 나오면 안 됩니다. 반드시 다른 향수를 추천하세요."
 
     contents = [
         types.Content(
@@ -132,8 +138,14 @@ def get_ai_response(
     try:
         cleaned = re.sub(r"```json|```", "", raw_reply).strip()
         parsed = json.loads(cleaned)
+        scent_id = parsed.get("scent_id")
+
+        if scent_id and excluded_ids and scent_id in excluded_ids:
+            print(f"[warn] AI가 excluded_id {scent_id} 추천 시도 → 무시")
+            scent_id = None
+
         return {
-            "scent_id": parsed.get("scent_id"),
+            "scent_id": scent_id,
             "reply": parsed.get("reply", ""),
         }
     except Exception as e:
