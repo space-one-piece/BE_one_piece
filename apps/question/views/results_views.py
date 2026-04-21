@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 
 from apps.question.extend_schema import value_list
 from apps.question.serializers.results_serializers import ResultsIntSerializer, ResultsSerializer
-from apps.question.service.results_service import new_web_share, result_list, review_save, select_web_share
+from apps.question.service.results_service import new_web_share, out_results, result_list, review_save, select_web_share
 
 
 class ResultsCreateUrlAPIView(APIView):
@@ -115,4 +115,30 @@ class ResultListAPIView(APIView):
     )
     def get(self, request: Request, division: str) -> Response:
         serializer_data = result_list(request.user.id, division)
+        return Response(serializer_data.data, status=status.HTTP_200_OK)
+
+
+class ResultDetailAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(
+        tags=["quest"],
+        summary="결과 조회 API",
+        description="결과 조회 API",
+        request=None,
+        responses={
+            200: OpenApiResponse(
+                response=OpenApiTypes.OBJECT,
+                examples=[value_list["200_web_get"]],
+            ),
+            404: OpenApiResponse(
+                examples=[value_list["404"]],
+            ),
+            429: OpenApiResponse(
+                examples=[value_list["429"]],
+            ),
+        },
+    )
+    def get(self, request: Request, division: str, requests_id: int) -> Response:
+        serializer_data = out_results(request.user.id, requests_id, division)
         return Response(serializer_data.data, status=status.HTTP_200_OK)

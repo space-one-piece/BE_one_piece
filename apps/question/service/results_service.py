@@ -66,7 +66,7 @@ def select_web_share(result_id: str) -> ResultWebShareSerializer:
 
 
 def result_list(user_id: int, division: str) -> ResultListSerializer:
-    if division == "keywords":
+    if division == "keyword":
         questions_data = (
             QuestionsResults.objects.filter(user_id=user_id, division="K")
             .select_related("scent")
@@ -98,3 +98,22 @@ def result_list(user_id: int, division: str) -> ResultListSerializer:
     ]
 
     return ResultListSerializer(data, many=True)
+
+
+def out_results(user_id: int, requests_id: int, division: str) -> ResultWebShareSerializer:
+    check = "K" if division == "keyword" else "Q"
+    questin_data = get_object_or_404(QuestionsResults, pk=requests_id, division=check)
+
+    if questin_data.user_id != user_id:
+        raise PermissionDenied()
+
+    data = {
+        "id": questin_data.id,
+        "recommended_scent": questin_data.scent,
+        "reason": questin_data.answer_ai,
+        "review": questin_data.review,
+        "rating": questin_data.rating,
+    }
+
+    serializer_data = ResultWebShareSerializer(data)
+    return serializer_data

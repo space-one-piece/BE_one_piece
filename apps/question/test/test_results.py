@@ -114,10 +114,21 @@ class ResultsAPIViewTest(TestCase):
     def test_question_list_success(self) -> None:
         self.client.force_authenticate(user=self.user)
         url = reverse("results", kwargs={"division": "K"})
-        response = self.client.get(url)
+        response = self.client.get(url, content_type="application/json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_question_list_fail(self) -> None:
         url = reverse("results", kwargs={"division": "K"})
-        response = self.client.get(url)
+        response = self.client.get(url, content_type="application/json")
         self.assertIn(response.status_code, [status.HTTP_401_UNAUTHORIZED, status.HTTP_403_FORBIDDEN])
+
+    def test_detail_success(self) -> None:
+        self.client.force_authenticate(user=self.user)
+        url = reverse("detail", kwargs={"requests_id": self.question_results.id, "division": "keyword"})
+        response = self.client.get(url, content_type="application/json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_detail_fail(self) -> None:
+        url = reverse("detail", kwargs={"requests_id": self.question_results.id, "division": "keyword"})
+        response = self.client.get(url, content_type="application/json")
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
