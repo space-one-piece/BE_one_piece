@@ -11,6 +11,7 @@ from apps.analysis.serializers.analysis_serializers import (
     AnalysisListSerializer,
 )
 from apps.analysis.service.analysis_service import AnalysisService
+from apps.core.paginations import StandardCustomPagination
 from apps.core.serializers.presigned_url_serializer import PresignedUrlRequestSerializer
 from apps.core.services.presigned_url_service import PresignedUrlService
 
@@ -52,9 +53,12 @@ class AnalysisListCreateAPIView(APIView):
         },
     )
     def get(self, request: Request) -> Response:
-        data_list = AnalysisService.get_analysis_list(user_id=request.user.id)
+        queryset = AnalysisService.get_analysis_list(user_id=request.user.id)
 
-        serializer = AnalysisListSerializer(data_list, many=True)
+        paginator = StandardCustomPagination()
+        paginated_queryset = paginator.paginate_queryset(queryset, request, view=self)
+
+        serializer = AnalysisListSerializer(paginated_queryset, many=True)
         return Response(serializer.data)
 
     @extend_schema(

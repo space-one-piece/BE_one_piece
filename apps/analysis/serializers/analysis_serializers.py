@@ -26,6 +26,7 @@ class ScentListSerializer(serializers.ModelSerializer["Scent"]):
         fields = [
             "id",
             "name",
+            "tags",
             "description",
             "eng_name",
             "thumbnail_url",
@@ -80,7 +81,7 @@ class ImageColorAnalysisSerializer(serializers.ModelSerializer["ImageColorAnalys
 # 분석 히스토리 목록 조회용
 class AnalysisListSerializer(serializers.ModelSerializer["ImageAnalysis"]):
     recommended_scent = ScentListSerializer(read_only=True)
-    type = serializers.CharField(default="image", read_only=True)
+    type = serializers.CharField(default="analyses", read_only=True)
 
     class Meta:
         model = ImageAnalysis
@@ -91,6 +92,20 @@ class AnalysisListSerializer(serializers.ModelSerializer["ImageAnalysis"]):
             "review",
             "rating",
             "created_at",
+        ]
+        read_only_fields = fields
+
+
+class ScentAnalysisDataSerializer(serializers.ModelSerializer["ImageAnalysis"]):
+    class Meta:
+        model = ImageAnalysis
+        fields = [
+            "ai_tags",
+            "ai_keywords",
+            "ai_intensity",
+            "ai_comment",
+            "match_score",
+            "is_fallback",
         ]
         read_only_fields = fields
 
@@ -107,6 +122,12 @@ class AnalysisDetailSerializer(serializers.ModelSerializer["ImageAnalysis"]):
             "id",
             "recommended_scent",
             "image_metadata",
+            "ai_tags",
+            "ai_keywords",
+            "ai_intensity",
+            "ai_comment",
+            "match_score",
+            "is_fallback",
             "created_at",
         ]
         read_only_fields = fields
