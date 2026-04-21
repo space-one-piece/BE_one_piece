@@ -49,10 +49,11 @@ def new_web_share(user_id: int, result_id: int) -> str:
 def select_web_share(result_id: str) -> ResultWebShareSerializer:
     question_id = decode_id(result_id)
     question_data = get_object_or_404(QuestionsResults, pk=question_id)
-    key_url = image_url_edit(question_data.scent.thumbnail_url)
 
-    question_data.scent.thumbnail_url = s3handler.generate_get_presigned_url(key_url)
-    # 프라사인 url이 권한 프라이빗일때 아니면 퍼블릭은 다른 방법
+    if question_data.scent.thumbnail_url:
+        key_url = image_url_edit(question_data.scent.thumbnail_url)
+        question_data.scent.thumbnail_url = s3handler.generate_get_presigned_url(key_url)
+        # 프라사인 url이 권한 프라이빗일때 아니면 퍼블릭은 다른 방법
 
     data = {
         "id": question_data.id,
