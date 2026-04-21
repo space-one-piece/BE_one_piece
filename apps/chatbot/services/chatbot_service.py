@@ -58,10 +58,10 @@ def parse_context(text: str) -> Context:
     llm_result = llm_parse(text)
     rule_result = rule_based_extract(text)
     return {
-        "space": llm_result["space"] or rule_result["space"],
-        "mood": llm_result["mood"] or rule_result["mood"],
-        "intensity": llm_result["intensity"] or rule_result["intensity"],
-        "time": llm_result["time"] or rule_result["time"],
+        "space": llm_result["space"] if llm_result["space"] is not None else rule_result["space"],
+        "mood": llm_result["mood"] if llm_result["mood"] is not None else rule_result["mood"],
+        "intensity": llm_result["intensity"] if llm_result["intensity"] is not None else rule_result["intensity"],
+        "time": llm_result["time"] if llm_result["time"] is not None else rule_result["time"],
     }
 
 
@@ -93,7 +93,7 @@ def _call_gemini(
 def get_ai_response(
     messages: list[dict[str, Any]],
     candidates: list[dict[str, Any]] | None = None,
-) -> str:
+) -> dict[str, Any]:
     system_prompt = CHATBOT_SYSTEM_PROMPT
 
     if candidates:
@@ -108,9 +108,12 @@ def get_ai_response(
         for msg in messages
     ]
 
+    raw_reply = ""
+
     for i in range(3):
         try:
-            return _call_gemini(contents, system_prompt, settings.GEMINI_MODEL)
+            raw_reply = _call_gemini(contents, system_prompt, settings.GEMINI_MODEL)
+            break
         except Exception as e:
             print(f"[Gemini error - retry {i}] {e}")
             if "503" in str(e):
@@ -118,17 +121,24 @@ def get_ai_response(
                 continue
             break
 
+    if not raw_reply:
+        try:
+            print("[Gemini fallback] switching to gemini-2.0-flash-lite")
+            raw_reply = _call_gemini(contents, system_prompt, "gemini-2.0-flash-lite")
+        except Exception as e:
+            print(f"[Gemini fallback error] {e}")
+            raise GeminiUnavailableError()
+
     try:
-        print("[Gemini fallback] switching to gemini-2.0-flash")
-        return _call_gemini(contents, system_prompt, "gemini-2.0-flash-lite")
+        cleaned = re.sub(r"```json|```", "", raw_reply).strip()
+        parsed = json.loads(cleaned)
+        return {
+            "scent_id": parsed.get("scent_id"),
+            "reply": parsed.get("reply", ""),
+        }
     except Exception as e:
-        print(f"[Gemini fallback error] {e}")
-
-    raise GeminiUnavailableError()
-
-
-def extract_recommended_scent_id(response_text: str) -> int | None:
-    match = re.search(r"\[ID:\s*(\d+)\]", response_text)
-    if match:
-        return int(match.group(1))
-    return None
+        print(f"[JSON parse error] {e}, raw: {raw_reply}")
+        return {
+            "scent_id": None,
+            "reply": raw_reply,
+        }

@@ -97,7 +97,9 @@ class ChatbotRecommendationViewTest(TestCase):
     # 재추천 요청
     @patch("apps.chatbot.services.chatbot_service.client")
     def test_retry_success(self, mock_client: MagicMock) -> None:
-        mock_client.models.generate_content.return_value.text = "[ID: 8] 샌달 콰이어트를 추천드려요."
+        mock_client.models.generate_content.return_value.text = (
+            '{"scent_id": 8, "reply": "샌달 콰이어트를 추천드려요."}'
+        )
         response: Response = self.client.post(
             f"/api/v1/chatbot/sessions/{self.session.id}/recommendations/retry/",
         )

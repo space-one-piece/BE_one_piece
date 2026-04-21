@@ -1,5 +1,3 @@
-import re
-
 from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.utils.timezone import now
@@ -13,7 +11,7 @@ from rest_framework.views import APIView
 
 from ..models import ChatbotRecommendation, ChatSession
 from ..services.chatbot_completion_policy import MAX_RETRY_COUNT
-from ..services.chatbot_service import extract_recommended_scent_id, get_ai_response
+from ..services.chatbot_service import get_ai_response
 from ..services.context_service import init_context
 from ..services.scent_filter_service import filter_scents, get_fallback_scents
 from ..views.chat_views import get_session_store, set_session_store
@@ -94,6 +92,7 @@ class ChatbotRecommendationRetryStatusView(APIView):
             raise NotFound()
 
         excluded_ids = store.get("excluded_ids", [])
+        # 첫 번째 excluded_id는 최초 추천이라 재추천 횟수에서 제외
         retry_count = max(len(excluded_ids) - 1, 0)
         retry_available = retry_count < MAX_RETRY_COUNT
 
@@ -138,6 +137,7 @@ class ChatbotRecommendationRetryView(APIView):
             raise NotFound()
 
         excluded_ids = store.get("excluded_ids", [])
+        # 첫 번째 excluded_id는 최초 추천이라 재추천 횟수에서 제외
         retry_count = max(len(excluded_ids) - 1, 0)
 
         if retry_count >= MAX_RETRY_COUNT:
@@ -147,22 +147,24 @@ class ChatbotRecommendationRetryView(APIView):
 
         if any(v is not None for v in ctx.values()):
             candidates = filter_scents(ctx, excluded_ids)
+            if not candidates:
+                candidates = get_fallback_scents(excluded_ids)
         else:
             candidates = get_fallback_scents(excluded_ids)
 
-        reply = get_ai_response(store["messages"], candidates)
-        clean_reply = re.sub(r"\[ID:\s*\d+\]\s*", "", reply)
+        ai_response = get_ai_response(store["messages"], candidates)
+        reply = ai_response["reply"]
+        scent_id_from_ai = ai_response["scent_id"]
 
-        scent_id = extract_recommended_scent_id(reply)
         recommendation_id = None
 
-        if scent_id:
+        if scent_id_from_ai:
             with transaction.atomic():
-                store["excluded_ids"].append(scent_id)
+                store["excluded_ids"].append(scent_id_from_ai)
                 recommendation = ChatbotRecommendation.objects.create(
                     user=user,
                     session=session,
-                    scent_id=scent_id,
+                    scent_id=scent_id_from_ai,
                     retry_count=retry_count + 1,
                 )
                 recommendation_id = recommendation.id
@@ -175,7 +177,7 @@ class ChatbotRecommendationRetryView(APIView):
             {
                 "status": "success",
                 "data": {
-                    "reply": clean_reply,
+                    "reply": reply,
                     "recommendation_id": recommendation_id,
                     "retry_count": retry_count + 1,
                     "source_type": "chatbot",

@@ -1,5 +1,4 @@
 import json
-import re
 from typing import Any
 
 import redis
@@ -23,20 +22,9 @@ from ..services.chatbot_completion_policy import (
     should_force_fallback,
     validate_chatbot_input,
 )
-from ..services.chatbot_service import (
-    extract_recommended_scent_id,
-    get_ai_response,
-    parse_context,
-)
-from ..services.context_service import (
-    can_recommend,
-    init_context,
-    merge_context,
-)
-from ..services.scent_filter_service import (
-    filter_scents,
-    get_fallback_scents,
-)
+from ..services.chatbot_service import get_ai_response, parse_context
+from ..services.context_service import can_recommend, init_context, merge_context
+from ..services.scent_filter_service import filter_scents, get_fallback_scents
 
 User = get_user_model()
 
@@ -46,7 +34,7 @@ redis_client = redis.Redis(
     decode_responses=True,
 )
 
-SESSION_TTL = 1200
+SESSION_TTL = 1200  # 20분
 
 
 def get_session_store(session_id: int) -> dict[str, Any] | None:
@@ -91,21 +79,17 @@ class ChatMessageView(APIView):
         if not isinstance(user, User):
             raise NotAuthenticated()
 
-        # 메시지 검증
         message = request.data.get("message", "")
         validate_chatbot_input(message)
 
-        # 세션 확인
         try:
             session = ChatSession.objects.get(id=session_id, user=user)
         except ChatSession.DoesNotExist:
             raise NotFound()
 
-        # 세션 상태 체크
         if session.status == "inactive":
             raise SessionInactiveError()
 
-        # Redis에서 세션 데이터 가져오기
         store = get_session_store(session_id)
         if store is None:
             store = {
@@ -116,7 +100,6 @@ class ChatMessageView(APIView):
                 "excluded_ids": [],
             }
 
-        # 강제 종료 확인
         if should_force_end(store["total_turns"]):
             session.status = "inactive"
             session.ended_at = now()
@@ -124,46 +107,42 @@ class ChatMessageView(APIView):
             delete_session_store(session_id)
             raise SessionExpiredError()
 
-        # 메시지 추가
         store["messages"].append({"role": "user", "parts": [{"text": message}]})
         store["total_turns"] += 1
         store["messages"] = store["messages"][-10:]
 
-        # 의미있는 턴 카운트 및 context 업데이트
         if is_meaningful_turn(message):
             store["meaningful_turns"] += 1
             new_ctx = parse_context(message)
             store["context"] = merge_context(store["context"], new_ctx)
 
-        # 추천 가능 여부 판단
         is_recommendation = False
         recommendation_id = None
-        candidates = None
 
         if can_recommend(store["context"]):
             candidates = filter_scents(store["context"], store["excluded_ids"])
+            if not candidates:
+                candidates = get_fallback_scents(store["excluded_ids"])
         elif should_force_fallback(store["meaningful_turns"]) or is_impatient(message):
             candidates = get_fallback_scents(store["excluded_ids"])
+        else:
+            candidates = get_fallback_scents(store["excluded_ids"])
 
-        # AI 응답 생성
-        reply = get_ai_response(store["messages"], candidates)
-        clean_reply = re.sub(r"\[ID:\s*\d+\]\s*", "", reply)
+        ai_response = get_ai_response(store["messages"], candidates)
+        reply = ai_response["reply"]
+        scent_id_from_ai = ai_response["scent_id"]
 
-        # 추천 결과 처리
-        if candidates:
-            scent_id = extract_recommended_scent_id(reply)
-            if scent_id:
-                is_recommendation = True
-                store["excluded_ids"].append(scent_id)
+        if candidates and scent_id_from_ai:
+            is_recommendation = True
+            store["excluded_ids"].append(scent_id_from_ai)
 
-                recommendation = ChatbotRecommendation.objects.create(
-                    user=user,
-                    session=session,
-                    scent_id=scent_id,
-                )
-                recommendation_id = recommendation.id
+            recommendation = ChatbotRecommendation.objects.create(
+                user=user,
+                session=session,
+                scent_id=scent_id_from_ai,
+            )
+            recommendation_id = recommendation.id
 
-        # AI 응답 Redis에 저장
         store["messages"].append({"role": "model", "parts": [{"text": reply}]})
         store["messages"] = store["messages"][-10:]
         set_session_store(session_id, store)
@@ -172,7 +151,7 @@ class ChatMessageView(APIView):
             {
                 "status": "success",
                 "data": {
-                    "reply": clean_reply,
+                    "reply": reply,
                     "is_recommendation": is_recommendation,
                     "recommendation_id": recommendation_id,
                     "source_type": "chatbot",

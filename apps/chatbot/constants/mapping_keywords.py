@@ -1,4 +1,6 @@
 SPACE_MAPPING: dict[str, str] = {
+    "집": "livingroom",
+    "집에서": "livingroom",
     "침실": "bedroom",
     "방": "bedroom",
     "잠자리": "bedroom",
