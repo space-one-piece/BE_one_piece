@@ -12,7 +12,6 @@ from apps.users.serializers.user_login_serializers import (
     ErrorResponseSerializer,
     LoginResponseSerializer,
     LoginSerializer,
-    UserSimpleSerializer,
 )
 from apps.users.services.login_services import LoginService
 
