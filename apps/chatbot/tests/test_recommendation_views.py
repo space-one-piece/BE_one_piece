@@ -54,28 +54,28 @@ class ChatbotRecommendationViewTest(TestCase):
     # 추천 결과 저장
     def test_save_recommendation_success(self) -> None:
         response: Response = self.client.patch(
-            f"/api/v1/chatbot/sessions/{self.session.id}/recommendations/{self.recommendation.id}/save/",
+            f"/api/v1/chatbot/sessions/{self.session.id}/recommendations/{self.recommendation.id}/save",
         )
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.data["data"]["is_saved"])
 
     def test_save_recommendation_not_found(self) -> None:
         response: Response = self.client.patch(
-            f"/api/v1/chatbot/sessions/{self.session.id}/recommendations/9999/save/",
+            f"/api/v1/chatbot/sessions/{self.session.id}/recommendations/9999/save",
         )
         self.assertEqual(response.status_code, 404)
 
     def test_save_recommendation_unauthenticated(self) -> None:
         self.client.force_authenticate(user=None)
         response: Response = self.client.patch(
-            f"/api/v1/chatbot/sessions/{self.session.id}/recommendations/{self.recommendation.id}/save/",
+            f"/api/v1/chatbot/sessions/{self.session.id}/recommendations/{self.recommendation.id}/save",
         )
         self.assertEqual(response.status_code, 401)
 
     # 재추천 가능 여부 조회
     def test_retry_status_success(self) -> None:
         response: Response = self.client.get(
-            f"/api/v1/chatbot/sessions/{self.session.id}/recommendations/retry/status/",
+            f"/api/v1/chatbot/sessions/{self.session.id}/recommendations/retry/status",
         )
         self.assertEqual(response.status_code, 200)
         self.assertIn("retry_count", response.data["data"])
@@ -83,14 +83,14 @@ class ChatbotRecommendationViewTest(TestCase):
 
     def test_retry_status_session_not_found(self) -> None:
         response: Response = self.client.get(
-            "/api/v1/chatbot/sessions/9999/recommendations/retry/status/",
+            "/api/v1/chatbot/sessions/9999/recommendations/retry/status",
         )
         self.assertEqual(response.status_code, 404)
 
     def test_retry_status_store_not_found(self) -> None:
         delete_session_store(self.session.id)
         response: Response = self.client.get(
-            f"/api/v1/chatbot/sessions/{self.session.id}/recommendations/retry/status/",
+            f"/api/v1/chatbot/sessions/{self.session.id}/recommendations/retry/status",
         )
         self.assertEqual(response.status_code, 404)
 
@@ -101,7 +101,7 @@ class ChatbotRecommendationViewTest(TestCase):
             '{"scent_id": 8, "reply": "샌달 콰이어트를 추천드려요."}'
         )
         response: Response = self.client.post(
-            f"/api/v1/chatbot/sessions/{self.session.id}/recommendations/retry/",
+            f"/api/v1/chatbot/sessions/{self.session.id}/recommendations/retry",
         )
         self.assertEqual(response.status_code, 200)
         self.assertIn("reply", response.data["data"])
@@ -114,19 +114,19 @@ class ChatbotRecommendationViewTest(TestCase):
             store["excluded_ids"] = [1, 2, 3]
             set_session_store(self.session.id, store)
         response: Response = self.client.post(
-            f"/api/v1/chatbot/sessions/{self.session.id}/recommendations/retry/",
+            f"/api/v1/chatbot/sessions/{self.session.id}/recommendations/retry",
         )
         self.assertEqual(response.status_code, 429)
 
     def test_retry_session_not_found(self) -> None:
         response: Response = self.client.post(
-            "/api/v1/chatbot/sessions/9999/recommendations/retry/",
+            "/api/v1/chatbot/sessions/9999/recommendations/retry",
         )
         self.assertEqual(response.status_code, 404)
 
     def test_retry_store_not_found(self) -> None:
         delete_session_store(self.session.id)
         response: Response = self.client.post(
-            f"/api/v1/chatbot/sessions/{self.session.id}/recommendations/retry/",
+            f"/api/v1/chatbot/sessions/{self.session.id}/recommendations/retry",
         )
         self.assertEqual(response.status_code, 404)

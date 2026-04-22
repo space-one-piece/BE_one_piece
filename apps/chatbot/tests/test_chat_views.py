@@ -30,7 +30,7 @@ class ChatMessageViewTest(TestCase):
         mock_client.models.generate_content.return_value.text = "어떤 공간에서 사용하실 예정이세요?"
 
         response: Response = self.client.post(
-            f"/api/v1/chatbot/sessions/{self.session.id}/messages/",
+            f"/api/v1/chatbot/sessions/{self.session.id}/messages",
             {"message": "향수 추천해줘"},
             format="json",
         )
@@ -40,7 +40,7 @@ class ChatMessageViewTest(TestCase):
     @patch("apps.chatbot.services.chatbot_service.client")
     def test_message_empty(self, mock_client: MagicMock) -> None:
         response: Response = self.client.post(
-            f"/api/v1/chatbot/sessions/{self.session.id}/messages/",
+            f"/api/v1/chatbot/sessions/{self.session.id}/messages",
             {"message": ""},
             format="json",
         )
@@ -49,7 +49,7 @@ class ChatMessageViewTest(TestCase):
     def test_message_unauthenticated(self) -> None:
         self.client.force_authenticate(user=None)
         response: Response = self.client.post(
-            f"/api/v1/chatbot/sessions/{self.session.id}/messages/",
+            f"/api/v1/chatbot/sessions/{self.session.id}/messages",
             {"message": "향수 추천해줘"},
             format="json",
         )
@@ -57,7 +57,7 @@ class ChatMessageViewTest(TestCase):
 
     def test_message_session_not_found(self) -> None:
         response: Response = self.client.post(
-            "/api/v1/chatbot/sessions/9999/messages/",
+            "/api/v1/chatbot/sessions/9999/messages",
             {"message": "향수 추천해줘"},
             format="json",
         )

@@ -23,7 +23,7 @@ class ChatSessionCreateViewTest(TestCase):
 
     def test_create_session_success(self) -> None:
         response: Response = self.client.post(
-            "/api/v1/chatbot/sessions/",
+            "/api/v1/chatbot/sessions",
             {"message": "향수 추천해줘"},
             format="json",
         )
@@ -32,7 +32,7 @@ class ChatSessionCreateViewTest(TestCase):
 
     def test_create_session_no_message(self) -> None:
         response: Response = self.client.post(
-            "/api/v1/chatbot/sessions/",
+            "/api/v1/chatbot/sessions",
             {},
             format="json",
         )
@@ -41,7 +41,7 @@ class ChatSessionCreateViewTest(TestCase):
     def test_create_session_unauthenticated(self) -> None:
         self.client.force_authenticate(user=None)
         response: Response = self.client.post(
-            "/api/v1/chatbot/sessions/",
+            "/api/v1/chatbot/sessions",
             {"message": "향수 추천해줘"},
             format="json",
         )
@@ -77,21 +77,21 @@ class ChatSessionEndViewTest(TestCase):
 
     def test_end_session_success(self) -> None:
         response: Response = self.client.patch(
-            f"/api/v1/chatbot/sessions/{self.session.id}/",
+            f"/api/v1/chatbot/sessions/{self.session.id}",
         )
         self.assertEqual(response.status_code, 200)
         self.assertIn("ended_at", response.data["data"])
 
     def test_end_session_not_found(self) -> None:
         response: Response = self.client.patch(
-            "/api/v1/chatbot/sessions/9999/",
+            "/api/v1/chatbot/sessions/9999",
         )
         self.assertEqual(response.status_code, 404)
 
     def test_end_session_unauthenticated(self) -> None:
         self.client.force_authenticate(user=None)
         response: Response = self.client.patch(
-            f"/api/v1/chatbot/sessions/{self.session.id}/",
+            f"/api/v1/chatbot/sessions/{self.session.id}",
         )
         self.assertEqual(response.status_code, 401)
 
@@ -104,6 +104,6 @@ class ChatSessionEndViewTest(TestCase):
         )
         self.client.force_authenticate(user=other_user)
         response: Response = self.client.patch(
-            f"/api/v1/chatbot/sessions/{self.session.id}/",
+            f"/api/v1/chatbot/sessions/{self.session.id}",
         )
         self.assertEqual(response.status_code, 404)
