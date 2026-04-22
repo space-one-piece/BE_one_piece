@@ -38,8 +38,14 @@ class LoginTestCase(TestCase):
         response = self.client.post(self.login_url, data=json.dumps(data), content_type="application/json")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
         self.assertIn("access", response.data)
-        self.assertIn("refresh", response.data)
+        self.assertNotIn("refresh", response.data)
+
+        self.assertIn("refresh_token", response.cookies)
+
+        refresh_cookie = response.cookies["refresh_token"]
+        self.assertTrue(refresh_cookie["httponly"])
 
     # 잘못된 비밀번호 입력시 실패 테스트
     def test_login_invalid_password(self) -> None:

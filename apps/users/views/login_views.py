@@ -1,5 +1,6 @@
 from typing import Any
 
+from django.conf import settings
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import status
 from rest_framework.permissions import AllowAny
@@ -11,6 +12,7 @@ from apps.users.serializers.user_login_serializers import (
     ErrorResponseSerializer,
     LoginResponseSerializer,
     LoginSerializer,
+    UserSimpleSerializer,
 )
 from apps.users.services.login_services import LoginService
 
@@ -34,11 +36,24 @@ class LoginView(APIView):
     )
     def post(self, request: Request, *args: Any, **kwargs: Any) -> Any:
         serializer = LoginSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        if serializer.is_valid():
+            data = LoginService.login_user(
+                email=serializer.validated_data["email"], password=serializer.validated_data["password"]
+            )
 
-        login_result = LoginService.login_user(
-            email=serializer.validated_data["email"], password=serializer.validated_data["password"]
-        )
+            access_token = data.get("access")
+            refresh_token = data.get("refresh")
 
-        response_serializer = LoginResponseSerializer(login_result)
-        return Response(response_serializer.data, status=status.HTTP_200_OK)
+            response = Response({"access": access_token}, status=status.HTTP_200_OK)
+
+            if refresh_token and isinstance(refresh_token, str):
+                response.set_cookie(
+                    key="refresh_token",
+                    value=refresh_token,
+                    httponly=True,
+                    secure=not settings.DEBUG,
+                    samesite="Lax",
+                    max_age=7 * 24 * 60 * 60,
+                )
+                return response
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
