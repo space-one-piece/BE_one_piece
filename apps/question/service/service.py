@@ -247,8 +247,9 @@ def result_prompt(combined_keywords: str, check_type: str) -> tuple[str, Any]:
     preferences: {add_text}
     scent: {scent_name}, {scent_profile}, {scent_tags}
 
-    Explain why this perfume is recommended based on the user's preferences in a 
-    natural and engaging way (3-5 sentences). Do not use Markdown, and respond only in Korean.
+    Explain why this perfume is recommended based on the user's preferences in a natural and 
+    engaging way (3-5 sentences). Do not use Markdown, and translate the final answer into Korean so 
+    that the output is only in Korean.
     """
 
     return prompt, selected_scent.get("id")
