@@ -5,10 +5,6 @@ from apps.analysis.models import Scent
 from .models import ChatbotRecommendation, ChatSession
 
 
-class ChatSessionCreateSerializer(serializers.Serializer[None]):
-    message = serializers.CharField()
-
-
 class ChatSessionSerializer(serializers.ModelSerializer[ChatSession]):
     class Meta:
         model = ChatSession

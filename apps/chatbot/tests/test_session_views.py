@@ -30,14 +30,6 @@ class ChatSessionCreateViewTest(TestCase):
         self.assertEqual(response.status_code, 201)
         self.assertIn("id", response.data["data"])
 
-    def test_create_session_no_message(self) -> None:
-        response: Response = self.client.post(
-            "/api/v1/chatbot/sessions",
-            {},
-            format="json",
-        )
-        self.assertEqual(response.status_code, 400)
-
     def test_create_session_unauthenticated(self) -> None:
         self.client.force_authenticate(user=None)
         response: Response = self.client.post(
