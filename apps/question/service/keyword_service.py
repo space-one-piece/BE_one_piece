@@ -9,7 +9,7 @@ from apps.analysis.models import Scent
 from apps.question.gool_ai_studio import ask_gemini
 from apps.question.models import Keyword
 from apps.question.serializers.serializers import KeywordOutSerializer
-from apps.question.service.service import keyword_save, parse_gemini_response, result_prompt, s3_image
+from apps.question.service.service import keyword_save, result_prompt, s3_image
 
 
 def keyword_select() -> QuerySet[Keyword]:
@@ -23,18 +23,18 @@ def keyword_result(user_id: int, validated_data: list[dict[str, Any]]) -> Keywor
     keyword_strings = [{"division": data["division"], "name": data["name"]} for data in validated_data]
 
     json_str = json.dumps(keyword_strings, ensure_ascii=False)
-    data = ask_gemini(result_prompt(json_str, "키워드"))
+    prompt, scent_id = result_prompt(json_str, "키워드")
+    data = ask_gemini(prompt)
     if data is None:
         raise Http404()
 
-    dict_data = parse_gemini_response(data)
-    scent_data = get_object_or_404(Scent, pk=dict_data["id"])
+    scent_data = get_object_or_404(Scent, pk=scent_id)
 
     scent_data.thumbnail_url = s3_image(scent_data.thumbnail_url) if scent_data.thumbnail_url else None
 
-    result = keyword_save(user_id, dict_data["id"], dict_data["reason"], json_str, "K")
+    result = keyword_save(user_id, scent_id, data, json_str, "K")
 
-    filter_data = {"id": result.id, "recommended_scent": scent_data, "reason": dict_data["reason"]}
+    filter_data = {"id": result.id, "recommended_scent": scent_data, "reason": data}
 
     serializer = KeywordOutSerializer(filter_data)
 
