@@ -1,9 +1,25 @@
+from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
 from django.contrib.postgres.indexes import GinIndex
 from django.db import models
 
 from apps.core.models import TimeStampModel
 from apps.users.models.models import User
+
+
+class ImageResource(TimeStampModel):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    img_key = models.CharField(max_length=512, unique=True)
+    original_name = models.CharField(max_length=255, blank=True, null=True)
+    is_uploaded = models.BooleanField(default=False)
+
+    class Meta:
+        db_table = "image_resources"
+
+    @property
+    def image_url(self) -> str:
+        base_url = f"https://{settings.AWS_S3_BUCKET_NAME}.s3.{settings.AWS_S3_REGION}.amazonaws.com/"
+        return f"{base_url}{self.img_key}"
 
 
 class Scent(TimeStampModel):
@@ -46,6 +62,11 @@ class Scent(TimeStampModel):
 class ImageAnalysis(TimeStampModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     recommended_scent = models.ForeignKey(Scent, on_delete=models.CASCADE)
+    image_resource = models.OneToOneField(
+        ImageResource,
+        on_delete=models.CASCADE,
+        related_name="analysis",
+    )
     s3_image_url = models.CharField(null=True, blank=True, max_length=500)
     ai_tags = models.JSONField(null=True, blank=True)
     ai_intensity = models.IntegerField(null=True, blank=True)

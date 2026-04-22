@@ -9,9 +9,10 @@ from django.db import transaction
 from django.db.models import QuerySet
 
 from apps.analysis.client import GeminiClient
-from apps.analysis.models import ImageAnalysis, ImageColorAnalysis, Scent
+from apps.analysis.models import ImageAnalysis, ImageColorAnalysis, ImageResource, Scent
 from apps.analysis.service.color_serivce import ColorAnalysisUtil
 from apps.chatbot.services.recommendation_history_list import get_chatbot_recommendation_history
+from apps.core.services.presigned_url_service import PresignedUrlService
 from apps.question.service.results_service import result_list
 from apps.users.models.models import User
 
@@ -58,6 +59,10 @@ class AnalysisService:
 
     @staticmethod
     def image_analysis_process(user: User, img_key: str) -> tuple[ImageAnalysis, ImageColorAnalysis]:
+        resource = ImageResource.objects.filter(user=user, img_key=img_key).first()
+        if not resource:
+            raise ValueError("유효하지 않은 이미지 키이거나 접근 권한이 없습니다.")
+
         try:
             s3_client = boto3.client(
                 "s3",
@@ -120,10 +125,15 @@ class AnalysisService:
             color_data = {"dominant_hex": "#FFFFFF", "contrast": 0.0, "brightness": 0.0, "saturation": 0.0}
             color_error_msg = str(e.__cause__ or e)
 
-        img_url = f"https://{settings.AWS_S3_BUCKET_NAME}.s3.{settings.AWS_S3_REGION}.amazonaws.com/{img_key}"
+        # img_url = f"https://{settings.AWS_S3_BUCKET_NAME}.s3.{settings.AWS_S3_REGION}.amazonaws.com/{img_key}"
+        img_url = resource.image_url
         with transaction.atomic():
+            resource.is_uploaded = True
+            resource.save()
+
             analysis_record = ImageAnalysis.objects.create(
                 user=user,
+                image_resource=resource,
                 recommended_scent=best_scent,  # type: ignore
                 s3_image_url=img_url,
                 ai_tags=ai_tags,
@@ -151,7 +161,7 @@ class AnalysisService:
         return (
             ImageAnalysis.objects.filter(user_id=user_id)
             .select_related("recommended_scent")
-            # .prefetch_related("image_metadata")
+            # .prefetch_related("image_metadata") 목록 조회에서 불필요
             .order_by("-created_at")
         )
 
@@ -187,3 +197,55 @@ class AnalysisService:
         combined = image_data + survey_data + keyword_data + chatbot_data
 
         return sorted(combined, key=lambda x: x["created_at"], reverse=True)
+
+    @staticmethod
+    def create_upload_resource(user: User, file_name: str) -> dict[str, Any]:
+        s3_result = PresignedUrlService.create(folder="analysis", file_name=file_name)
+
+        resource = ImageResource.objects.create(
+            user=user,
+            img_key=s3_result["key"],
+            original_name=file_name,
+            is_uploaded=False,
+        )
+
+        return {
+            "presigned_url": s3_result["presigned_url"],
+            "img_url": s3_result["img_url"],
+            "key": s3_result["key"],
+            "resource_id": resource.id,
+        }
+
+    @staticmethod
+    def get_my_analysis(user_id: int, analysis_id: int) -> ImageAnalysis | None:
+        return (
+            ImageAnalysis.objects.filter(id=analysis_id, user_id=user_id)
+            .select_related("recommended_scent", "image_metadata")
+            .first()
+        )
+
+    @staticmethod
+    @transaction.atomic
+    def delete_analysis(user_id: int, analysis_id: int) -> bool:
+        analysis = (
+            ImageAnalysis.objects.filter(id=analysis_id, user_id=user_id).select_related("image_resource").first()
+        )
+
+        if not analysis:
+            return False
+
+        img_key = analysis.image_resource.img_key
+        analysis.image_resource.delete()
+
+        try:
+            s3_client = boto3.client(
+                "s3",
+                aws_access_key_id=settings.AWS_S3_ACCESS_KEY_ID,
+                aws_secret_access_key=settings.AWS_S3_SECRET_ACCESS_KEY,
+                region_name=settings.AWS_S3_REGION,
+            )
+            s3_client.delete_object(Bucket=settings.AWS_S3_BUCKET_NAME, Key=img_key)
+        except Exception:
+            logger.error(f"S3 파일 삭제 실패 (Key: {img_key})", exc_info=True)
+
+        return True
