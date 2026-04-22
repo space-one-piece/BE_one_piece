@@ -1,6 +1,7 @@
 import json
 import logging
 import math
+import random
 from typing import Any, cast
 from urllib.parse import urlparse
 
@@ -47,7 +48,6 @@ def parse_gemini_response(text: str) -> dict[str, Any]:
 
 
 QUESTION_MAPPING = {
-    # Place (공간)
     "아침에 선호하는 향": "freshness",
     "업무 중 선호하는 향": "depth",
     "휴식 시 선호하는 향": "softness",
@@ -218,7 +218,9 @@ def distance(p1: dict[str, int], p2: dict[str, int]) -> float:
 
 
 def find_best_scent(user_profile: dict[str, int], scents: list[dict[str, Any]]) -> dict[str, Any]:
-    return min(scents, key=lambda s: distance(user_profile, s["profile"]))
+    sorted_scents = sorted(scents, key=lambda s: distance(user_profile, s["profile"]))
+    top3 = sorted_scents[:3]
+    return random.choice(top3)
 
 
 def result_prompt(combined_keywords: str, check_type: str) -> tuple[str, Any]:
@@ -226,8 +228,13 @@ def result_prompt(combined_keywords: str, check_type: str) -> tuple[str, Any]:
 
     if check_type == "설문지":
         user_profile = build_user_profile(data)
+        add_text = ", ".join(
+            f"{q.get('title')}: {q.get('answer')}"
+            for q in data  # 많으면 10개 제한
+        )
     else:
         user_profile = build_profile_from_keywords(data)
+        add_text = ", ".join(kw.get("name") for kw in data)
 
     selected_scent = find_best_scent(user_profile, SCENT_DATA)
 
@@ -235,12 +242,13 @@ def result_prompt(combined_keywords: str, check_type: str) -> tuple[str, Any]:
     scent_profile = selected_scent.get("profile")
     scent_tags = selected_scent.get("tags")
 
-    # 4. 프롬프트
     prompt = f"""
     user: {user_profile}
+    preferences: {add_text}
     scent: {scent_name}, {scent_profile}, {scent_tags}
 
-    Explain why this perfume is recommended in no more than two lines, without using Markdown, and also provide the answer in Korean.
+    Explain why this perfume is recommended based on the user's preferences in a 
+    natural and engaging way (3-5 sentences). Do not use Markdown, and respond only in Korean.
     """
 
     return prompt, selected_scent.get("id")
