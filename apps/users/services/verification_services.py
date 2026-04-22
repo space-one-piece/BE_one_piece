@@ -6,7 +6,8 @@ from typing import Optional
 from django.conf import settings
 from django.core.cache import cache
 from django.core.mail import send_mail
-from twilio.rest import Client  # type: ignore
+from solapi import SolapiMessageService
+from solapi.model import RequestMessage
 
 
 class VerificationService:
@@ -39,21 +40,27 @@ class VerificationService:
     def send_phone_code(cls, phone_number: str) -> bool:
         code = cls._generate_code()
         clean_number = phone_number.replace("-", "")
-        cache.set(f"phone_code_{phone_number}", code, timeout=cls.EXPIRY_TIME)
 
-        if settings.TWILIO_ACCOUNT_SID and settings.TWILIO_AUTH_TOKEN:
+        cache.set(f"phone_code_{clean_number}", code, timeout=cls.EXPIRY_TIME)
+
+        if settings.COOLSMS_API_KEY and settings.COOLSMS_API_SECRET:
             try:
-                client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
-                client.messages.create(
-                    body=f"[Space one-piece] 인증번호는 [{code}] 입니다.",
-                    from_=settings.TWILIO_PHONE_NUMBER,
-                    to=f"+82{clean_number[1:]}",
+                message_service = SolapiMessageService(
+                    api_key=settings.COOLSMS_API_KEY,
+                    api_secret=settings.COOLSMS_API_SECRET,
                 )
+                message = RequestMessage(
+                    from_=settings.COOLSMS_PHONE_NUMBER, to=clean_number, text=f"[한조각] 인증번호는 [{code}] 입니다."
+                )
+
+                response = message_service.send(message)
+                print(f"SOLAPI 메시지 발송 성공: {response.group_info.group_id}")
                 return True
             except Exception as e:
-                print(f"Twilio 발송에러: {e}")
+                print(f"SOLAPI 메시지 발송 실패: {str(e)}")
                 return False
 
+        # API키가 빠져버렸을 경우 if문 건너띄어서 여기(혹시 몰라서 코드 작성)
         print(f"\n[SMS 시뮬레이션] 번호: {clean_number} | 인증번호: [{code}]")
         return True
 

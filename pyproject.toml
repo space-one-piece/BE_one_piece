@@ -39,6 +39,7 @@ dependencies = [
     "colorthief>=0.2.1",
     "opencv-python-headless>=4.13.0.92",
     "redis>=7.4.0",
+    "solapi>=5.0.3",
 ]
 
 [dependency-groups]
