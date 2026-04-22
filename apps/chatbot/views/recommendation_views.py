@@ -184,6 +184,7 @@ class ChatbotRecommendationRetryView(APIView):
                 "data": {
                     "reply": reply,
                     "recommendation_id": recommendation_id,
+                    "scent_id": scent_id_from_ai if recommendation_id else None,
                     "retry_count": retry_count + 1,
                     "source_type": "chatbot",
                 },

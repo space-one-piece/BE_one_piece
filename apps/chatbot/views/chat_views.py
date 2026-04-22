@@ -140,6 +140,7 @@ class ChatMessageView(APIView):
                 user=user,
                 session=session,
                 scent_id=scent_id_from_ai,
+                reply=reply,
             )
             recommendation_id = recommendation.id
 
@@ -154,6 +155,7 @@ class ChatMessageView(APIView):
                     "reply": reply,
                     "is_recommendation": is_recommendation,
                     "recommendation_id": recommendation_id,
+                    "scent_id": scent_id_from_ai if is_recommendation else None,
                     "source_type": "chatbot",
                 },
             },
