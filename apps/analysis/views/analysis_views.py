@@ -36,8 +36,8 @@ class UploadURLAPIView(APIView):
         serializer.is_valid(raise_exception=True)
 
         result = AnalysisService.create_upload_resource(
-            user=request.user,
-            file_name=serializer.validated_data["file_name"],  # type: ignore
+            user=request.user,  # type: ignore
+            file_name=serializer.validated_data["file_name"],
         )
 
         return Response(result)
