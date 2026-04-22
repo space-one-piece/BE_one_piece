@@ -1,19 +1,31 @@
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.exceptions import NotFound
+from rest_framework.permissions import BasePermission, IsAdminUser, IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from apps.analysis.models import Scent
 from apps.analysis.serializers.analysis_serializers import (
     ScentDetailSerializer,
     ScentListSerializer,
 )
 from apps.analysis.serializers.scent_serializers import ScentCreateUpdateSerializer
+from apps.analysis.service.scent_service import (
+    create_scent,
+    delete_scent,
+    get_scent_detail,
+    get_scent_list,
+    update_scent,
+)
 
 
 class ScentListCreateAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    def get_permissions(self) -> list[BasePermission]:
+        if self.request.method == "POST":
+            return [IsAdminUser()]
+        return [IsAuthenticated()]
 
     @extend_schema(
         tags=["scent_management"],
@@ -22,7 +34,9 @@ class ScentListCreateAPIView(APIView):
         responses={200: ScentListSerializer(many=True)},
     )
     def get(self, request: Request) -> Response:
-        return Response(...)
+        scents = get_scent_list()
+        serializer = ScentListSerializer(scents, many=True)
+        return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK)
 
     @extend_schema(
         tags=["scent_management"],
@@ -36,23 +50,40 @@ class ScentListCreateAPIView(APIView):
         },
     )
     def post(self, request: Request) -> Response:
-        return Response(..., status=status.HTTP_201_CREATED)
+        serializer = ScentCreateUpdateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        scent = create_scent(serializer.validated_data)
+        return Response(
+            {"status": "success", "data": ScentDetailSerializer(scent).data},
+            status=status.HTTP_201_CREATED,
+        )
 
 
 class ScentDetailAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    def get_permissions(self) -> list[BasePermission]:
+        if self.request.method in ["PATCH", "DELETE"]:
+            return [IsAdminUser()]
+        return [IsAuthenticated()]
+
+    def get_object(self, id: int) -> Scent:
+        try:
+            return get_scent_detail(id)
+        except Exception:
+            raise NotFound()
 
     @extend_schema(
         tags=["scent_management"],
         summary="향 데이터 상세 조회",
-        description="특정 ID를 가진 향의 모든 상세 정보를 조회.",
+        description="특정 ID를 가진 향의 모든 상세 정보를 조회",
         responses={
             200: ScentDetailSerializer,
             404: OpenApiResponse(description="존재하지 않는 데이터"),
         },
     )
     def get(self, request: Request, id: int) -> Response:
-        return Response(...)
+        scent = self.get_object(id)
+        serializer = ScentDetailSerializer(scent)
+        return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK)
 
     @extend_schema(
         tags=["scent_management"],
@@ -66,7 +97,14 @@ class ScentDetailAPIView(APIView):
         },
     )
     def patch(self, request: Request, id: int) -> Response:
-        return Response(...)
+        scent = self.get_object(id)
+        serializer = ScentCreateUpdateSerializer(scent, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        scent = update_scent(scent, serializer.validated_data)
+        return Response(
+            {"status": "success", "data": ScentDetailSerializer(scent).data},
+            status=status.HTTP_200_OK,
+        )
 
     @extend_schema(
         tags=["scent_management"],
@@ -78,4 +116,6 @@ class ScentDetailAPIView(APIView):
         },
     )
     def delete(self, request: Request, id: int) -> Response:
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        scent = self.get_object(id)
+        delete_scent(scent)
+        return Response({"status": "success"}, status=status.HTTP_204_NO_CONTENT)
