@@ -1,5 +1,6 @@
 from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
 from rest_framework import serializers, status
+from rest_framework.exceptions import NotFound, ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -13,7 +14,6 @@ from apps.analysis.serializers.analysis_serializers import (
 from apps.analysis.service.analysis_service import AnalysisService
 from apps.core.paginations import StandardCustomPagination
 from apps.core.serializers.presigned_url_serializer import PresignedUrlRequestSerializer
-from apps.core.services.presigned_url_service import PresignedUrlService
 
 
 # 이미지 프리사인 URL 요청
@@ -35,7 +35,10 @@ class UploadURLAPIView(APIView):
         serializer = PresignedUrlRequestSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        result = PresignedUrlService.create(folder="analysis", file_name=serializer.validated_data["file_name"])
+        result = AnalysisService.create_upload_resource(
+            user=request.user,  # type: ignore
+            file_name=serializer.validated_data["file_name"],
+        )
 
         return Response(result)
 
@@ -82,7 +85,7 @@ class AnalysisListCreateAPIView(APIView):
         try:
             analysis_record, _ = AnalysisService.image_analysis_process(user=request.user, img_key=image_key)  # type: ignore
         except ValueError as e:
-            return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            raise ValidationError(detail=str(e))
 
         output_serializer = AnalysisDetailSerializer(analysis_record)
 
@@ -102,8 +105,13 @@ class AnalysisDetailAPIView(APIView):
         },
     )
     def get(self, request: Request, id: int) -> Response:
-        # Todo:본인 소유 권한 제어
-        return Response(...)
+        data = AnalysisService.get_my_analysis(user_id=request.user.id, analysis_id=id)
+
+        if not data:
+            raise NotFound(detail="접근권한이 없거나 존재하지 않는 분석 데이터")
+
+        output_serializer = AnalysisDetailSerializer(data)
+        return Response(output_serializer.data)
 
     @extend_schema(
         tags=["image_analysis"],
@@ -115,8 +123,12 @@ class AnalysisDetailAPIView(APIView):
         },
     )
     def delete(self, request: Request, id: int) -> Response:
-        # Todo:본인 소유 권한 제어
-        return Response(...)
+        success = AnalysisService.delete_analysis(user_id=request.user.id, analysis_id=id)
+
+        if not success:
+            raise NotFound(detail="삭제할 분석 결과가 없거나 접근 권한이 없습니다.")
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 # 이미지 분석 결과 저장
