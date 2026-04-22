@@ -16,10 +16,12 @@ from apps.users.services.social_login_services import GoogleOAuthService, KaKaoO
 logger = logging.getLogger(__name__)
 
 
-def frontend_redirect(*, provider: str, is_success: bool = True) -> HttpResponseRedirect:
-    base = getattr(settings, "FRONTEND_SOCIAL_REDIRECT_URL", "") or "/"
-    parms = {"provider": provider, "is_success": str(is_success).lower()}
-    return redirect(f"{base}?{urllib.parse.urlencode(parms)}")
+def frontend_redirect(*, provider: str, is_success: bool = True, **kwargs: Any) -> HttpResponseRedirect:
+    base = getattr(settings, "FRONTEND_SOCIAL_REDIRECT_URL", "") or "http://localhost:5173"
+    params = {"provider": provider, "is_success": str(is_success).lower()}
+    params.update(kwargs)
+    query_string = urllib.parse.urlencode(params)
+    return redirect(f"{base}?{query_string}")
 
 
 def set_auth_cookies(response: Any, refresh: str) -> None:
@@ -27,7 +29,7 @@ def set_auth_cookies(response: Any, refresh: str) -> None:
         "refresh_token",
         refresh,
         max_age=7 * 24 * 60 * 60,
-        domain=getattr(settings, "COOCKE_DOMAIN", None),
+        domain=getattr(settings, "COOKIE_DOMAIN", None),
         httponly=True,
         secure=getattr(settings, "COOKIE_SECURE", False),
         samesite="Lax",
@@ -100,7 +102,7 @@ class NaverSocialLoginCallbackView(APIView):
             user = service.get_or_create_user(user_info)
 
             refresh = RefreshToken.for_user(user)
-            response = frontend_redirect(provider="naver", is_success=True)
+            response = frontend_redirect(provider="naver", is_success=True, code=code)
             set_auth_cookies(response, refresh=str(refresh))
             return response
         except Exception:
@@ -175,7 +177,7 @@ class KakaoSocialLoginCallbackView(APIView):
             user = service.get_or_create_user(user_info)
 
             refresh = RefreshToken.for_user(user)
-            response = frontend_redirect(provider="kakao", is_success=True)
+            response = frontend_redirect(provider="kakao", is_success=True, code=code)
             set_auth_cookies(response, refresh=str(refresh))
             return response
         except Exception:
@@ -250,7 +252,7 @@ class GoogleSocialLoginCallbackView(APIView):
             user = service.get_or_create_user(user_info)
 
             refresh = RefreshToken.for_user(user)
-            response = frontend_redirect(provider="google", is_success=True)
+            response = frontend_redirect(provider="google", is_success=True, code=code)
             set_auth_cookies(response, refresh=str(refresh))
             return response
         except Exception:
