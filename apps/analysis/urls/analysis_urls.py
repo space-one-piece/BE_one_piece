@@ -22,7 +22,7 @@ urlpatterns = [
     path("<int:id>/feedback", AnalysisFeedbackAPIView.as_view(), name="feedback"),  # patch
     # 3. 리뷰
     path("<int:id>/review", AnalysisReviewAPIView.as_view(), name="review"),  # get,patch,delete
-    path("reviews/me/", MyReviewListAPIView.as_view(), name="my-reviews"),
+    path("reviews/me", MyReviewListAPIView.as_view(), name="my-reviews"),
     # 4. 통합 분석 리스트
     path("history", IntegratedHistoryListAPIView.as_view(), name="my-history"),  # get
 ]
