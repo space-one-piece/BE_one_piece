@@ -10,6 +10,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from ..models import ChatbotRecommendation, ChatSession
+from ..serializers import ChatbotRecommendationDetailSerializer
 from ..services.chatbot_completion_policy import MAX_RETRY_COUNT
 from ..services.chatbot_service import get_ai_response
 from ..services.context_service import init_context
@@ -189,5 +190,39 @@ class ChatbotRecommendationRetryView(APIView):
                     "source_type": "chatbot",
                 },
             },
+            status=status.HTTP_200_OK,
+        )
+
+
+class ChatbotRecommendationDetailView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(
+        tags=["Chatbot"],
+        summary="추천 결과 상세 조회",
+        description="챗봇 추천 결과 상세 정보를 조회합니다",
+        responses={
+            200: OpenApiResponse(description="조회 성공"),
+            401: OpenApiResponse(description="인증 실패"),
+            404: OpenApiResponse(description="추천 결과 없음"),
+        },
+    )
+    def get(self, request: Request, session_id: int, recommendation_id: int) -> Response:
+        user = request.user
+        if not isinstance(user, User):
+            raise NotAuthenticated()
+
+        try:
+            recommendation = ChatbotRecommendation.objects.select_related("scent").get(
+                id=recommendation_id,
+                session_id=session_id,
+                user=user,
+            )
+        except ChatbotRecommendation.DoesNotExist:
+            raise NotFound()
+
+        serializer = ChatbotRecommendationDetailSerializer(recommendation)
+        return Response(
+            {"status": "success", "data": serializer.data},
             status=status.HTTP_200_OK,
         )

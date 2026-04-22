@@ -2,6 +2,7 @@ from django.urls import path
 
 from .views.chat_views import ChatMessageView
 from .views.recommendation_views import (
+    ChatbotRecommendationDetailView,
     ChatbotRecommendationRetryStatusView,
     ChatbotRecommendationRetryView,
     ChatbotRecommendationSaveView,
@@ -26,5 +27,10 @@ urlpatterns = [
         "sessions/<int:session_id>/recommendations/retry",
         ChatbotRecommendationRetryView.as_view(),
         name="chatbot-recommendation-retry",
+    ),
+    path(
+        "sessions/<int:session_id>/recommendations/<int:recommendation_id>",
+        ChatbotRecommendationDetailView.as_view(),
+        name="chatbot-recommendation-detail",
     ),
 ]
