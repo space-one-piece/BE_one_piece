@@ -6,8 +6,8 @@ from typing import Optional
 from django.conf import settings
 from django.core.cache import cache
 from django.core.mail import send_mail
-from solapi import SolapiMessageService
-from solapi.model import RequestMessage
+from solapi import SolapiMessageService  # type: ignore
+from solapi.model import RequestMessage  # type: ignore
 
 
 class VerificationService:
