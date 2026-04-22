@@ -1,6 +1,5 @@
 import random
 import string
-import uuid
 from typing import Optional
 
 from django.conf import settings
@@ -79,8 +78,6 @@ class VerificationService:
 
         if saved_code and str(saved_code) == str(code):
             cache.delete(cache_key)
-            verification_token = str(uuid.uuid4())
-            # 회원가입 시 검증을 위해 토큰과 이메일을 매핑하여 저장
-            cache.set(f"signup_token_{verification_token}", clean_id, timeout=cls.TOKEN_EXPIRY_TIME)
-            return verification_token
+            cache.set(f"signup_token_{code}", clean_id, timeout=cls.TOKEN_EXPIRY_TIME)
+            return code
         return None

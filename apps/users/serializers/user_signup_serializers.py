@@ -12,7 +12,6 @@ class SignUpSerializer(serializers.ModelSerializer[User]):
     phone_number = serializers.CharField(
         min_length=11, max_length=11, validators=[RegexValidator(r"^\d{11}$", "휴대전화 번호는 11자리여야 합니다.")]
     )
-    gender = serializers.ChoiceField(choices=["M", "F"])
     email_token = serializers.CharField(write_only=True)
     phone_token = serializers.CharField(write_only=True)
 
