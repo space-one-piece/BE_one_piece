@@ -4,10 +4,7 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 
 from apps.chatbot.models import ChatSession
-from apps.chatbot.serializers import (
-    ChatSessionCreateSerializer,
-    ChatSessionSerializer,
-)
+from apps.chatbot.serializers import ChatSessionSerializer
 
 User = get_user_model()
 
@@ -23,21 +20,6 @@ class ChatSerializerTest(TestCase):
             user=self.user,
             status="active",
         )
-
-    def test_valid_message(self) -> None:
-        data = {"message": "침실에서 쓸 향수 추천해줘"}
-        serializer = ChatSessionCreateSerializer(data=data)
-        self.assertTrue(serializer.is_valid())
-
-    def test_empty_message(self) -> None:
-        data = {"message": ""}
-        serializer = ChatSessionCreateSerializer(data=data)
-        self.assertFalse(serializer.is_valid())
-
-    def test_missing_message(self) -> None:
-        data: dict[str, str] = {}
-        serializer = ChatSessionCreateSerializer(data=data)
-        self.assertFalse(serializer.is_valid())
 
     def test_session_serializer_fields(self) -> None:
         serializer = ChatSessionSerializer(self.session)

@@ -2,14 +2,14 @@ from django.contrib.auth import get_user_model
 from django.utils.timezone import now
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import status
-from rest_framework.exceptions import NotAuthenticated, NotFound, PermissionDenied, ValidationError
+from rest_framework.exceptions import NotAuthenticated, NotFound, PermissionDenied
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 
 from ..models import ChatSession
-from ..serializers import ChatSessionCreateSerializer, ChatSessionSerializer
+from ..serializers import ChatSessionSerializer
 from ..views.chat_views import delete_session_store
 
 User = get_user_model()
@@ -17,23 +17,17 @@ User = get_user_model()
 
 class ChatSessionCreateView(GenericAPIView[ChatSession]):
     permission_classes = [IsAuthenticated]
-    serializer_class = ChatSessionCreateSerializer
 
     @extend_schema(
         tags=["Chatbot"],
         summary="세션 생성",
-        description="첫 메시지 전송 시 채팅 세션을 생성합니다",
+        description="챗봇 페이지 진입 시 채팅 세션을 생성합니다",
         responses={
             201: OpenApiResponse(description="세션 생성 성공"),
-            400: OpenApiResponse(description="메시지 없음"),
             401: OpenApiResponse(description="인증 실패"),
         },
     )
     def post(self, request: Request) -> Response:
-        serializer = self.get_serializer(data=request.data)
-        if not serializer.is_valid():
-            raise ValidationError("메시지를 입력해주세요.")
-
         user = request.user
         if not isinstance(user, User):
             raise NotAuthenticated()
