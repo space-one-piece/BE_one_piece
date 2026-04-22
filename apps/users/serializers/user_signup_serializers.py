@@ -14,7 +14,8 @@ class SignUpSerializer(serializers.ModelSerializer[User]):
     )
     gender = serializers.ChoiceField(choices=["M", "F"])
     email_token = serializers.CharField(write_only=True)
+    phone_token = serializers.CharField(write_only=True)
 
     class Meta:
         model = User
-        fields = ("email", "password", "name", "birthday", "phone_number", "gender", "email_token")
+        fields = ("email", "password", "name", "birthday", "phone_number", "gender", "email_token", "phone_token")

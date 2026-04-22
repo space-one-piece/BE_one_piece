@@ -15,7 +15,7 @@ class SignUpView(APIView):
 
     @extend_schema(
         summary="일반 회원가입",
-        description="이메일 토큰을 검증한 후 회원가입을 처리합니다.",
+        description="이메일 및 휴대폰 토큰을 검증한 후 회원가입을 처리합니다.",
         request=SignUpSerializer,
         responses={
             201: OpenApiResponse(
