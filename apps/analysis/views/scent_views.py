@@ -18,7 +18,7 @@ class ScentListCreateAPIView(APIView):
     @extend_schema(
         tags=["scent_management"],
         summary="향 데이터 목록 조회",
-        description="전체 향 데이터의 목록을 반환합니다. (페이지네이션 적용 가능)",
+        description="전체 향 데이터의 목록을 반환",
         responses={200: ScentListSerializer(many=True)},
     )
     def get(self, request: Request) -> Response:
@@ -27,7 +27,7 @@ class ScentListCreateAPIView(APIView):
     @extend_schema(
         tags=["scent_management"],
         summary="새로운 향 데이터 등록",
-        description="관리자 권한으로 새로운 향 데이터를 생성합니다.",
+        description="관리자 권한으로 새로운 향 데이터를 생성",
         request=ScentCreateUpdateSerializer,
         responses={
             201: ScentDetailSerializer,
@@ -45,7 +45,7 @@ class ScentDetailAPIView(APIView):
     @extend_schema(
         tags=["scent_management"],
         summary="향 데이터 상세 조회",
-        description="특정 ID를 가진 향의 모든 상세 정보를 조회합니다.",
+        description="특정 ID를 가진 향의 모든 상세 정보를 조회.",
         responses={
             200: ScentDetailSerializer,
             404: OpenApiResponse(description="존재하지 않는 데이터"),
@@ -57,7 +57,7 @@ class ScentDetailAPIView(APIView):
     @extend_schema(
         tags=["scent_management"],
         summary="향 데이터 수정",
-        description="기존 향 데이터의 특정 필드를 수정합니다. (Partial Update)",
+        description="기존 향 데이터의 특정 필드를 수정",
         request=ScentCreateUpdateSerializer,
         responses={
             200: ScentDetailSerializer,
@@ -71,7 +71,7 @@ class ScentDetailAPIView(APIView):
     @extend_schema(
         tags=["scent_management"],
         summary="향 데이터 삭제",
-        description="특정 향 데이터를 영구적으로 삭제합니다.",
+        description="특정 향 데이터를 영구적으로 삭제",
         responses={
             204: OpenApiResponse(description="삭제 성공"),
             404: OpenApiResponse(description="존재하지 않는 데이터"),
