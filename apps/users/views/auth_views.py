@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, cast
 
 from django.conf import settings
 from drf_spectacular.utils import OpenApiResponse, extend_schema
@@ -8,13 +8,15 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from apps.users.models.models import User
 from apps.users.serializers.auth_serializers import (
     LoginResponseSerializer,
     LoginSerializer,
     LogoutSerializer,
+    UserWithdrawalSerializer,
 )
 from apps.users.serializers.Error_Response_Serializers import ErrorResponseSerializer
-from apps.users.services.auth_services import LoginService, LogoutService
+from apps.users.services.auth_services import LoginService, LogoutService, WithdrawalService
 
 
 class LoginView(APIView):
@@ -89,3 +91,42 @@ class LogoutView(APIView):
         LogoutService.logout(refresh_token)
 
         return Response({"detail": "성공적으로 로그아웃 되었습니다."}, status=status.HTTP_200_OK)
+
+
+class UserWithdrawalView(APIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = UserWithdrawalSerializer
+
+    @extend_schema(
+        summary="회원탈퇴",
+        description=(
+            "사용자 계정을 비활성화 하고 탈퇴 정보를 기록합니다. \n\n"
+            "비밀번호 확인과 탈퇴 동의가 필수이며, 14일 이내에 계정복구가 가능합니다."
+        ),
+        request=UserWithdrawalSerializer,
+        responses={
+            204: None,
+            400: OpenApiResponse(
+                response=ErrorResponseSerializer, description="비밀번호 불일치, 이미 탈퇴한 계정 또는 확인 미동의"
+            ),
+            401: OpenApiResponse(response=ErrorResponseSerializer, description="인증 실패 (로그인필요)"),
+        },
+        tags=["accounts"],
+    )
+    def post(self, request: Request) -> Response:
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        if not serializer.validated_data.get("confirm"):
+            return Response({"detail": "탈퇴 확인이 필요합니다."}, status=status.HTTP_400_BAD_REQUEST)
+
+        current_user = cast(User, request.user)
+
+        WithdrawalService.deactivate_user(
+            user=current_user,
+            password=serializer.validated_data["password"],
+            reason=serializer.validated_data["reason"],
+            other_reason=serializer.validated_data.get("other_reason", ""),
+        )
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
