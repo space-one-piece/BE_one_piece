@@ -31,7 +31,7 @@ class Keyword(TimeStampModel):
 
 
 class Question(TimeStampModel):
-    TYPE_CHOICES_QUESTION = {("Fs", "Freshness"), ("Dh", "depth"), ("Ss", "softness"), ("Wh", "warmth")}
+    TYPE_CHOICES_QUESTION = [("Fs", "Freshness"), ("Ss", "softness"), ("Dh", "depth"), ("Wh", "warmth")]
 
     content = models.TextField(null=False, blank=False)
     additional = models.TextField(null=True, blank=True)
