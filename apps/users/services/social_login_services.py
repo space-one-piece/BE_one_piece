@@ -10,7 +10,7 @@ from django.contrib.auth import get_user_model
 from django.db import transaction
 from rest_framework.exceptions import ValidationError
 
-from apps.users.choices import SocialTypeChoice, UserGender
+from apps.users.choices import SocialTypeChoice
 from apps.users.models.models import SocialUser, UserWithdrawal
 
 User = get_user_model()
@@ -88,7 +88,6 @@ class NaverOAuthService:
             return existing_user
 
         name = user_info.get("name")
-        gender = user_info.get("gender")
         birthday_date = self.parse_naver_birthday(user_info)
         profile_image_url = user_info.get("profile_image_url")
         mobile = user_info.get("mobile", "").replace("-", "")
@@ -98,7 +97,6 @@ class NaverOAuthService:
                 email=email,
                 name=name[:30] if name else "네이버유저",
                 phone_number=mobile if mobile else f"N_{naver_id[:18]}",
-                gender=UserGender.FEMALE if gender == "F" else UserGender.MALE,
                 birthday=birthday_date or date(1990, 1, 1),
                 profile_image_url=profile_image_url or "",
                 social_type=SocialTypeChoice.NAVER,
@@ -170,14 +168,12 @@ class KaKaoOAuthService:
 
         profile_image_url = kakao_account.get("profile_image_url", {})
         name = kakao_account.get("name")
-        gender = kakao_account.get("gender")
 
         with transaction.atomic():
             user = User.objects.create(
                 email=email,
                 name=name[:30] if name else "카카오유저",
                 phone_number=f"K_{kakao_id[:18]}",
-                gender=UserGender.FEMALE if gender == "F" else UserGender.MALE,
                 birthday=date(1990, 1, 1),
                 profile_image_url=profile_image_url or "",
                 social_type=SocialTypeChoice.KAKAO,
@@ -251,7 +247,6 @@ class GoogleOAuthService:
                 email=email,
                 name=user_info.get("name", "구글유저")[:30],
                 phone_number=f"G_{google_id[:18]}",
-                gender=UserGender.MALE,
                 birthday=date(1990, 1, 1),
                 profile_image_url=user_info.get("profile_image_url", ""),
                 social_type=SocialTypeChoice.GOOGLE,

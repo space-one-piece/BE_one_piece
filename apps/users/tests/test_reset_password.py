@@ -23,7 +23,6 @@ class PasswordResetTestCase(TestCase):
             password="pw1234!@",
             birthday="1999-12-11",
             name="테스터",
-            gender="M",
             phone_number="01011115534",
         )
         cls.url = reverse("users:change_password")

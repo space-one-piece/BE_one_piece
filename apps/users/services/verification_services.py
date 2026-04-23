@@ -1,6 +1,5 @@
 import random
 import string
-from typing import Optional
 
 from django.conf import settings
 from django.core.cache import cache
@@ -65,9 +64,9 @@ class VerificationService:
 
     # 공통 확인 로직(토큰 발행)
     @classmethod
-    def confirm_code(cls, identifier: str, code: str, auth_type: str) -> Optional[str]:
+    def confirm_code(cls, identifier: str, code: str, auth_type: str) -> bool:
         if auth_type not in ["email", "phone"]:
-            return None
+            return False
 
         clean_id = identifier.strip()
         if auth_type == "phone":
@@ -77,7 +76,9 @@ class VerificationService:
         saved_code = cache.get(cache_key)
 
         if saved_code and str(saved_code) == str(code):
+            verified_Key = f"verified_{auth_type}_{clean_id}"
+            cache.set(verified_Key, True, timeout=cls.TOKEN_EXPIRY_TIME)
+
             cache.delete(cache_key)
-            cache.set(f"signup_token_{code}", clean_id, timeout=cls.TOKEN_EXPIRY_TIME)
-            return code
-        return None
+            return True
+        return False

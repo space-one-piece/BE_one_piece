@@ -1,4 +1,5 @@
-from typing import Any, cast
+from datetime import timedelta
+from typing import Any, Literal, cast
 
 from django.conf import settings
 from drf_spectacular.utils import OpenApiResponse, extend_schema
@@ -49,16 +50,19 @@ class LoginView(APIView):
             response = Response({"access": access_token}, status=status.HTTP_200_OK)
 
             if refresh_token and isinstance(refresh_token, str):
+                jwt_settings = cast(dict[str, Any], settings.SIMPLE_JWT)
                 response.set_cookie(
-                    key="refresh_token",
+                    key=cast(str, jwt_settings.get("AUTH_COOKIE", "refresh_token")),
                     value=refresh_token,
-                    httponly=True,
-                    secure=not settings.DEBUG,
-                    samesite="Lax",
-                    max_age=7 * 24 * 60 * 60,
+                    httponly=cast(bool, jwt_settings.get("AUTH_COOKIE_HTTP_ONLY", True)),
+                    secure=cast(bool, jwt_settings.get("AUTH_COOKIE_SECURE", False)),
+                    samesite=cast(Literal["Lax", "Strict", "None"], jwt_settings.get("AUTH_COOKIE_SAMESITE", "Lax")),
+                    path=cast(str, jwt_settings.get("AUTH_COOKIE_PATH", "/")),
+                    max_age=int(cast(timedelta, jwt_settings.get("REFRESH_TOKEN_LIFETIME")).total_seconds()),
                 )
                 return response
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"detail": "토큰 발급에 실패했습니다."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class LogoutView(APIView):

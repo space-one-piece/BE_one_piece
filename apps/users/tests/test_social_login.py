@@ -22,7 +22,6 @@ class SocialLoginTest(APITestCase):
             password="pw1234!@",
             birthday="2000-05-21",
             phone_number="010-1234-1242",
-            gender="M",
         )
 
         self.kakao_callback_url = reverse("users:kakao_social_callback")
@@ -43,7 +42,7 @@ class SocialLoginTest(APITestCase):
 
         response = self.client.get(self.kakao_callback_url, {"code": "test_code", "state": "test_state"})
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
-        self.assertIn("is_success=true", response.url)  # type: ignore
+        self.assertIn("code=test_code", response.url)  # type: ignore
 
     # naver test
     @patch("apps.users.services.social_login_services.NaverOAuthService.get_access_token")
@@ -59,8 +58,7 @@ class SocialLoginTest(APITestCase):
 
         response = self.client.get(self.naver_callback_url, {"code": "test_code", "state": "test_state"})
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
-        self.assertIn("provider=naver", response.url)  # type: ignore
-        self.assertIn("is_success=true", response.url)  # type: ignore
+        self.assertIn("code=test_code", response.url)  # type: ignore
 
     # google test
     @patch("apps.users.services.social_login_services.GoogleOAuthService.get_access_token")
@@ -76,7 +74,7 @@ class SocialLoginTest(APITestCase):
 
         response = self.client.get(self.google_callback_url, {"code": "test_code", "state": "test_state"})
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
-        self.assertIn("is_success=true", response.url)  # type: ignore
+        self.assertIn("code=test_code", response.url)  # type: ignore
 
     # 실패 테스트
     def test_login_failure_invalid_state(self) -> None:

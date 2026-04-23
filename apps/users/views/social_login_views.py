@@ -17,11 +17,17 @@ logger = logging.getLogger(__name__)
 
 
 def frontend_redirect(*, provider: str, is_success: bool = True, **kwargs: Any) -> HttpResponseRedirect:
-    base = getattr(settings, "FRONTEND_SOCIAL_REDIRECT_URL", "") or "http://localhost:5173"
-    params = {"provider": provider, "is_success": str(is_success).lower()}
-    params.update(kwargs)
+    base = getattr(settings, "FRONTEND_SOCIAL_REDIRECT_URL", "http://localhost:5173")
+
+    if is_success:
+        params = kwargs
+    else:
+        params = {"provider": provider, "is_success": "false"}
+        params.update(kwargs)
+
     query_string = urllib.parse.urlencode(params)
-    return redirect(f"{base}?{query_string}")
+    url = f"{base}/?{query_string}" if not base.endswith("/") else f"{base}?{query_string}"
+    return redirect(url)
 
 
 def set_auth_cookies(response: Any, refresh: str) -> None:

@@ -4,4 +4,4 @@ from rest_framework import serializers
 
 
 class RefreshTokenSerializer(serializers.Serializer[Any]):
-    refresh = serializers.CharField(required=True, help_text="발급받았던 Refresh토큰을 입력하세요.")
+    refresh = serializers.CharField(read_only=True, help_text="새로 발급된 Refresh토큰입니다..")

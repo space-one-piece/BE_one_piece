@@ -1,5 +1,6 @@
-from typing import Any
+from typing import cast
 
+from django.conf import settings
 from django.test import TestCase
 from rest_framework import status
 from rest_framework.reverse import reverse
@@ -18,7 +19,7 @@ class RefreshTokenTest(TestCase):
     @classmethod
     def setUpTestData(cls) -> None:
         cls.user = User.objects.create_user(
-            email="test@test.com", password="test1234!@", birthday="1999-05-11", name="테스트", gender="M"
+            email="test@test.com", password="test1234!@", birthday="1999-05-11", name="테스트"
         )
         cls.url = reverse("users:token_refresh")
 
@@ -29,17 +30,18 @@ class RefreshTokenTest(TestCase):
 
     # 재발급 성공 테스트
     def test_refresh_token_success(self) -> None:
-        data = {"refresh": self.refresh_token_str}
-        response = self.client.post(self.url, data, format="json")
+        cookie_name = cast(str, settings.SIMPLE_JWT.get("AUTH_COOKIE", "refresh_token"))
+        self.client.cookies[cookie_name] = self.refresh_token_str
+
+        response = self.client.post(self.url, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("access", response.data)
-        self.assertIn("refresh", response.data)
+        self.assertIn(cookie_name, response.cookies)
 
     # 필수값(refresh_token)값 누락
     def test_refresh_missing_field(self) -> None:
-        data: dict[str, Any] = {}
-        response = self.client.post(self.url, data, format="json")
+        response = self.client.post(self.url, format="json")
 
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual("필수값이 누락되었습니다.", response.data["error_detail"])
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.data["detail"], "리프레시 토큰이 쿠키에 없습니다.")
