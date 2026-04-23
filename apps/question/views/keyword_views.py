@@ -9,7 +9,7 @@ from rest_framework.views import APIView
 from apps.question.extend_schema import value_list
 from apps.question.serializers.keyword_serializers import KeywordPostSerializer, KeywordSerializer
 from apps.question.serializers.serializers import KeywordOutSerializer
-from apps.question.service.keyword_service import keyword_result, keyword_select
+from apps.question.service.keyword_service import KeywordService
 
 
 class KeywordAPIView(APIView):
@@ -28,7 +28,7 @@ class KeywordAPIView(APIView):
         },
     )
     def get(self, request: Request, *args: object, **kwargs: object) -> Response:
-        data = keyword_select()
+        data = KeywordService.keyword_select()
         serializer = KeywordSerializer(data, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -48,7 +48,7 @@ class KeywordAPIView(APIView):
     def post(self, request: Request, *args: object, **kwargs: object) -> Response:
         serializer = KeywordPostSerializer(data=request.data, many=True)
         serializer.is_valid(raise_exception=True)
-        serializer_data = keyword_result(request.user.id, serializer.validated_data)
+        serializer_data = KeywordService.keyword_result(request.user.id, serializer.validated_data)
         data = KeywordOutSerializer(serializer_data)
 
         return Response(data.data, status=status.HTTP_201_CREATED)

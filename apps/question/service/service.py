@@ -16,200 +16,202 @@ from apps.question.models import Keyword, Question, QuestionsAnswer, QuestionsRe
 s3handler = S3Handler()
 
 
-def image_url_edit(image_url: str) -> str:
-    parsed = urlparse(image_url)
-    return parsed.path.lstrip("/") if parsed is not None else image_url
+class Service:
+    @staticmethod
+    def image_url_edit(image_url: str) -> str:
+        parsed = urlparse(image_url)
+        return parsed.path.lstrip("/") if parsed is not None else image_url
 
+    @classmethod
+    def s3_image(cls, image_url: str) -> str | None:
+        if image_url is not None:
+            image_key = cls.image_url_edit(image_url)
+            try:
+                return s3handler.generate_get_presigned_url(image_key)
+            except ClientError as e:
+                logger = logging.getLogger(__name__)
+                logger.error(e)
+                return image_url
 
-def s3_image(image_url: str) -> str | None:
-    if image_url is not None:
-        image_key = image_url_edit(image_url)
-        try:
-            return s3handler.generate_get_presigned_url(image_key)
-        except ClientError as e:
-            logger = logging.getLogger(__name__)
-            logger.error(e)
-            return image_url
+        return None
 
-    return None
+    @staticmethod
+    def parse_gemini_response(text: str) -> dict[str, Any]:
+        cleaned = text.strip()
 
+        if cleaned.startswith("```"):
+            cleaned = cleaned.split("```")[1]
+            cleaned = cleaned.replace("json\n", "", 1)
 
-def parse_gemini_response(text: str) -> dict[str, Any]:
-    cleaned = text.strip()
+        if cleaned.endswith("```"):
+            cleaned = cleaned.rsplit("```", 1)[0]
 
-    if cleaned.startswith("```"):
-        cleaned = cleaned.split("```")[1]
-        cleaned = cleaned.replace("json\n", "", 1)
+        cleaned = cleaned.strip()
 
-    if cleaned.endswith("```"):
-        cleaned = cleaned.rsplit("```", 1)[0]
+        return cast(dict[str, Any], json.loads(cleaned))
 
-    cleaned = cleaned.strip()
+    @staticmethod
+    def get_cached_data() -> tuple[dict[str, str], dict[str, int], dict[str, JSONField | Any]] | Any:
+        cached_data = cache.get("scent_logic_maps")
+        if cached_data is not None:
+            return cached_data
 
-    return cast(dict[str, Any], json.loads(cleaned))
+        q_map = {q.content: q.category for q in Question.objects.all()}
+        a_map = {a.answer: a.score for a in QuestionsAnswer.objects.all()}
+        k_map = {k.name: k.score for k in Keyword.objects.all()}
 
+        result = (q_map, a_map, k_map)
 
-def get_cached_data() -> tuple[dict[str, str], dict[str, int], dict[str, JSONField | Any]] | Any:
-    cached_data = cache.get("scent_logic_maps")
-    if cached_data is not None:
-        return cached_data
+        cache.set("scent_logic_maps", result, 3600)
 
-    q_map = {q.content: q.category for q in Question.objects.all()}
-    a_map = {a.answer: a.score for a in QuestionsAnswer.objects.all()}
-    k_map = {k.name: k.score for k in Keyword.objects.all()}
+        return result
 
-    result = (q_map, a_map, k_map)
+    @classmethod
+    def match_score(cls, p1: dict[str, int], p2: dict[str, int]) -> int:
+        d = cls.distance(p1, p2)
+        max_dist = 223.606  # sqrt(5 * 100^2)
+        score = (1 - (d / max_dist)) * 100
+        return max(0, int(round(score)))
 
-    cache.set("scent_logic_maps", result, 3600)
+    @classmethod
+    def build_user_profile(cls, survey_answers: list[dict[str, Any]]) -> dict[str, int]:
+        cached_data = cls.get_cached_data()
 
-    return result
+        q_map_data, a_map_data, k_map_data = cached_data
 
+        profile: dict[str, list[int]] = {
+            "freshness": [],
+            "warmth": [],
+            "softness": [],
+            "depth": [],
+            "sweetness": [],
+        }
 
-def match_score(p1: dict[str, int], p2: dict[str, int]) -> int:
-    d = distance(p1, p2)
-    max_dist = 223.606  # sqrt(5 * 100^2)
-    score = (1 - (d / max_dist)) * 100
-    return max(0, int(round(score)))
+        for q in survey_answers:
+            title = q.get("title")
+            result = q.get("answer")
 
+            if not isinstance(title, str) or not isinstance(result, str):
+                continue
 
-def build_user_profile(survey_answers: list[dict[str, Any]]) -> dict[str, int]:
-    cached_data = get_cached_data()
+            key = q_map_data.get(title)
+            score = a_map_data.get(result)
 
-    q_map_data, a_map_data, k_map_data = cached_data
+            if not key:
+                continue
 
-    profile: dict[str, list[int]] = {
-        "freshness": [],
-        "warmth": [],
-        "softness": [],
-        "depth": [],
-        "sweetness": [],
-    }
+            if not score:
+                continue
 
-    for q in survey_answers:
-        title = q.get("title")
-        result = q.get("answer")
+            if key and score is not None:
+                profile[key].append(score)
 
-        if not isinstance(title, str) or not isinstance(result, str):
-            continue
+        return {k: int(round(sum(v) / len(v))) if v else 50 for k, v in profile.items()}
 
-        key = q_map_data.get(title)
-        score = a_map_data.get(result)
+    @classmethod
+    def build_profile_from_keywords(cls, keywords: list[dict[str, Any]]) -> dict[str, int]:
+        cached_data = cls.get_cached_data()
 
-        if not key:
-            continue
+        q_map_data, a_map_data, k_map_data = cached_data
 
-        if not score:
-            continue
+        profile = {
+            "freshness": 50,
+            "warmth": 50,
+            "softness": 50,
+            "depth": 50,
+            "sweetness": 50,
+        }
 
-        if key and score is not None:
-            profile[key].append(score)
+        for kw in keywords:
+            name = kw.get("name")
 
-    return {k: int(round(sum(v) / len(v))) if v else 50 for k, v in profile.items()}
+            if not isinstance(name, str):
+                continue
 
+            boost = k_map_data.get(name)
 
-def build_profile_from_keywords(keywords: list[dict[str, Any]]) -> dict[str, int]:
-    cached_data = get_cached_data()
+            if not boost or not isinstance(boost, dict):
+                continue
 
-    q_map_data, a_map_data, k_map_data = cached_data
+            for k, v in boost.items():
+                profile[k] = max(0, min(100, profile[k] + v))
 
-    profile = {
-        "freshness": 50,
-        "warmth": 50,
-        "softness": 50,
-        "depth": 50,
-        "sweetness": 50,
-    }
+        return profile
 
-    for kw in keywords:
-        name = kw.get("name")
+    @staticmethod
+    def distance(p1: dict[str, int], p2: dict[str, int]) -> float:
+        return math.sqrt(sum((p1[k] - p2[k]) ** 2 for k in p1))
 
-        if not isinstance(name, str):
-            continue
+    @classmethod
+    def find_best_scent(cls, user_profile: dict[str, int], scents: list[dict[str, Any]]) -> dict[str, Any]:
+        sorted_scents = sorted(scents, key=lambda s: cls.distance(user_profile, s["profile"]))
+        top3 = sorted_scents[:3]
+        return random.choice(top3)
 
-        boost = k_map_data.get(name)
+    @staticmethod
+    def get_cached_scent_data() -> list[dict[str, Any]]:
+        cached_scents = cache.get("scent_full_data")
+        if cached_scents is not None:
+            return cast(list[dict[str, Any]], cached_scents)
 
-        if not boost or not isinstance(boost, dict):
-            continue
+        scents = []
+        for s in Scent.objects.all():
+            scents.append(
+                {
+                    "id": s.id,
+                    "name": s.name,
+                    "profile": s.profile,
+                    "tags": s.tags,
+                }
+            )
 
-        for k, v in boost.items():
-            profile[k] = max(0, min(100, profile[k] + v))
+        cache.set("scent_full_data", scents, 3600)
+        return scents
 
-    return profile
+    @classmethod
+    def result_prompt(cls, combined_keywords: str, check_type: str) -> tuple[str, Any, int]:
+        data = json.loads(combined_keywords)
 
+        if check_type == "설문지":
+            user_profile = cls.build_user_profile(data)
+            add_text = ", ".join(
+                f"{q.get('title')}: {q.get('answer')}"
+                for q in data  # 많으면 10개 제한
+            )
+        else:
+            user_profile = cls.build_profile_from_keywords(data)
+            add_text = ", ".join(kw.get("name") for kw in data)
 
-def distance(p1: dict[str, int], p2: dict[str, int]) -> float:
-    return math.sqrt(sum((p1[k] - p2[k]) ** 2 for k in p1))
+        selected_scent = cls.find_best_scent(user_profile, cls.get_cached_scent_data())
 
+        match_score_data = cls.match_score(user_profile, selected_scent.get("profile", {}))
 
-def find_best_scent(user_profile: dict[str, int], scents: list[dict[str, Any]]) -> dict[str, Any]:
-    sorted_scents = sorted(scents, key=lambda s: distance(user_profile, s["profile"]))
-    top3 = sorted_scents[:3]
-    return random.choice(top3)
+        scent_name = selected_scent.get("name")
+        scent_profile = selected_scent.get("profile")
+        scent_tags = selected_scent.get("tags")
 
+        prompt = f"""
+        user: {user_profile}
+        preferences: {add_text}
+        scent: {scent_name}, {scent_profile}, {scent_tags}
+        match_score: {match_score_data}
+    
+        Explain why this perfume is recommended based on the user's preferences in a natural and 
+        engaging way (3-5 sentences). Do not use Markdown, and translate the final answer into Korean so 
+        that the output is only in Korean.
+        """
 
-def get_cached_scent_data() -> list[dict[str, Any]]:
-    cached_scents = cache.get("scent_full_data")
-    if cached_scents is not None:
-        return cast(list[dict[str, Any]], cached_scents)
+        return prompt, selected_scent.get("id"), match_score_data
 
-    scents = []
-    for s in Scent.objects.all():
-        scents.append(
-            {
-                "id": s.id,
-                "name": s.name,
-                "profile": s.profile,
-                "tags": s.tags,
-            }
+    @staticmethod
+    def keyword_save(
+        user_id: int, scent_id: int, answer_ai: str, json_data: str, division: str, match_score: int
+    ) -> QuestionsResults:
+        return QuestionsResults.objects.create(
+            user_id=user_id,
+            scent_id=scent_id,
+            division=division,
+            questions_json=json_data,
+            answer_ai=answer_ai,
+            match_score=match_score,
         )
-
-    cache.set("scent_full_data", scents, 3600)
-    return scents
-
-
-def result_prompt(combined_keywords: str, check_type: str) -> tuple[str, Any, int]:
-    data = json.loads(combined_keywords)
-
-    if check_type == "설문지":
-        user_profile = build_user_profile(data)
-        add_text = ", ".join(
-            f"{q.get('title')}: {q.get('answer')}"
-            for q in data  # 많으면 10개 제한
-        )
-    else:
-        user_profile = build_profile_from_keywords(data)
-        add_text = ", ".join(kw.get("name") for kw in data)
-
-    selected_scent = find_best_scent(user_profile, get_cached_scent_data())
-
-    match_score_data = match_score(user_profile, selected_scent.get("profile", {}))
-
-    scent_name = selected_scent.get("name")
-    scent_profile = selected_scent.get("profile")
-    scent_tags = selected_scent.get("tags")
-
-    prompt = f"""
-    user: {user_profile}
-    preferences: {add_text}
-    scent: {scent_name}, {scent_profile}, {scent_tags}
-    match_score: {match_score_data}
-
-    Explain why this perfume is recommended based on the user's preferences in a natural and 
-    engaging way (3-5 sentences). Do not use Markdown, and translate the final answer into Korean so 
-    that the output is only in Korean.
-    """
-
-    return prompt, selected_scent.get("id"), match_score_data
-
-
-def keyword_save(
-    user_id: int, scent_id: int, answer_ai: str, json_data: str, division: str, match_score: int
-) -> QuestionsResults:
-    return QuestionsResults.objects.create(
-        user_id=user_id,
-        scent_id=scent_id,
-        division=division,
-        questions_json=json_data,
-        answer_ai=answer_ai,
-        match_score=match_score,
-    )

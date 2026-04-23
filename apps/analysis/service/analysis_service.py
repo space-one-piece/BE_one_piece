@@ -19,7 +19,7 @@ from apps.chatbot.serializers import ChatbotRecommendationDetailSerializer
 from apps.chatbot.services.recommendation_history_list import get_chatbot_recommendation_history
 from apps.core.services.presigned_url_service import PresignedUrlService
 from apps.question.serializers.results_serializers import ResultWebShareSerializer
-from apps.question.service.results_service import out_results, result_list
+from apps.question.service.results_service import ResultsService
 from apps.users.models.models import User
 
 logger = logging.getLogger(__name__)
@@ -195,8 +195,8 @@ class AnalysisService:
             for item in image_qs
         ]
 
-        survey_data = result_list(user_id, "survey")
-        keyword_data = result_list(user_id, "keywords")
+        survey_data = ResultsService.result_list(user_id, "survey")
+        keyword_data = ResultsService.result_list(user_id, "keywords")
         chatbot_data = get_chatbot_recommendation_history(user_id)
 
         combined = image_data + survey_data + keyword_data + chatbot_data
@@ -275,7 +275,7 @@ class AnalysisService:
             return instance, ChatbotRecommendationDetailSerializer
 
         elif analysis_type in ["keyword", "survey"]:
-            instance = out_results(user_id=user_id, requests_id=analysis_id, division=analysis_type)
+            instance = ResultsService.out_results(user_id=user_id, requests_id=analysis_id, division=analysis_type)
             return instance, ResultWebShareSerializer
 
         else:

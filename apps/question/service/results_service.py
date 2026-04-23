@@ -7,115 +7,117 @@ from rest_framework.exceptions import PermissionDenied
 from apps.analysis.models import Scent
 from apps.core.utils.hashids import decode_id, encode_id
 from apps.question.models import QuestionsResults
-from apps.question.service.service import s3_image
+from apps.question.service.service import Service
 
 
-def review_save(user_id: int, result_id: int, review: str, rating: int) -> dict[str, Any]:
-    data = get_object_or_404(QuestionsResults, pk=result_id)
+class ResultsService(Service):
+    @classmethod
+    def review_save(cls, user_id: int, result_id: int, review: str, rating: int) -> dict[str, Any]:
+        data = get_object_or_404(QuestionsResults, pk=result_id)
 
-    if data.user_id != user_id:
-        raise PermissionDenied()
+        if data.user_id != user_id:
+            raise PermissionDenied()
 
-    data.review = review
-    data.rating = rating
-    data.updated_at = datetime.now()
-    data.save()
+        data.review = review
+        data.rating = rating
+        data.updated_at = datetime.now()
+        data.save()
 
-    return scent_return(data.scent_id, result_id, data.answer_ai, rating, review)
+        return cls.scent_return(data.scent_id, result_id, data.answer_ai, rating, review)
 
+    @staticmethod
+    def scent_return(scent_id: int, result_id: int, answer_ai: str, rating: int, review: str) -> dict[str, Any]:
+        scent = get_object_or_404(Scent, pk=scent_id)
 
-def scent_return(scent_id: int, result_id: int, answer_ai: str, rating: int, review: str) -> dict[str, Any]:
-    scent = get_object_or_404(Scent, pk=scent_id)
+        scent.thumbnail_url = Service.s3_image(scent.thumbnail_url) if scent.thumbnail_url else None
 
-    scent.thumbnail_url = s3_image(scent.thumbnail_url) if scent.thumbnail_url else None
+        data = {"id": result_id, "recommended_scent": scent, "reason": answer_ai, "rating": rating, "review": review}
+        return data
 
-    data = {"id": result_id, "recommended_scent": scent, "reason": answer_ai, "rating": rating, "review": review}
-    return data
+    @staticmethod
+    def new_web_share(user_id: int, result_id: int) -> str:
+        question_data = get_object_or_404(QuestionsResults, pk=result_id)
+        if user_id != question_data.user.id:
+            raise PermissionDenied()
 
+        question_id = encode_id(result_id)
+        return f"https://one_piece/api/v1/question/{question_id}"
 
-def new_web_share(user_id: int, result_id: int) -> str:
-    question_data = get_object_or_404(QuestionsResults, pk=result_id)
-    if user_id != question_data.user.id:
-        raise PermissionDenied()
+    @staticmethod
+    def select_web_share(result_id: str) -> dict[str, Any]:
+        question_id = decode_id(result_id)
+        question_data = get_object_or_404(QuestionsResults, pk=question_id)
 
-    question_id = encode_id(result_id)
-    return f"https://one_piece/api/v1/question/{question_id}"
-
-
-def select_web_share(result_id: str) -> dict[str, Any]:
-    question_id = decode_id(result_id)
-    question_data = get_object_or_404(QuestionsResults, pk=question_id)
-
-    question_data.scent.thumbnail_url = (
-        s3_image(question_data.scent.thumbnail_url) if question_data.scent.thumbnail_url else None
-    )
-
-    data = {
-        "id": question_data.id,
-        "recommended_scent": question_data.scent,
-        "ai_comment": question_data.answer_ai,
-        "match_score": question_data.match_score,
-        "review": question_data.review,
-        "rating": question_data.rating,
-    }
-    return data
-
-
-def result_list(user_id: int, division: str) -> list[dict[str, Any]]:
-    if division == "keyword":
-        questions_data = (
-            QuestionsResults.objects.filter(user_id=user_id, division="K")
-            .select_related("scent")
-            .order_by("-created_at")
-        )
-    else:
-        questions_data = (
-            QuestionsResults.objects.filter(user_id=user_id, division="S")
-            .select_related("scent")
-            .order_by("-created_at")
+        question_data.scent.thumbnail_url = (
+            Service.s3_image(question_data.scent.thumbnail_url) if question_data.scent.thumbnail_url else None
         )
 
-    data = [
-        {
-            "id": item.id,
-            "type": division,
-            "recommended_scent": {
-                "id": item.scent.id,
-                "name": item.scent.name,
-                "description": item.scent.description,
-                "eng_name": item.scent.eng_name,
-                "thumbnail_url": s3_image(item.scent.thumbnail_url) if item.scent.thumbnail_url else None,
-            },
-            "ai_comment": item.answer_ai,
-            "match_score": item.match_score,
-            "review": item.review,
-            "rating": item.rating,
-            "created_at": item.created_at,
+        data = {
+            "id": question_data.id,
+            "recommended_scent": question_data.scent,
+            "ai_comment": question_data.answer_ai,
+            "match_score": question_data.match_score,
+            "review": question_data.review,
+            "rating": question_data.rating,
         }
-        for item in questions_data
-    ]
+        return data
 
-    return data
+    @staticmethod
+    def result_list(user_id: int, division: str) -> list[dict[str, Any]]:
+        if division == "keyword":
+            questions_data = (
+                QuestionsResults.objects.filter(user_id=user_id, division="K")
+                .select_related("scent")
+                .order_by("-created_at")
+            )
+        else:
+            questions_data = (
+                QuestionsResults.objects.filter(user_id=user_id, division="S")
+                .select_related("scent")
+                .order_by("-created_at")
+            )
 
+        data = [
+            {
+                "id": item.id,
+                "type": division,
+                "recommended_scent": {
+                    "id": item.scent.id,
+                    "name": item.scent.name,
+                    "description": item.scent.description,
+                    "eng_name": item.scent.eng_name,
+                    "thumbnail_url": Service.s3_image(item.scent.thumbnail_url) if item.scent.thumbnail_url else None,
+                },
+                "ai_comment": item.answer_ai,
+                "match_score": item.match_score,
+                "review": item.review,
+                "rating": item.rating,
+                "created_at": item.created_at,
+            }
+            for item in questions_data
+        ]
 
-def out_results(user_id: int, requests_id: int, division: str) -> dict[str, Any]:
-    check = "K" if division == "keyword" else "Q"
-    questin_data = get_object_or_404(QuestionsResults, pk=requests_id, division=check)
+        return data
 
-    if questin_data.user_id != user_id:
-        raise PermissionDenied()
+    @staticmethod
+    def out_results(user_id: int, requests_id: int, division: str) -> dict[str, Any]:
+        check = "K" if division == "keyword" else "Q"
+        questin_data = get_object_or_404(QuestionsResults, pk=requests_id, division=check)
 
-    questin_data.scent.thumbnail_url = (
-        s3_image(questin_data.scent.thumbnail_url) if questin_data.scent.thumbnail_url else None
-    )
+        if questin_data.user_id != user_id:
+            raise PermissionDenied()
 
-    data = {
-        "id": questin_data.id,
-        "recommended_scent": questin_data.scent,
-        "ai_comment": questin_data.answer_ai,
-        "match_score": questin_data.match_score,
-        "review": questin_data.review,
-        "rating": questin_data.rating,
-    }
+        questin_data.scent.thumbnail_url = (
+            Service.s3_image(questin_data.scent.thumbnail_url) if questin_data.scent.thumbnail_url else None
+        )
 
-    return data
+        data = {
+            "id": questin_data.id,
+            "recommended_scent": questin_data.scent,
+            "ai_comment": questin_data.answer_ai,
+            "match_score": questin_data.match_score,
+            "review": questin_data.review,
+            "rating": questin_data.rating,
+        }
+
+        return data
