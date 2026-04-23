@@ -2,6 +2,8 @@ from typing import Any
 
 from rest_framework import serializers
 
+from apps.users.choices import WithdrawalReason
+
 
 # 유저 로그인 요청 데이터
 class LoginSerializer(serializers.Serializer[Any]):
@@ -25,3 +27,13 @@ class LoginResponseSerializer(serializers.Serializer[Any]):
 # 로그아웃
 class LogoutSerializer(serializers.Serializer[Any]):
     refresh = serializers.CharField(help_text="로그아웃할 사용자의 Refresh token")
+
+
+# 회원탈퇴
+class UserWithdrawalSerializer(serializers.Serializer[Any]):
+    password = serializers.CharField(write_only=True, label="비밀번호 확인")
+    confirm = serializers.BooleanField(
+        required=True, label="탈퇴 동의 여부", help_text="탈퇴에 동의해야 처리가 가능합니다."
+    )
+    reason = serializers.ChoiceField(choices=WithdrawalReason, label="탈퇴 사유", required=True)
+    other_reason = serializers.CharField(required=False, allow_blank=True, label="기타 사유", default="")
