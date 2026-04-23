@@ -2,7 +2,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 from django.db import models
 
 from apps.core.models import TimeStampModel
-from apps.users.choices import SocialTypeChoice, UserGender, UserStatus, WithdrawalReason
+from apps.users.choices import SocialTypeChoice, UserStatus, WithdrawalReason
 
 
 class UserManager(BaseUserManager["User"]):
@@ -37,7 +37,6 @@ class User(TimeStampModel, AbstractBaseUser, PermissionsMixin):
         verbose_name="가입 경로",
     )
     phone_number = models.CharField(max_length=20, unique=True, verbose_name="휴대전화")
-    gender = models.CharField(max_length=6, choices=UserGender, verbose_name="성별")
     status = models.CharField(choices=UserStatus, default=UserStatus.ACTIVE)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)

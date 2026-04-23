@@ -14,7 +14,6 @@ class FindEmailTest(TestCase):
     phone_number: str
     url: str
     birthday: str
-    gender: str
     user: User
 
     @classmethod
@@ -23,10 +22,9 @@ class FindEmailTest(TestCase):
         cls.phone_number = "01011234215"
         cls.email = "test@example.com"
         cls.birthday = "1995-01-01"
-        cls.gender = "M"
 
         cls.user = User.objects.create_user(
-            email=cls.email, name=cls.name, phone_number=cls.phone_number, birthday=cls.birthday, gender=cls.gender
+            email=cls.email, name=cls.name, phone_number=cls.phone_number, birthday=cls.birthday
         )
         cls.url = reverse("users:find_email")
 

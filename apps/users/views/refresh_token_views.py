@@ -1,3 +1,6 @@
+from typing import Any, Literal, cast
+
+from django.conf import settings
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.permissions import AllowAny
@@ -20,10 +23,39 @@ class RefreshTokenView(APIView):
         tags=["accounts"],
     )
     def post(self, request: Request) -> Response:
-        serializer = RefreshTokenSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        jwt_settings = cast(dict[str, Any], settings.SIMPLE_JWT)
+        cookie_name = cast(str, jwt_settings.get("AUTH_COOKIE"))
 
-        refresh_token = serializer.validated_data["refresh"]
-        new_token = refresh_token_service(refresh_token)
+        refresh_token = request.COOKIES.get(cookie_name)
 
-        return Response(new_token, status=status.HTTP_200_OK)
+        if not refresh_token:
+            return Response(
+                {"detail": "리프레시 토큰이 쿠키에 없습니다."},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
+        try:
+            res_data = refresh_token_service(refresh_token)
+        except Exception:
+            return Response(
+                {"detail": "유효하지 않거나 만료된 리프레시 토큰입니다."},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
+        response = Response(
+            {
+                "access": res_data.get("access_token"),
+            },
+            status=status.HTTP_200_OK,
+        )
+
+        response.set_cookie(
+            key=cookie_name,
+            value=cast(str, res_data.get("refresh")),
+            httponly=cast(bool, settings.SIMPLE_JWT["AUTH_COOKIE_HTTP_ONLY"]),
+            samesite=cast(Literal["Lax", "Strict", "None"], jwt_settings.get("AUTH_COOKIE_SAMESITE", "Lax")),
+            secure=cast(bool, jwt_settings.get("AUTH_COOKIE_SECURE", False)),
+            path=cast(str, jwt_settings.get("AUTH_COOKIE_PATH", "/")),
+        )
+
+        return response

@@ -25,7 +25,6 @@ class LoginTestCase(TestCase):
             name="한조각",
             birthday="2000-05-11",
             phone_number="010-1234-1234",
-            gender="M",
         )
         cls.login_url = reverse("users:login")
 

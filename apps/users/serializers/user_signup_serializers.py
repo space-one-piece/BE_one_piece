@@ -12,9 +12,7 @@ class SignUpSerializer(serializers.ModelSerializer[User]):
     phone_number = serializers.CharField(
         min_length=11, max_length=11, validators=[RegexValidator(r"^\d{11}$", "휴대전화 번호는 11자리여야 합니다.")]
     )
-    email_token = serializers.CharField(write_only=True)
-    phone_token = serializers.CharField(write_only=True)
 
     class Meta:
         model = User
-        fields = ("email", "password", "name", "birthday", "phone_number", "gender", "email_token", "phone_token")
+        fields = ("email", "password", "name", "birthday", "phone_number")

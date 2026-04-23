@@ -18,7 +18,7 @@ class LogoutTestCase(TestCase):
     @classmethod
     def setUpTestData(cls) -> None:
         cls.user = User.objects.create_user(
-            email="test@test.com", password="pw1234!@", birthday="1999-05-11", name="테스트", gender="M"
+            email="test@test.com", password="pw1234!@", birthday="1999-05-11", name="테스트"
         )
         cls.logout_url = reverse("users:logout")
 

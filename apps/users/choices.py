@@ -1,12 +1,6 @@
 from django.db import models
 
 
-# 성별
-class UserGender(models.TextChoices):
-    MALE = "M"
-    FEMALE = "F"
-
-
 # 소셜 종류
 class SocialTypeChoice(models.TextChoices):
     GENERAL = "GENERAL"
