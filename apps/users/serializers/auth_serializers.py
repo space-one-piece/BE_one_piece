@@ -15,13 +15,11 @@ class UserSimpleSerializer(serializers.Serializer[Any]):
     email = serializers.EmailField()
     name = serializers.CharField()
 
-
 # 로그인 성공 . 클라이언트가 받게 될 최종 데이터 구조
 class LoginResponseSerializer(serializers.Serializer[Any]):
     access = serializers.CharField()
     refresh = serializers.CharField()
 
-
-# 에러 응답용
-class ErrorResponseSerializer(serializers.Serializer[Any]):
-    error_detail = serializers.CharField(help_text="에러 메시지")
+# 로그아웃
+class LogoutSerializer(serializers.Serializer[Any]):
+    refresh = serializers.CharField(help_text="로그아웃할 사용자의 Refresh token")

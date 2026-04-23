@@ -1,8 +1,7 @@
 from django.urls import include, path
 
+from apps.users.views.auth_views import LoginView, LogoutView
 from apps.users.views.find_email_views import FindEmailView
-from apps.users.views.login_views import LoginView
-from apps.users.views.logout_views import LogoutView
 from apps.users.views.refresh_token_views import RefreshTokenView
 from apps.users.views.reset_passwor_views import PasswordResetView
 from apps.users.views.signup_views import SignUpView
