@@ -18,7 +18,8 @@ class ResultsIntSerializer(serializers.Serializer[dict[str, Any]]):
 class ResultsOutSerializer(serializers.Serializer[Any]):
     id = serializers.IntegerField()
     recommended_scent = ScentDetailSerializer(read_only=True)
-    reason = serializers.CharField()
+    ai_comment = serializers.CharField()
+    match_score = serializers.IntegerField()
     review = serializers.CharField()
     rating = serializers.IntegerField()
 
@@ -26,7 +27,8 @@ class ResultsOutSerializer(serializers.Serializer[Any]):
 class ResultWebShareSerializer(serializers.Serializer[Any]):
     id = serializers.IntegerField()
     recommended_scent = ScentDetailSerializer(read_only=True)
-    reason = serializers.CharField()
+    ai_comment = serializers.CharField()
+    match_score = serializers.IntegerField()
     review = serializers.CharField()
     rating = serializers.IntegerField()
 

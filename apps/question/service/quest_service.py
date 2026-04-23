@@ -21,10 +21,12 @@ def quest_in(user_id: int, validated_data: list[dict[str, Any]]) -> KeywordOutSe
     if validated_data is None:
         raise Http404()
 
-    keyword_strings = [{"title": data["title"], "answer": data["results"]} for data in validated_data]
+    keyword_strings = [
+        {"title": data["title"], "answer": data["results"], "id": data["question_num"]} for data in validated_data
+    ]
 
     json_str = json.dumps(keyword_strings, ensure_ascii=False)
-    prompt, scent_id = result_prompt(json_str, "설문지")
+    prompt, scent_id, match_score = result_prompt(json_str, "설문지")
     data = ask_gemini(prompt)
     if data is None:
         raise Http404()
@@ -32,9 +34,14 @@ def quest_in(user_id: int, validated_data: list[dict[str, Any]]) -> KeywordOutSe
     scent_data = get_object_or_404(Scent, id=scent_id)
 
     scent_data.thumbnail_url = s3_image(scent_data.thumbnail_url) if scent_data.thumbnail_url else None
-    result = keyword_save(user_id, scent_id, data, json_str, "S")
+    result = keyword_save(user_id, scent_id, data, json_str, "S", match_score)
 
-    filter_data = {"id": result.id, "recommended_scent": scent_data, "reason": data}
+    filter_data = {
+        "id": result.id,
+        "recommended_scent": scent_data,
+        "ai_comment": data,
+        "match_score": result.match_score,
+    }
 
     serializer = KeywordOutSerializer(filter_data)
 

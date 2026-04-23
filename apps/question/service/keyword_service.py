@@ -23,7 +23,7 @@ def keyword_result(user_id: int, validated_data: list[dict[str, Any]]) -> Keywor
     keyword_strings = [{"division": data["division"], "name": data["name"]} for data in validated_data]
 
     json_str = json.dumps(keyword_strings, ensure_ascii=False)
-    prompt, scent_id = result_prompt(json_str, "키워드")
+    prompt, scent_id, match_score = result_prompt(json_str, "키워드")
     data = ask_gemini(prompt)
     if data is None:
         raise Http404()
@@ -32,9 +32,14 @@ def keyword_result(user_id: int, validated_data: list[dict[str, Any]]) -> Keywor
 
     scent_data.thumbnail_url = s3_image(scent_data.thumbnail_url) if scent_data.thumbnail_url else None
 
-    result = keyword_save(user_id, scent_id, data, json_str, "K")
+    result = keyword_save(user_id, scent_id, data, json_str, "K", match_score)
 
-    filter_data = {"id": result.id, "recommended_scent": scent_data, "reason": data}
+    filter_data = {
+        "id": result.id,
+        "recommended_scent": scent_data,
+        "ai_comment": data,
+        "match_score": result.match_score,
+    }
 
     serializer = KeywordOutSerializer(filter_data)
 

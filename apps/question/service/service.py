@@ -7,6 +7,7 @@ from urllib.parse import urlparse
 
 from botocore.exceptions import ClientError
 from django.core.cache import cache
+from django.db.models import JSONField
 
 from apps.core.utils.s3_handler import S3Handler
 from apps.question.models import Keyword, Question, QuestionsAnswer, QuestionsResults
@@ -47,15 +48,7 @@ def parse_gemini_response(text: str) -> dict[str, Any]:
     return cast(dict[str, Any], json.loads(cleaned))
 
 
-ANSWER_SCORE = {
-    0: 0,
-    1: 33,
-    2: 66,
-    3: 100,
-}
-
-
-def get_cached_data():
+def get_cached_data() -> tuple[dict[str, str], dict[str, int], dict[str, JSONField | Any]] | Any:
     cached_data = cache.get("scent_logic_maps")
     if cached_data is not None:
         return cached_data
@@ -69,6 +62,13 @@ def get_cached_data():
     cache.set("scent_logic_maps", result, 3600)
 
     return result
+
+
+def match_score(p1: dict[str, int], p2: dict[str, int]) -> int:
+    d = distance(p1, p2)
+    max_dist = 223.606  # sqrt(5 * 100^2)
+    score = (1 - (d / max_dist)) * 100
+    return max(0, int(round(score)))
 
 
 def build_user_profile(survey_answers: list[dict[str, Any]]) -> dict[str, int]:
@@ -86,25 +86,24 @@ def build_user_profile(survey_answers: list[dict[str, Any]]) -> dict[str, int]:
 
     for q in survey_answers:
         title = q.get("title")
-        result = q.get("results")
+        result = q.get("answer")
 
-        if not title or not isinstance(title, str):
+        if not isinstance(title, str) or not isinstance(result, str):
             continue
 
         key = q_map_data.get(title)
+        score = a_map_data.get(result)
+
         if not key:
             continue
 
-        if not result or not isinstance(result, str):
+        if not score:
             continue
 
-        score = a_map_data.get(result)
-        if score is None:
-            continue
+        if key and score is not None:
+            profile[key].append(score)
 
-        profile[key].append(score)
-
-    return {k: int(sum(v) / len(v)) if v else 50 for k, v in profile.items()}
+    return {k: int(round(sum(v) / len(v))) if v else 50 for k, v in profile.items()}
 
 
 def build_profile_from_keywords(keywords: list[dict[str, Any]]) -> dict[str, int]:
@@ -121,10 +120,14 @@ def build_profile_from_keywords(keywords: list[dict[str, Any]]) -> dict[str, int
     }
 
     for kw in keywords:
-        name = kw.get("fields", {}).get("name")
+        name = kw.get("name")
+
+        if not isinstance(name, str):
+            continue
 
         boost = k_map_data.get(name)
-        if not boost:
+
+        if not boost or not isinstance(boost, dict):
             continue
 
         for k, v in boost.items():
@@ -143,36 +146,22 @@ def find_best_scent(user_profile: dict[str, int], scents: list[dict[str, Any]]) 
     return random.choice(top3)
 
 
-def result_prompt(combined_keywords: str, check_type: str) -> tuple[str, Any]:
-    from apps.analysis.models import Scent
-
+def result_prompt(combined_keywords: str, check_type: str) -> tuple[str, Any, int]:
     data = json.loads(combined_keywords)
 
     if check_type == "설문지":
         user_profile = build_user_profile(data)
-        add_text = ", ".join(f"{q.get('title')}: {q.get('answer')}" for q in data)
+        add_text = ", ".join(
+            f"{q.get('title')}: {q.get('answer')}"
+            for q in data  # 많으면 10개 제한
+        )
     else:
         user_profile = build_profile_from_keywords(data)
         add_text = ", ".join(kw.get("name") for kw in data)
 
-    # SCENT_DATA → DB 조회로 변경
-    scent_data = cast(
-        list[dict[str, Any]],
-        list(
-            Scent.objects.values(
-                "id",
-                "name",
-                "categories",
-                "tags",
-                "intensity",
-                "season",
-                "recommended_places",
-                "is_bestseller",
-                "profile",
-            )
-        ),
-    )
-    selected_scent = find_best_scent(user_profile, scent_data)
+    selected_scent = find_best_scent(user_profile, SCENT_DATA)
+
+    match_score_data = match_score(user_profile, selected_scent.get("profile", {}))
 
     scent_name = selected_scent.get("name")
     scent_profile = selected_scent.get("profile")
@@ -182,16 +171,24 @@ def result_prompt(combined_keywords: str, check_type: str) -> tuple[str, Any]:
     user: {user_profile}
     preferences: {add_text}
     scent: {scent_name}, {scent_profile}, {scent_tags}
+    match_score: {match_score_data}
 
     Explain why this perfume is recommended based on the user's preferences in a natural and 
     engaging way (3-5 sentences). Do not use Markdown, and translate the final answer into Korean so 
     that the output is only in Korean.
     """
 
-    return prompt, selected_scent.get("id")
+    return prompt, selected_scent.get("id"), match_score_data
 
 
-def keyword_save(user_id: int, scent_id: int, answer_ai: str, json_data: str, division: str) -> QuestionsResults:
+def keyword_save(
+    user_id: int, scent_id: int, answer_ai: str, json_data: str, division: str, match_score: int
+) -> QuestionsResults:
     return QuestionsResults.objects.create(
-        user_id=user_id, scent_id=scent_id, division=division, questions_json=json_data, answer_ai=answer_ai
+        user_id=user_id,
+        scent_id=scent_id,
+        division=division,
+        questions_json=json_data,
+        answer_ai=answer_ai,
+        match_score=match_score,
     )
