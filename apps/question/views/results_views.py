@@ -9,6 +9,7 @@ from rest_framework.views import APIView
 from apps.question.extend_schema import value_list
 from apps.question.serializers.results_serializers import (
     ResultsIntSerializer,
+    ResultsOutSerializer,
     ResultsSerializer,
     ResultWebShareSerializer,
 )
@@ -54,7 +55,8 @@ class ResultsCreateUrlAPIView(APIView):
     )
     def get(self, request: Request, results_id: str) -> Response:
         serializer = select_web_share(results_id)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        data = ResultWebShareSerializer(serializer)
+        return Response(data.data, status=status.HTTP_200_OK)
 
 
 class ReviewViewAPIView(APIView):
@@ -84,9 +86,10 @@ class ReviewViewAPIView(APIView):
     def patch(self, request: Request, results_id: int) -> Response:
         serializer = ResultsIntSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        data = review_save(
+        serializer_data = review_save(
             request.user.id, results_id, serializer.validated_data["review"], serializer.validated_data["rating"]
         )
+        data = ResultsOutSerializer(serializer_data)
         return Response(data.data, status=status.HTTP_200_OK)
 
 
@@ -145,5 +148,5 @@ class ResultDetailAPIView(APIView):
     )
     def get(self, request: Request, division: str, requests_id: int) -> Response:
         serializer_data = out_results(request.user.id, requests_id, division)
-        result = ResultWebShareSerializer(serializer_data)
-        return Response(result.data, status=status.HTTP_200_OK)
+        data = ResultWebShareSerializer(serializer_data)
+        return Response(data.data, status=status.HTTP_200_OK)
