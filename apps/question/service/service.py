@@ -60,7 +60,7 @@ def get_cached_data() -> tuple[dict[str, str], dict[str, int], dict[str, JSONFie
 
     result = (q_map, a_map, k_map)
 
-    cache.set("scent_logic_maps", result, 86400)
+    cache.set("scent_logic_maps", result, 3600)
 
     return result
 
@@ -163,7 +163,7 @@ def get_cached_scent_data() -> list[dict[str, Any]]:
             }
         )
 
-    cache.set("scent_full_data", scents, 86400)
+    cache.set("scent_full_data", scents, 3600)
     return scents
 
 
