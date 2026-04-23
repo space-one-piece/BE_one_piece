@@ -23,4 +23,5 @@ class KeywordInputSerializer(serializers.Serializer[dict[str, Any]]):
 class KeywordOutSerializer(serializers.Serializer[Any]):
     id = serializers.IntegerField()
     recommended_scent = ScentDetailSerializer(read_only=True)
-    reason = serializers.CharField()
+    ai_comment = serializers.CharField()
+    match_score = serializers.IntegerField()

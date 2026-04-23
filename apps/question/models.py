@@ -6,10 +6,20 @@ from apps.users.models.models import User
 
 
 class Keyword(TimeStampModel):
-    TYPE_CHOICES = [("MO", "MOOD"), ("SN", "Scent Notes"), ("TS", "Time & Season"), ("PL", "Place"), ("TE", "Texture")]
+    TYPE_CHOICES_KEYWORD = [
+        ("MO", "MOOD"),
+        ("SN", "Scent Notes"),
+        ("TS", "Time & Season"),
+        ("PL", "Place"),
+        ("TE", "Texture"),
+    ]
 
-    division = models.CharField(null=False, blank=False, max_length=2, choices=TYPE_CHOICES)
+    division = models.CharField(null=False, blank=False, max_length=2, choices=TYPE_CHOICES_KEYWORD)
     name = models.CharField(null=False, blank=False, max_length=30)
+    score = models.JSONField(
+        null=False,
+        blank=False,
+    )
 
     def __str__(self) -> str:
         return f"{self.name}"
@@ -21,10 +31,13 @@ class Keyword(TimeStampModel):
 
 
 class Question(TimeStampModel):
+    TYPE_CHOICES_QUESTION = {("Fs", "Freshness"), ("Dh", "depth"), ("Ss", "softness"), ("Wh", "warmth")}
+
     content = models.TextField(null=False, blank=False)
     additional = models.TextField(null=True, blank=True)
     left_label = models.CharField(null=False, blank=False, max_length=15)
     right_label = models.CharField(null=False, blank=False, max_length=15)
+    category = models.CharField(null=False, blank=False, max_length=15, choices=TYPE_CHOICES_QUESTION)
 
     def __str__(self) -> str:
         return f"질문: {self.content}"
@@ -38,6 +51,7 @@ class Question(TimeStampModel):
 class QuestionsAnswer(TimeStampModel):
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name="answers")
     answer = models.CharField(null=False, blank=False, max_length=10)
+    score = models.IntegerField(null=False, blank=False, default=0)
 
     def __str__(self) -> str:
         return f"답: {self.answer}"
@@ -63,6 +77,7 @@ class QuestionsResults(TimeStampModel):
     image_key = models.CharField(null=True, blank=True, max_length=30)
     review = models.TextField(null=True, blank=True, max_length=300)
     rating = models.IntegerField(null=True, blank=True)
+    match_score = models.IntegerField(null=False, blank=False, default=0)
 
     def __str__(self) -> str:
         return f"결과는{self.scent.name} 향이고 이유는 {self.answer_ai}"

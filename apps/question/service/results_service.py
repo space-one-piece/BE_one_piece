@@ -57,7 +57,8 @@ def select_web_share(result_id: str) -> ResultWebShareSerializer:
     data = {
         "id": question_data.id,
         "recommended_scent": question_data.scent,
-        "reason": question_data.answer_ai,
+        "ai_comment": question_data.answer_ai,
+        "match_score": question_data.match_score,
         "review": question_data.review,
         "rating": question_data.rating,
     }
@@ -89,6 +90,8 @@ def result_list(user_id: int, division: str) -> list[dict[str, Any]]:
                 "eng_name": item.scent.eng_name,
                 "thumbnail_url": s3_image(item.scent.thumbnail_url) if item.scent.thumbnail_url else None,
             },
+            "ai_comment": item.answer_ai,
+            "match_score": item.match_score,
             "review": item.review,
             "rating": item.rating,
             "created_at": item.created_at,
@@ -113,7 +116,8 @@ def out_results(user_id: int, requests_id: int, division: str) -> ResultWebShare
     data = {
         "id": questin_data.id,
         "recommended_scent": questin_data.scent,
-        "reason": questin_data.answer_ai,
+        "ai_comment": questin_data.answer_ai,
+        "match_score": questin_data.match_score,
         "review": questin_data.review,
         "rating": questin_data.rating,
     }

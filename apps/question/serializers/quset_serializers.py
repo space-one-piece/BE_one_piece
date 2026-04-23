@@ -25,4 +25,4 @@ class QuestionSerializer(serializers.ModelSerializer[Question]):
 class QuestionsInSerializer(serializers.Serializer[Any]):
     title = serializers.CharField()
     results = serializers.CharField()
-    question_num = serializers.CharField()
+    question_num = serializers.IntegerField()
