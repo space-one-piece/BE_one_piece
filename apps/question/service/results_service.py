@@ -7,14 +7,10 @@ from rest_framework.exceptions import PermissionDenied
 from apps.analysis.models import Scent
 from apps.core.utils.hashids import decode_id, encode_id
 from apps.question.models import QuestionsResults
-from apps.question.serializers.results_serializers import (
-    ResultsOutSerializer,
-    ResultWebShareSerializer,
-)
 from apps.question.service.service import s3_image
 
 
-def review_save(user_id: int, result_id: int, review: str, rating: int) -> ResultsOutSerializer:
+def review_save(user_id: int, result_id: int, review: str, rating: int) -> dict[str, Any]:
     data = get_object_or_404(QuestionsResults, pk=result_id)
 
     if data.user_id != user_id:
@@ -28,13 +24,13 @@ def review_save(user_id: int, result_id: int, review: str, rating: int) -> Resul
     return scent_return(data.scent_id, result_id, data.answer_ai, rating, review)
 
 
-def scent_return(scent_id: int, result_id: int, answer_ai: str, rating: int, review: str) -> ResultsOutSerializer:
+def scent_return(scent_id: int, result_id: int, answer_ai: str, rating: int, review: str) -> dict[str, Any]:
     scent = get_object_or_404(Scent, pk=scent_id)
 
     scent.thumbnail_url = s3_image(scent.thumbnail_url) if scent.thumbnail_url else None
 
     data = {"id": result_id, "recommended_scent": scent, "reason": answer_ai, "rating": rating, "review": review}
-    return ResultsOutSerializer(data)
+    return data
 
 
 def new_web_share(user_id: int, result_id: int) -> str:
@@ -46,7 +42,7 @@ def new_web_share(user_id: int, result_id: int) -> str:
     return f"https://one_piece/api/v1/question/{question_id}"
 
 
-def select_web_share(result_id: str) -> ResultWebShareSerializer:
+def select_web_share(result_id: str) -> dict[str, Any]:
     question_id = decode_id(result_id)
     question_data = get_object_or_404(QuestionsResults, pk=question_id)
 
@@ -62,7 +58,7 @@ def select_web_share(result_id: str) -> ResultWebShareSerializer:
         "review": question_data.review,
         "rating": question_data.rating,
     }
-    return ResultWebShareSerializer(data)
+    return data
 
 
 def result_list(user_id: int, division: str) -> list[dict[str, Any]]:
@@ -122,5 +118,4 @@ def out_results(user_id: int, requests_id: int, division: str) -> dict[str, Any]
         "rating": questin_data.rating,
     }
 
-    # serializer_data = ResultWebShareSerializer(data)
     return data

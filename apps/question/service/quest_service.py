@@ -8,7 +8,6 @@ from django.shortcuts import get_object_or_404
 from apps.analysis.models import Scent
 from apps.question.gool_ai_studio import ask_gemini
 from apps.question.models import Question
-from apps.question.serializers.serializers import KeywordOutSerializer
 from apps.question.service.service import keyword_save, result_prompt, s3_image
 
 
@@ -17,7 +16,7 @@ def quest_select() -> QuerySet[Question]:
     return random_question
 
 
-def quest_in(user_id: int, validated_data: list[dict[str, Any]]) -> KeywordOutSerializer:
+def quest_in(user_id: int, validated_data: list[dict[str, Any]]) -> dict[str, Any]:
     if validated_data is None:
         raise Http404()
 
@@ -43,6 +42,4 @@ def quest_in(user_id: int, validated_data: list[dict[str, Any]]) -> KeywordOutSe
         "match_score": result.match_score,
     }
 
-    serializer = KeywordOutSerializer(filter_data)
-
-    return serializer
+    return filter_data
