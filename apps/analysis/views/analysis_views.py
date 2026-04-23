@@ -149,7 +149,21 @@ class AnalysisFeedbackAPIView(APIView):
         },
     )
     def patch(self, request: Request, id: int) -> Response:
-        return Response(...)
+        is_helpful = request.data.get("is_helpful")
+
+        if is_helpful is None:
+            raise ValidationError({"detail": "is_helpful 필드는 필수"})
+        if not isinstance(is_helpful, bool):
+            raise ValidationError({"detail": "is_helpful는 boolean 타입"})
+
+        updated_analysis = AnalysisService.update_analysis_feedback(
+            user_id=request.user.id, analysis_id=id, is_helpful=is_helpful
+        )
+
+        if not updated_analysis:
+            raise NotFound(detail="해당 이미지 분석 결과를 찾을 수 없거나 접근 권한이 없습니다.")
+
+        return Response({"detail": "피드백이 성공적으로 반영되었습니다."}, status=status.HTTP_200_OK)
 
 
 # 유저 분석 통계 반환
@@ -164,7 +178,9 @@ class AnalysisStatsAPIView(APIView):
         },
     )
     def get(self, request: Request) -> Response:
-        return Response(...)
+        stats_data = AnalysisService.get_user_statistics(user_id=request.user.id)
+
+        return Response({"data": stats_data})
 
 
 class IntegratedHistoryListAPIView(APIView):
@@ -184,4 +200,33 @@ class IntegratedHistoryListAPIView(APIView):
         paginated_queryset = paginator.paginate_queryset(history_list, request, view=self)  # type: ignore
 
         serializer = AnalysisListSerializer(paginated_queryset, many=True)
+        return Response(serializer.data)
+
+
+class AnalysisTotalDetailAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(
+        tags=["analysis_detail"],
+        summary="통합 분석 결과 상세 조회",
+        description="ID와 Type을 받아 이미지/챗봇/키워드 중 적절한 분석 결과를 반환합니다.",
+    )
+    def get(self, request: Request, id: int) -> Response:
+        analysis_type = request.query_params.get("type")
+        value_type = {"image", "chatbot", "keyword", "survey"}
+
+        if not analysis_type:
+            raise ValidationError({"detail": "type 파라미터가 필요합니다. (image, chatbot, keyword, survey)"})
+
+        if analysis_type not in value_type:
+            raise ValidationError({"detail": f"유효하지 않은 type. 허용값: {value_type}"})
+
+        instance, output_serializer = AnalysisService.get_total_detail(
+            user_id=request.user.id, analysis_id=id, analysis_type=analysis_type
+        )
+
+        if not instance:
+            raise NotFound(detail=f"해당 {analysis_type} 분석 결과를 찾을 수 없습니다.")
+
+        serializer = output_serializer(instance)
         return Response(serializer.data)

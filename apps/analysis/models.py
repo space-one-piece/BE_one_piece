@@ -61,7 +61,12 @@ class Scent(TimeStampModel):
 
 class ImageAnalysis(TimeStampModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    recommended_scent = models.ForeignKey(Scent, on_delete=models.CASCADE)
+    recommended_scent = models.ForeignKey(
+        Scent,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
     image_resource = models.OneToOneField(
         ImageResource,
         on_delete=models.CASCADE,
