@@ -102,7 +102,7 @@ def result_list(user_id: int, division: str) -> list[dict[str, Any]]:
     return data
 
 
-def out_results(user_id: int, requests_id: int, division: str) -> ResultWebShareSerializer:
+def out_results(user_id: int, requests_id: int, division: str) -> dict[str, Any]:
     check = "K" if division == "keyword" else "Q"
     questin_data = get_object_or_404(QuestionsResults, pk=requests_id, division=check)
 
@@ -122,5 +122,5 @@ def out_results(user_id: int, requests_id: int, division: str) -> ResultWebShare
         "rating": questin_data.rating,
     }
 
-    serializer_data = ResultWebShareSerializer(data)
-    return serializer_data
+    # serializer_data = ResultWebShareSerializer(data)
+    return data

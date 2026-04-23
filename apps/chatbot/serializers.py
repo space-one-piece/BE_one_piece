@@ -44,6 +44,7 @@ class ChatbotRecommendationDetailSerializer(serializers.ModelSerializer[ChatbotR
     recommended_scent = ChatbotScentDetailSerializer(source="scent")
     ai_comment = serializers.CharField(source="reply")
     source_type = serializers.SerializerMethodField()
+    match_score = serializers.IntegerField(default=80, read_only=True)
 
     class Meta:
         model = ChatbotRecommendation
@@ -51,6 +52,7 @@ class ChatbotRecommendationDetailSerializer(serializers.ModelSerializer[ChatbotR
             "id",
             "recommended_scent",
             "ai_comment",
+            "match_score",
             "source_type",
             "is_saved",
             "created_at",

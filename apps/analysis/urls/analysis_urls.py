@@ -5,6 +5,7 @@ from ..views.analysis_views import (
     AnalysisFeedbackAPIView,
     AnalysisListCreateAPIView,
     AnalysisStatsAPIView,
+    AnalysisTotalDetailAPIView,
     IntegratedHistoryListAPIView,
     UploadURLAPIView,
 )
@@ -25,4 +26,6 @@ urlpatterns = [
     path("/reviews/me", MyReviewListAPIView.as_view(), name="my-reviews"),
     # 4. 통합 분석 리스트
     path("/history", IntegratedHistoryListAPIView.as_view(), name="my-history"),  # get
+    # 5. 상세 분석/추천 통합
+    path("/detail/{int:id}", AnalysisTotalDetailAPIView.as_view(), name="my-detail"),  # get
 ]

@@ -1,19 +1,25 @@
 import logging
 import time
+from collections import Counter
 from typing import Any
 
 import boto3
 from botocore.exceptions import BotoCoreError, ClientError
 from django.conf import settings
 from django.db import transaction
-from django.db.models import QuerySet
+from django.db.models import Avg, QuerySet
+from rest_framework.exceptions import ValidationError
 
 from apps.analysis.client import GeminiClient
 from apps.analysis.models import ImageAnalysis, ImageColorAnalysis, ImageResource, Scent
+from apps.analysis.serializers.analysis_serializers import AnalysisDetailSerializer
 from apps.analysis.service.color_serivce import ColorAnalysisUtil
+from apps.chatbot.models import ChatbotRecommendation
+from apps.chatbot.serializers import ChatbotRecommendationDetailSerializer
 from apps.chatbot.services.recommendation_history_list import get_chatbot_recommendation_history
 from apps.core.services.presigned_url_service import PresignedUrlService
-from apps.question.service.results_service import result_list
+from apps.question.serializers.results_serializers import ResultWebShareSerializer
+from apps.question.service.results_service import out_results, result_list
 from apps.users.models.models import User
 
 logger = logging.getLogger(__name__)
@@ -125,7 +131,6 @@ class AnalysisService:
             color_data = {"dominant_hex": "#FFFFFF", "contrast": 0.0, "brightness": 0.0, "saturation": 0.0}
             color_error_msg = str(e.__cause__ or e)
 
-        # img_url = f"https://{settings.AWS_S3_BUCKET_NAME}.s3.{settings.AWS_S3_REGION}.amazonaws.com/{img_key}"
         img_url = resource.image_url
         with transaction.atomic():
             resource.is_uploaded = True
@@ -134,7 +139,7 @@ class AnalysisService:
             analysis_record = ImageAnalysis.objects.create(
                 user=user,
                 image_resource=resource,
-                recommended_scent=best_scent,  # type: ignore
+                recommended_scent=best_scent,
                 s3_image_url=img_url,
                 ai_tags=ai_tags,
                 ai_intensity=ai_intensity,
@@ -225,17 +230,17 @@ class AnalysisService:
         )
 
     @staticmethod
-    @transaction.atomic
     def delete_analysis(user_id: int, analysis_id: int) -> bool:
-        analysis = (
-            ImageAnalysis.objects.filter(id=analysis_id, user_id=user_id).select_related("image_resource").first()
-        )
+        with transaction.atomic():
+            analysis = (
+                ImageAnalysis.objects.filter(id=analysis_id, user_id=user_id).select_related("image_resource").first()
+            )
 
-        if not analysis:
-            return False
+            if not analysis:
+                return False
 
-        img_key = analysis.image_resource.img_key
-        analysis.image_resource.delete()
+            img_key = analysis.image_resource.img_key
+            analysis.image_resource.delete()
 
         try:
             s3_client = boto3.client(
@@ -249,3 +254,123 @@ class AnalysisService:
             logger.error(f"S3 파일 삭제 실패 (Key: {img_key})", exc_info=True)
 
         return True
+
+    @classmethod
+    def get_total_detail(cls, user_id: int, analysis_id: int, analysis_type: str) -> tuple[Any, Any]:
+        instance: Any
+
+        if analysis_type == "image":
+            instance = cls.get_my_analysis(user_id=user_id, analysis_id=analysis_id)
+            return instance, AnalysisDetailSerializer
+
+        elif analysis_type == "chatbot":
+            instance = (
+                ChatbotRecommendation.objects.select_related("scent")
+                .filter(
+                    id=analysis_id,
+                    user=user_id,
+                )
+                .first()
+            )
+            return instance, ChatbotRecommendationDetailSerializer
+
+        elif analysis_type in ["keyword", "survey"]:
+            instance = out_results(user_id=user_id, requests_id=analysis_id, division=analysis_type)
+            return instance, ResultWebShareSerializer
+
+        else:
+            raise ValidationError({"detail": f"유효하지 않은 analysis_type입니다. ({analysis_type})"})
+
+    @staticmethod
+    def update_analysis_feedback(user_id: int, analysis_id: int, is_helpful: bool) -> ImageAnalysis | None:
+        analysis = ImageAnalysis.objects.filter(id=analysis_id, user_id=user_id).first()
+
+        if not analysis:
+            return None
+
+        analysis.is_helpful = is_helpful
+
+        analysis.save(update_fields=["is_helpful"])
+
+        return analysis
+
+    @staticmethod
+    def get_user_statistics(user_id: int) -> dict[str, Any]:
+        base_qs = ImageAnalysis.objects.filter(user_id=user_id)
+        total_analyses = base_qs.count()
+
+        if total_analyses == 0:
+            return {
+                "total_analyses": 0,
+                "preferred_tags": [],
+                "top_ai_keywords": [],
+                "image_color_stats": {
+                    "most_frequent_colors": [],
+                    "average_brightness_level": "데이터 없음",
+                    "average_saturation_level": "데이터 없음",
+                },
+            }
+
+        data_list = base_qs.values_list(
+            "recommended_scent__tags",
+            "ai_keywords",
+            "image_metadata__dominant_color_hex",
+        )
+
+        all_tags = []
+        all_ai_keywords = []
+        all_colors = []
+
+        for tags, ai_keywords, dominant_colors in data_list:
+            if tags:
+                all_tags.extend(tags)
+            if ai_keywords:
+                all_ai_keywords.extend(ai_keywords)
+            if dominant_colors:
+                all_colors.extend(dominant_colors)
+
+        preferred_tags = []
+        for tag, count in Counter(all_tags).most_common(3):
+            preferred_tags.append(
+                {
+                    "tag": tag,
+                    "count": count,
+                    "percentage": round((count / total_analyses) * 100, 1),
+                }
+            )
+
+        top_ai_keywords = [k for k, _ in Counter(all_ai_keywords).most_common(3)]
+        top_colors = [c for c, _ in Counter(all_colors).most_common(2)]
+
+        aggs = base_qs.aggregate(
+            avg_b=Avg("image_metadata__avg_brightness"), avg_s=Avg("image_metadata__avg_saturation")
+        )
+
+        # 명도
+        avg_b = aggs["avg_b"] or 0
+        if avg_b < 40:
+            b_label = "어두운 편"
+        elif avg_b < 70:
+            b_label = "중간"
+        else:
+            b_label = "밝은 편"
+
+        # 채도
+        avg_s = aggs["avg_s"] or 0
+        if avg_s < 40:
+            s_label = "낮은 편"
+        elif avg_s < 70:
+            s_label = "중간"
+        else:
+            s_label = "높은 편"
+
+        return {
+            "total_analyses": total_analyses,
+            "preferred_tags": preferred_tags,
+            "top_ai_keywords": top_ai_keywords,
+            "image_color_stats": {
+                "most_frequent_colors": top_colors,
+                "average_brightness_level": b_label,
+                "average_saturation_level": s_label,
+            },
+        }

@@ -7,7 +7,11 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.question.extend_schema import value_list
-from apps.question.serializers.results_serializers import ResultsIntSerializer, ResultsSerializer
+from apps.question.serializers.results_serializers import (
+    ResultsIntSerializer,
+    ResultsSerializer,
+    ResultWebShareSerializer,
+)
 from apps.question.service.results_service import new_web_share, out_results, result_list, review_save, select_web_share
 
 
@@ -141,4 +145,5 @@ class ResultDetailAPIView(APIView):
     )
     def get(self, request: Request, division: str, requests_id: int) -> Response:
         serializer_data = out_results(request.user.id, requests_id, division)
-        return Response(serializer_data.data, status=status.HTTP_200_OK)
+        result = ResultWebShareSerializer(serializer_data)
+        return Response(result.data, status=status.HTTP_200_OK)
