@@ -3,17 +3,18 @@ from typing import Any
 from django.conf import settings
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import status
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from apps.users.serializers.user_login_serializers import (
-    ErrorResponseSerializer,
+from apps.users.serializers.auth_serializers import (
     LoginResponseSerializer,
     LoginSerializer,
+    LogoutSerializer,
 )
-from apps.users.services.login_services import LoginService
+from apps.users.serializers.Error_Response_Serializers import ErrorResponseSerializer
+from apps.users.services.auth_services import LoginService, LogoutService
 
 
 class LoginView(APIView):
@@ -56,3 +57,35 @@ class LoginView(APIView):
                 )
                 return response
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class LogoutView(APIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = LogoutSerializer
+
+    @extend_schema(
+        summary="로그아웃",
+        tags=["accounts"],
+        description="전달받은 Refresh token을 블랙리스트에 추가하여 무효화합니다.",
+        request=LogoutSerializer,  # 요청 시리얼라이저 명시
+        responses={
+            200: OpenApiResponse(
+                description="로그아웃 성공",
+                response={
+                    "type": "object",
+                    "properties": {
+                        "detail": {"type": "string", "example": "성공적으로 로그아웃 되었습니다."},
+                    },
+                },
+            ),
+            401: OpenApiResponse(description="인증 실패 (로그인 필요)"),
+        },
+    )
+    def post(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        refresh_token: str = serializer.validated_data["refresh"]
+        LogoutService.logout(refresh_token)
+
+        return Response({"detail": "성공적으로 로그아웃 되었습니다."}, status=status.HTTP_200_OK)

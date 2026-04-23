@@ -22,6 +22,6 @@ class LoginResponseSerializer(serializers.Serializer[Any]):
     refresh = serializers.CharField()
 
 
-# 에러 응답용
-class ErrorResponseSerializer(serializers.Serializer[Any]):
-    error_detail = serializers.CharField(help_text="에러 메시지")
+# 로그아웃
+class LogoutSerializer(serializers.Serializer[Any]):
+    refresh = serializers.CharField(help_text="로그아웃할 사용자의 Refresh token")
