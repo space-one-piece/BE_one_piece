@@ -7,7 +7,6 @@ from urllib.parse import urlparse
 
 from botocore.exceptions import ClientError
 
-from apps.chatbot.prompts.support_context import SCENT_DATA
 from apps.core.utils.s3_handler import S3Handler
 from apps.question.models import QuestionsResults
 
@@ -224,19 +223,35 @@ def find_best_scent(user_profile: dict[str, int], scents: list[dict[str, Any]]) 
 
 
 def result_prompt(combined_keywords: str, check_type: str) -> tuple[str, Any]:
+    from apps.analysis.models import Scent
+
     data = json.loads(combined_keywords)
 
     if check_type == "설문지":
         user_profile = build_user_profile(data)
-        add_text = ", ".join(
-            f"{q.get('title')}: {q.get('answer')}"
-            for q in data  # 많으면 10개 제한
-        )
+        add_text = ", ".join(f"{q.get('title')}: {q.get('answer')}" for q in data)
     else:
         user_profile = build_profile_from_keywords(data)
         add_text = ", ".join(kw.get("name") for kw in data)
 
-    selected_scent = find_best_scent(user_profile, SCENT_DATA)
+    # SCENT_DATA → DB 조회로 변경
+    scent_data = cast(
+        list[dict[str, Any]],
+        list(
+            Scent.objects.values(
+                "id",
+                "name",
+                "categories",
+                "tags",
+                "intensity",
+                "season",
+                "recommended_places",
+                "is_bestseller",
+                "profile",
+            )
+        ),
+    )
+    selected_scent = find_best_scent(user_profile, scent_data)
 
     scent_name = selected_scent.get("name")
     scent_profile = selected_scent.get("profile")
