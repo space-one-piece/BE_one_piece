@@ -42,7 +42,7 @@ class UserWithdrawalTest(TestCase):
             "other_reason": "테스트 탈퇴 사유",
         }
 
-        response = self.client.delete(self.url, data, format="json")
+        response = self.client.post(self.url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.user.refresh_from_db()
         self.assertFalse(self.user.is_active)
