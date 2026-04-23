@@ -24,6 +24,7 @@ class LoginService:
 
         return {"access": str(refresh.access_token), "refresh": str(refresh), "user": user}
 
+
 class LogoutService:
     @staticmethod
     def logout(refresh_token_str: str) -> None:

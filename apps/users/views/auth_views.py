@@ -8,8 +8,12 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from apps.users.serializers.auth_serializers import LoginSerializer, LoginResponseSerializer, ErrorResponseSerializer, \
-    LogoutSerializer
+from apps.users.serializers.Error_Response_Serializers import ErrorResponseSerializer
+from apps.users.serializers.auth_serializers import (
+    LoginResponseSerializer,
+    LoginSerializer,
+    LogoutSerializer,
+)
 from apps.users.services.auth_services import LoginService, LogoutService
 
 
@@ -53,6 +57,7 @@ class LoginView(APIView):
                 )
                 return response
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
