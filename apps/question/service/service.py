@@ -9,6 +9,7 @@ from botocore.exceptions import ClientError
 from django.core.cache import cache
 from django.db.models import JSONField
 
+from apps.analysis.models import Scent
 from apps.core.utils.s3_handler import S3Handler
 from apps.question.models import Keyword, Question, QuestionsAnswer, QuestionsResults
 
@@ -59,7 +60,7 @@ def get_cached_data() -> tuple[dict[str, str], dict[str, int], dict[str, JSONFie
 
     result = (q_map, a_map, k_map)
 
-    cache.set("scent_logic_maps", result, 3600)
+    cache.set("scent_logic_maps", result, 86400)
 
     return result
 
@@ -146,6 +147,26 @@ def find_best_scent(user_profile: dict[str, int], scents: list[dict[str, Any]]) 
     return random.choice(top3)
 
 
+def get_cached_scent_data() -> list[dict[str, Any]]:
+    cached_scents = cache.get("scent_full_data")
+    if cached_scents is not None:
+        return cast(list[dict[str, Any]], cached_scents)
+
+    scents = []
+    for s in Scent.objects.all():
+        scents.append(
+            {
+                "id": s.id,
+                "name": s.name,
+                "profile": s.profile,
+                "tags": s.tags,
+            }
+        )
+
+    cache.set("scent_full_data", scents, 86400)
+    return scents
+
+
 def result_prompt(combined_keywords: str, check_type: str) -> tuple[str, Any, int]:
     data = json.loads(combined_keywords)
 
@@ -159,7 +180,7 @@ def result_prompt(combined_keywords: str, check_type: str) -> tuple[str, Any, in
         user_profile = build_profile_from_keywords(data)
         add_text = ", ".join(kw.get("name") for kw in data)
 
-    selected_scent = find_best_scent(user_profile, SCENT_DATA)
+    selected_scent = find_best_scent(user_profile, get_cached_scent_data())
 
     match_score_data = match_score(user_profile, selected_scent.get("profile", {}))
 
