@@ -312,3 +312,5 @@ CORS_ALLOWED_ORIGINS = [
 ]
 REDIS_HOST = os.getenv("REDIS_HOST", "redis")
 REDIS_PORT = int(os.getenv("REDIS_PORT", "6379"))
+
+CF_DOMAIN = os.getenv("CF_DOMAIN", "")

@@ -5,6 +5,7 @@ from django.utils import timezone
 from rest_framework.exceptions import PermissionDenied
 
 from apps.analysis.models import Scent
+from apps.core.utils.cloud_front import image_url_cloud
 from apps.core.utils.hashids import decode_id, encode_id
 from apps.question.models import QuestionsResults
 from apps.question.service.service import Service
@@ -31,7 +32,7 @@ class ResultsService(Service):
     ) -> dict[str, Any]:
         scent = get_object_or_404(Scent, pk=scent_id)
 
-        scent.thumbnail_url = cls.s3_image(scent.thumbnail_url) if scent.thumbnail_url else None
+        scent.thumbnail_url = image_url_cloud(scent.thumbnail_url) if scent.thumbnail_url else None
 
         scent.recommended_places = cls.list_url(scent.recommended_places) if scent.recommended_places else None
 

@@ -6,6 +6,7 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404
 
 from apps.analysis.models import Scent
+from apps.core.utils.cloud_front import image_url_cloud
 from apps.question.google_ai_studio import Gemini
 from apps.question.models import Keyword
 from apps.question.service.service import Service
@@ -31,7 +32,7 @@ class KeywordService(Service, Gemini):
 
         scent_data = get_object_or_404(Scent, pk=scent_id)
 
-        scent_data.thumbnail_url = cls.s3_image(scent_data.thumbnail_url)
+        scent_data.thumbnail_url = image_url_cloud(scent_data.thumbnail_url)
 
         scent_data.recommended_places = (
             cls.list_url(scent_data.recommended_places) if scent_data.recommended_places else None
