@@ -33,15 +33,7 @@ class ResultsService(Service):
 
         scent.thumbnail_url = cls.s3_image(scent.thumbnail_url) if scent.thumbnail_url else None
 
-        scent_data = scent.recommended_places
-
-        scent.recommended_places = [
-            {
-                **place,
-                "imageUrl": cls.s3_image(scent_data["imageUrl"]),
-            }
-            for place in scent.recommended_places
-        ]
+        scent.recommended_places = cls.list_url(scent.recommended_places) if scent.recommended_places else None
 
         data = {
             "id": result_id,
@@ -71,7 +63,9 @@ class ResultsService(Service):
             cls.s3_image(question_data.scent.thumbnail_url) if question_data.scent.thumbnail_url else None
         )
 
-        question_data.scent.recommended_places = cls.list_url(question_data.scent.recommended_places)
+        question_data.scent.recommended_places = (
+            cls.list_url(question_data.scent.recommended_places) if question_data.scent.recommended_places else None
+        )
 
         data = {
             "id": question_data.id,

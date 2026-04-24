@@ -33,7 +33,9 @@ class KeywordService(Service, Gemini):
 
         scent_data.thumbnail_url = cls.s3_image(scent_data.thumbnail_url)
 
-        scent_data.recommended_places = cls.list_url(scent_data.recommended_places)
+        scent_data.recommended_places = (
+            cls.list_url(scent_data.recommended_places) if scent_data.recommended_places else None
+        )
 
         result = cls.keyword_save(user_id, scent_id, data, json_str, "K", match_score)
 

@@ -211,8 +211,10 @@ class Service:
     def list_url(cls, data: list[dict[str, Any]]) -> list[dict[str, Any]]:
         return [
             {
-                **place,
+                "name": place["name"],
+                "description": place["description"],
                 "imageUrl": cls.s3_image(place["imageUrl"]),
+                "matchScore": place["matchScore"],
             }
             for place in data
         ]
