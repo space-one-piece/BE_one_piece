@@ -23,15 +23,24 @@ class ResultsService(Service):
         data.updated_at = timezone.now()
         data.save()
 
-        return cls.scent_return(data.scent_id, result_id, data.answer_ai, rating, review)
+        return cls.scent_return(data.scent_id, result_id, data.answer_ai, data.match_score, rating, review)
 
     @classmethod
-    def scent_return(cls, scent_id: int, result_id: int, answer_ai: str, rating: int, review: str) -> dict[str, Any]:
+    def scent_return(
+        cls, scent_id: int, result_id: int, answer_ai: str, match_score: int, rating: int, review: str
+    ) -> dict[str, Any]:
         scent = get_object_or_404(Scent, pk=scent_id)
 
         scent.thumbnail_url = cls.s3_image(scent.thumbnail_url) if scent.thumbnail_url else None
 
-        data = {"id": result_id, "recommended_scent": scent, "reason": answer_ai, "rating": rating, "review": review}
+        data = {
+            "id": result_id,
+            "recommended_scent": scent,
+            "ai_comment": answer_ai,
+            "match_score": match_score,
+            "rating": rating,
+            "review": review,
+        }
         return data
 
     @staticmethod

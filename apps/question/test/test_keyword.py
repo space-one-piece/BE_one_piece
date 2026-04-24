@@ -17,10 +17,11 @@ class QuestionAPIViewTest(TestCase):
         cls.user = User.objects.create_user(
             email="test@naver.com", password="test1234!@", birthday="1970-01-01", phone_number="010-0000-0000"
         )
-        Keyword.objects.create(division="M", name="포근한")
-        Keyword.objects.create(division="M", name="산뜻한")
 
     def setUp(self) -> None:
+        Keyword.objects.create(division="M", name="포근한", score={"softness": 15, "freshness": 10})
+        Keyword.objects.create(division="M", name="산뜻한", score={"softness": 15, "freshness": 10})
+
         self.client = APIClient()
 
     def test_keyword_list_success(self) -> None:
