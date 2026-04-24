@@ -9,7 +9,7 @@ from rest_framework.views import APIView
 from apps.question.extend_schema import value_list
 from apps.question.serializers.quset_serializers import QuestionSerializer, QuestionsInSerializer
 from apps.question.serializers.serializers import KeywordOutSerializer
-from apps.question.service.quest_service import quest_in, quest_select
+from apps.question.service.quest_service import QuestService
 
 
 class QuestAPIView(APIView):
@@ -26,7 +26,7 @@ class QuestAPIView(APIView):
         },
     )
     def get(self, request: Request, *args: object, **kwargs: object) -> Response:
-        data = quest_select()
+        data = QuestService.quest_select()
         serializer = QuestionSerializer(data, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -44,6 +44,6 @@ class QuestAPIView(APIView):
     def post(self, request: Request, *args: object, **kwargs: object) -> Response:
         serializer = QuestionsInSerializer(data=request.data, many=True)
         serializer.is_valid(raise_exception=True)
-        serializer_data = quest_in(request.user.id, serializer.validated_data)
+        serializer_data = QuestService.quest_in(request.user.id, serializer.validated_data)
         data = KeywordOutSerializer(serializer_data)
         return Response(data.data, status=status.HTTP_201_CREATED)

@@ -13,7 +13,7 @@ from apps.question.serializers.results_serializers import (
     ResultsSerializer,
     ResultWebShareSerializer,
 )
-from apps.question.service.results_service import new_web_share, out_results, result_list, review_save, select_web_share
+from apps.question.service.results_service import ResultsService
 
 
 class ResultsCreateUrlAPIView(APIView):
@@ -31,7 +31,7 @@ class ResultsCreateUrlAPIView(APIView):
         },
     )
     def post(self, request: Request, results_id: str) -> Response:
-        url = new_web_share(request.user.id, int(results_id))
+        url = ResultsService.new_web_share(request.user.id, int(results_id))
         data = {"web_share_url": url}
         return Response(data, status=status.HTTP_200_OK)
 
@@ -54,7 +54,7 @@ class ResultsCreateUrlAPIView(APIView):
         },
     )
     def get(self, request: Request, results_id: str) -> Response:
-        serializer = select_web_share(results_id)
+        serializer = ResultsService.select_web_share(results_id)
         data = ResultWebShareSerializer(serializer)
         return Response(data.data, status=status.HTTP_200_OK)
 
@@ -86,7 +86,7 @@ class ReviewViewAPIView(APIView):
     def patch(self, request: Request, results_id: int) -> Response:
         serializer = ResultsIntSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer_data = review_save(
+        serializer_data = ResultsService.review_save(
             request.user.id, results_id, serializer.validated_data["review"], serializer.validated_data["rating"]
         )
         data = ResultsOutSerializer(serializer_data)
@@ -121,7 +121,7 @@ class ResultListAPIView(APIView):
         },
     )
     def get(self, request: Request, division: str) -> Response:
-        serializer_data = result_list(request.user.id, division)
+        serializer_data = ResultsService.result_list(request.user.id, division)
         return Response(serializer_data, status=status.HTTP_200_OK)
 
 
@@ -147,6 +147,6 @@ class ResultDetailAPIView(APIView):
         },
     )
     def get(self, request: Request, division: str, requests_id: int) -> Response:
-        serializer_data = out_results(request.user.id, requests_id, division)
+        serializer_data = ResultsService.out_results(request.user.id, requests_id, division)
         data = ResultWebShareSerializer(serializer_data)
         return Response(data.data, status=status.HTTP_200_OK)

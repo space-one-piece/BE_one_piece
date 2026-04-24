@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 
 from apps.question.extend_schema import value_list
 from apps.question.serializers.image_user_serializers import ImageSerializer
-from apps.question.service.image_user_service import image_new, user_profile_save
+from apps.question.service.image_user_service import ImageUserService
 
 
 class ImageUserAPIView(APIView):
@@ -27,7 +27,7 @@ class ImageUserAPIView(APIView):
         },
     )
     def post(self, request: Request, requests_id: int) -> Response:
-        data = image_new(request.user.id, requests_id)
+        data = ImageUserService.image_new(request.user.id, requests_id)
         return Response({"message": data})
 
 
@@ -51,5 +51,5 @@ class UserImageAPIView(APIView):
         serializer = ImageSerializer(data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
 
-        user_profile_save(request.user.id, serializer.validated_data["image_url"])
+        ImageUserService.user_profile_save(request.user.id, serializer.validated_data["image_url"])
         return Response({"message": "이미지 저장 완료."}, status=status.HTTP_200_OK)

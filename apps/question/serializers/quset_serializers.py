@@ -19,7 +19,7 @@ class QuestionSerializer(serializers.ModelSerializer[Question]):
 
     class Meta:
         model = Question
-        fields = ["title", "additional", "left_label", "right_label", "answer"]
+        fields = ["id", "title", "additional", "left_label", "right_label", "answer"]
 
 
 class QuestionsInSerializer(serializers.Serializer[Any]):
