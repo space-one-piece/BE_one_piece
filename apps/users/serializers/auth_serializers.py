@@ -3,6 +3,7 @@ from typing import Any
 from rest_framework import serializers
 
 from apps.users.choices import WithdrawalReason
+from apps.users.serializers.verification_serializers import EmailVerifySerializer
 
 
 # 유저 로그인 요청 데이터
@@ -37,3 +38,8 @@ class UserWithdrawalSerializer(serializers.Serializer[Any]):
     )
     reason = serializers.ChoiceField(choices=WithdrawalReason, label="탈퇴 사유", required=True)
     other_reason = serializers.CharField(required=False, allow_blank=True, label="기타 사유", default="")
+
+
+# 계정복구
+class AccountRecoverySerializer(EmailVerifySerializer):
+    password = serializers.CharField(write_only=True, style={"input_type": "password"}, label="비밀번호 확인")
