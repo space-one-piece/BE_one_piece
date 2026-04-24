@@ -95,7 +95,6 @@ class ResultsService(Service):
                     "name": item.scent.name,
                     "description": item.scent.description,
                     "eng_name": item.scent.eng_name,
-                    "thumbnail_url": cls.s3_image(item.scent.thumbnail_url) if item.scent.thumbnail_url else None,
                 },
                 "ai_comment": item.answer_ai,
                 "match_score": item.match_score,
