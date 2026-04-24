@@ -24,7 +24,7 @@ class ChatbotCompletionPolicyTest(TestCase):
 
     def test_validate_profanity(self) -> None:
         with self.assertRaises(ValidationError):
-            validate_chatbot_input("씨발")
+            validate_chatbot_input("시발")
 
     def test_validate_valid_message(self) -> None:
         try:

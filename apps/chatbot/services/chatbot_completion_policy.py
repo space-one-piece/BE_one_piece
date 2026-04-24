@@ -1,10 +1,10 @@
 import re
 
+from korcen import korcen  # type: ignore[import-untyped]
 from rest_framework.exceptions import ValidationError
 
 from ..constants.blocked_keywords import (
     BLOCKED_NONSENSE_KEYWORDS,
-    BLOCKED_PROFANITY_KEYWORDS,
     BLOCKED_PROMPT_KEYWORDS,
 )
 from ..constants.mapping_keywords import IMPATIENT_KEYWORDS
@@ -49,13 +49,8 @@ def _validate_prompt_injection(content: str) -> None:
 
 
 def _validate_profanity(content: str) -> None:
-    raw_lower = content.lower()
-    normalized = _normalize_text(content)
-    for keyword in BLOCKED_PROFANITY_KEYWORDS:
-        k1 = keyword.lower()
-        k2 = _NORMALIZE_RE.sub("", k1)
-        if k1 in raw_lower or (k2 and k2 in normalized):
-            raise ValidationError("잘못된 요청입니다.")
+    if korcen.check(content):
+        raise ValidationError("잘못된 요청입니다.")
 
 
 def is_meaningful_turn(content: str) -> bool:

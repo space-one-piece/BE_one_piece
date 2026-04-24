@@ -4,7 +4,7 @@ COLOR_NC    = \033[0m
 
 DOCKER_EXEC = docker compose --env-file envs/.env -f deployments/docker/docker-compose.local.yml exec django
 
-.PHONY: setup run migrations migrate test ruff mypy superuser shell docker_up docker_up_build docker_down docker_down_v
+.PHONY: setup run migrations migrate test ruff mypy superuser shell docker_up docker_up_build docker_down docker_down_v seed
 
 setup:
 	@echo "$(COLOR_BLUE)Syncing dependencies inside Docker...$(COLOR_NC)"
@@ -62,3 +62,8 @@ docker_down:
 
 docker_down_v:
 	docker compose --env-file envs/.env -f deployments/docker/docker-compose.local.yml down -v
+
+seed:
+	@echo "$(COLOR_BLUE)Seeding scent data from S3...$(COLOR_NC)"
+	$(DOCKER_EXEC) uv run env PYTHONPATH=/one_piece python scripts/seed_scent.py
+	@echo "$(COLOR_GREEN)Seed complete!$(COLOR_NC)\n"

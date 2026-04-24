@@ -179,6 +179,15 @@ wheels = [
 ]
 
 [[package]]
+name = "better-profanity"
+version = "0.7.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/b5/4a/52966c1c883819f0b48540312a4a7f63b5c49f4e5b1a10838ae7f06ebb3c/better_profanity-0.7.0.tar.gz", hash = "sha256:8a6fdc8606d7471e7b5f6801917eca98ec211098262e82f62da4f5de3a73145b", size = 29977, upload-time = "2020-11-02T10:49:57.54Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/f3/dd/0b074d89e903cc771721cde2c4bf3d8c9d114b5bd791af5c62bcf5fb9459/better_profanity-0.7.0-py3-none-any.whl", hash = "sha256:bd4c529ea6aa2db1aaa50524be1ed14d0fe5c664f1fd88c8bc388c7e9f9f00e8", size = 46104, upload-time = "2020-11-02T10:49:56.066Z" },
+]
+
+[[package]]
 name = "billiard"
 version = "4.2.4"
 source = { registry = "https://pypi.org/simple" }
@@ -1182,6 +1191,19 @@ wheels = [
 ]
 
 [[package]]
+name = "korcen"
+version = "1.0.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "better-profanity" },
+    { name = "ordereddict" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/cb/56/66b05520db2561968909c2347e46d91ff3ff8d8f2e07ebe8b728290edb8a/korcen-1.0.2.tar.gz", hash = "sha256:a2ee52bda54ae1c356556ef6d9d49b4012e0dafee1f7fabe1690b8aa27286273", size = 22704, upload-time = "2025-05-20T11:49:06.728Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/eb/c0/0674954252f84f65d984a4c999969ba2dd84811abe15dcb7e23cb76d492b/korcen-1.0.2-py3-none-any.whl", hash = "sha256:bf543ce48e79a4b4391e17f25054b5fdfb90a8224e728be8331c7ed6cc4b861e", size = 59246, upload-time = "2025-05-20T11:49:03.555Z" },
+]
+
+[[package]]
 name = "msgpack"
 version = "1.1.2"
 source = { registry = "https://pypi.org/simple" }
@@ -1439,6 +1461,7 @@ dependencies = [
     { name = "celery" },
     { name = "channels" },
     { name = "channels-redis" },
+    { name = "colorama" },
     { name = "colorthief" },
     { name = "django" },
     { name = "django-admin-autocomplete-filter" },
@@ -1455,6 +1478,7 @@ dependencies = [
     { name = "google-genai" },
     { name = "gunicorn" },
     { name = "hashids" },
+    { name = "korcen" },
     { name = "mypy" },
     { name = "numpy" },
     { name = "opencv-python-headless" },
@@ -1486,6 +1510,7 @@ requires-dist = [
     { name = "celery", specifier = ">=5.5.3,<6.0.0" },
     { name = "channels", specifier = ">=4.3.1,<5.0.0" },
     { name = "channels-redis", specifier = ">=4.3.0,<5.0.0" },
+    { name = "colorama", specifier = ">=0.4.6" },
     { name = "colorthief", specifier = ">=0.2.1" },
     { name = "django", specifier = ">=5.2.1,<6.0.0" },
     { name = "django-admin-autocomplete-filter", specifier = ">=0.7.1,<0.8.0" },
@@ -1502,6 +1527,7 @@ requires-dist = [
     { name = "google-genai", specifier = ">=1.67.0,<2.0.0" },
     { name = "gunicorn", specifier = ">=23.0.0,<24.0.0" },
     { name = "hashids", specifier = ">=1.3.1" },
+    { name = "korcen", specifier = ">=1.0.2" },
     { name = "mypy", specifier = "==1.11.2" },
     { name = "numpy", specifier = ">=2.4.4" },
     { name = "opencv-python-headless", specifier = ">=4.13.0.92" },
@@ -1544,6 +1570,12 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/fb/c3/52cfea47cd33e53e8c0fbd6e7c800b457245c1fda7d61660b4ffe9596a7f/opencv_python_headless-4.13.0.92-cp37-abi3-win32.whl", hash = "sha256:a7cf08e5b191f4ebb530791acc0825a7986e0d0dee2a3c491184bd8599848a4b", size = 30812232, upload-time = "2026-02-05T07:02:29.594Z" },
     { url = "https://files.pythonhosted.org/packages/4a/90/b338326131ccb2aaa3c2c85d00f41822c0050139a4bfe723cfd95455bd2d/opencv_python_headless-4.13.0.92-cp37-abi3-win_amd64.whl", hash = "sha256:77a82fe35ddcec0f62c15f2ba8a12ecc2ed4207c17b0902c7a3151ae29f37fb6", size = 40070414, upload-time = "2026-02-05T07:02:26.448Z" },
 ]
+
+[[package]]
+name = "ordereddict"
+version = "1.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/53/25/ef88e8e45db141faa9598fbf7ad0062df8f50f881a36ed6a0073e1572126/ordereddict-1.1.tar.gz", hash = "sha256:1c35b4ac206cef2d24816c89f89cf289dd3d38cf7c449bb3fab7bf6d43f01b1f", size = 2114, upload-time = "2010-10-28T10:08:17.831Z" }
 
 [[package]]
 name = "packaging"
