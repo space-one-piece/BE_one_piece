@@ -1,6 +1,6 @@
 from django.urls import include, path
 
-from apps.users.views.auth_views import LoginView, LogoutView, UserWithdrawalView
+from apps.users.views.auth_views import AccountRecoveryView, LoginView, LogoutView, UserWithdrawalView
 from apps.users.views.find_email_views import FindEmailView
 from apps.users.views.refresh_token_views import RefreshTokenView
 from apps.users.views.reset_passwor_views import PasswordResetView
@@ -51,6 +51,8 @@ urlpatterns = [
     path("chang-password", PasswordResetView.as_view(), name="change_password"),
     # 회원탈퇴
     path("me", UserWithdrawalView.as_view(), name="me"),
+    # 계정 복구
+    path("recovery", AccountRecoveryView.as_view(), name="account_recovery"),
     # 인증 관련 include
     path("verification/", include(verification_patterns)),
 ]

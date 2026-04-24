@@ -11,15 +11,17 @@ from rest_framework.views import APIView
 
 from apps.users.models.models import User
 from apps.users.serializers.auth_serializers import (
+    AccountRecoverySerializer,
     LoginResponseSerializer,
     LoginSerializer,
     LogoutSerializer,
     UserWithdrawalSerializer,
 )
 from apps.users.serializers.Error_Response_Serializers import ErrorResponseSerializer
-from apps.users.services.auth_services import LoginService, LogoutService, WithdrawalService
+from apps.users.services.auth_services import LoginService, LogoutService, RecoveryService, WithdrawalService
 
 
+# 로그인
 class LoginView(APIView):
     permission_classes = [AllowAny]
     authentication_classes = []
@@ -65,6 +67,7 @@ class LoginView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+# 로그아웃
 class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
     serializer_class = LogoutSerializer
@@ -97,6 +100,7 @@ class LogoutView(APIView):
         return Response({"detail": "성공적으로 로그아웃 되었습니다."}, status=status.HTTP_200_OK)
 
 
+# 계정 탈퇴
 class UserWithdrawalView(APIView):
     permission_classes = [IsAuthenticated]
     serializer_class = UserWithdrawalSerializer
@@ -134,3 +138,34 @@ class UserWithdrawalView(APIView):
         )
 
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+# 계정 복구
+class AccountRecoveryView(APIView):
+    permission_classes = [AllowAny]
+    serializer_class = AccountRecoverySerializer
+
+    @extend_schema(
+        summary="계정 복구",
+        description="이메일 인증번호와 기존 비밀번호를 입력하여 계정을 복구합니다.",
+        request=AccountRecoverySerializer,
+        responses={
+            200: OpenApiResponse(description="복구 성공"),
+            400: OpenApiResponse(response=ErrorResponseSerializer, description="인증 실패 또는 기간만료"),
+        },
+        tags=["accounts"],
+    )
+    def post(self, request: Request) -> Response:
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        RecoveryService.recover_user(
+            email=serializer.validated_data["email"],
+            password=serializer.validated_data["password"],
+            code=serializer.validated_data["code"],
+        )
+
+        return Response(
+            {"detail": "계정이 성공적으로 복구되었습니다. 기존 비밀번호로 로그인이 가능합니다."},
+            status=status.HTTP_200_OK,
+        )
