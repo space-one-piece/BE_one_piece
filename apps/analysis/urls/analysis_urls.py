@@ -9,7 +9,7 @@ from ..views.analysis_views import (
     IntegratedHistoryListAPIView,
     UploadURLAPIView,
 )
-from ..views.review_views import AnalysisReviewAPIView, MyReviewListAPIView
+from ..views.review_views import MyReviewListAPIView, RecentReviewListAPIView
 
 app_name = "analysis_user"
 
@@ -22,8 +22,9 @@ urlpatterns = [
     path("/<int:id>", AnalysisDetailAPIView.as_view(), name="detail"),  # get,delete
     path("/<int:id>/feedback", AnalysisFeedbackAPIView.as_view(), name="feedback"),  # patch
     # 3. 리뷰
-    path("/<int:id>/review", AnalysisReviewAPIView.as_view(), name="review"),  # get,patch,delete
-    path("/reviews/me", MyReviewListAPIView.as_view(), name="my-reviews"),
+    path("/reviews", MyReviewListAPIView.as_view(), name="my-reviews"),  # get
+    path("/reviews/recent", RecentReviewListAPIView.as_view(), name="recent-reviews"),  # get
+    path("/reviews/<int:id>", MyReviewListAPIView.as_view(), name="my-review-detail"),  # get, patch, delete
     # 4. 통합 분석 리스트
     path("/history", IntegratedHistoryListAPIView.as_view(), name="my-history"),  # get
     # 5. 상세 분석/추천 통합
