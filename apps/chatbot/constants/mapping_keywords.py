@@ -52,6 +52,16 @@ SPACE_MAPPING: dict[str, str] = {
     "입구": "entryway",
     "현관문": "entryway",
     "들어오면": "entryway",
+    # 외출/야외 추가
+    "밖에서": "office",
+    "외출용": "office",
+    "외출": "office",
+    "야외": "entryway",
+    "밖": "entryway",
+    "나들이": "entryway",
+    "데이트": "entryway",
+    "외부": "office",
+    "회사밖": "entryway",
 }
 
 MOOD_MAPPING: dict[str, str] = {

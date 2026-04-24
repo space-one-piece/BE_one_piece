@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from apps.analysis.models import ImageAnalysis, ImageColorAnalysis, Scent
+from apps.analysis.models import ImageAnalysis, ImageColorAnalysis, ImageResource, Scent
 from apps.analysis.serializers.analysis_serializers import AnalysisDetailSerializer, UploadURLSerializer
 from apps.users.models.models import User
 
@@ -33,15 +33,22 @@ class SerializerOutputTest(TestCase):
     scent: Scent
     analysis: ImageAnalysis
     color: ImageColorAnalysis
+    image_resource: ImageResource
 
     @classmethod
     def setUpTestData(cls) -> None:
         """1:1 역참조 테스트 데이터 세팅"""
         cls.user = User.objects.create_user(email="test@test.com", password="password", birthday="1995-01-01")
+
         cls.scent = Scent.objects.create(name="우디 샌달우드", eng_name="Woody Sandalwood", intensity=4)
 
+        cls.image_resource = ImageResource.objects.create(user=cls.user)
+
         cls.analysis = ImageAnalysis.objects.create(
-            user=cls.user, recommended_scent=cls.scent, s3_image_url="https://s3.amazonaws.com/test.jpg"
+            user=cls.user,
+            recommended_scent=cls.scent,
+            s3_image_url="https://s3.amazonaws.com/test.jpg",
+            image_resource=cls.image_resource,
         )
 
         cls.color = ImageColorAnalysis.objects.create(
