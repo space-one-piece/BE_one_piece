@@ -16,7 +16,10 @@ client = genai.Client(api_key=settings.LGB_GEMINI_KEY)
 PARSE_PROMPT = """
 사용자의 메시지에서 다음 4가지 정보를 추출해줘.
 
-- space: 공간 (bedroom, livingroom, bathroom, study, kitchen, office, entryway)
+- space: 사용자가 향기를 사용할 공간
+  (bedroom, livingroom, bathroom, study, kitchen, office, entryway)
+  예) "밖에서", "외출용", "외부" → entryway 또는 office
+      "야외", "나들이", "데이트" → entryway
 - mood: 분위기 (calm, fresh, romantic, focus, energetic, luxury, cozy, sweet)
 - intensity: 강도 (light, medium, strong)
 - time: 시간대 (morning, daytime, evening, night)
