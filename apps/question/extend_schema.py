@@ -207,5 +207,5 @@ value_list = {
     "401": extend_schema("Unauthorized", {"error_detail": "자격 인증 데이터가 제공되 않았습니다."}, "401"),
     "403": extend_schema("Forbidden", {"error_detail": "권한이 없습니다."}, "403"),
     "404": extend_schema("Not Found", {"error_detail": "질문 결과가 없습니다."}, "404"),
-    "429": extend_schema("Too Mony Requests", {"error_detail": "너무 자주 접근하였습니다."}, "429"),
+    "429": extend_schema("Too Many Requests", {"error_detail": "너무 자주 접근하였습니다."}, "429"),
 }

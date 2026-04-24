@@ -13,21 +13,21 @@ from apps.analysis.models import Scent
 from apps.core.utils.s3_handler import S3Handler
 from apps.question.models import Keyword, Question, QuestionsAnswer, QuestionsResults
 
-s3handler = S3Handler()
-
 
 class Service:
+    _s3handler = S3Handler()
+
     @staticmethod
     def image_url_edit(image_url: str) -> str:
         parsed = urlparse(image_url)
         return parsed.path.lstrip("/") if parsed is not None else image_url
 
     @classmethod
-    def s3_image(cls, image_url: str) -> str | None:
+    def s3_image(cls, image_url: str | None) -> str | None:
         if image_url is not None:
             image_key = cls.image_url_edit(image_url)
             try:
-                return s3handler.generate_get_presigned_url(image_key)
+                return cls._s3handler.generate_get_presigned_url(image_key)
             except ClientError as e:
                 logger = logging.getLogger(__name__)
                 logger.error(e)
@@ -165,7 +165,7 @@ class Service:
             )
         else:
             user_profile = cls.build_profile_from_keywords(data)
-            add_text = ", ".join(kw.get("name") for kw in data)
+            add_text = ", ".join(kw.get("name", "Unknown") for kw in data)
 
         selected_scent = cls.find_best_scent(user_profile, cls.get_cached_scent_data())
 

@@ -1,4 +1,5 @@
 import json
+import random
 from typing import Any
 
 from django.db.models import QuerySet
@@ -6,19 +7,21 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404
 
 from apps.analysis.models import Scent
-from apps.question.gool_ai_studio import ask_gemini
+from apps.question.gool_ai_studio import Gemini
 from apps.question.models import Question
 from apps.question.service.service import Service
 
 
-class QuestService(Service):
+class QuestService(Service, Gemini):
     @staticmethod
     def quest_select() -> QuerySet[Question]:
-        random_question = Question.objects.prefetch_related("answers").order_by("?")[:10]
+        id_data = list(Question.objects.values_list("id", flat=True))
+        random_id = random.sample(id_data, min(len(id_data), 10))
+        random_question = Question.objects.filter(id__in=random_id).prefetch_related("answers")
         return random_question
 
-    @staticmethod
-    def quest_in(user_id: int, validated_data: list[dict[str, Any]]) -> dict[str, Any]:
+    @classmethod
+    def quest_in(cls, user_id: int, validated_data: list[dict[str, Any]]) -> dict[str, Any]:
         if validated_data is None:
             raise Http404()
 
@@ -27,15 +30,15 @@ class QuestService(Service):
         ]
 
         json_str = json.dumps(keyword_strings, ensure_ascii=False)
-        prompt, scent_id, match_score = Service.result_prompt(json_str, "설문지")
-        data = ask_gemini(prompt)
+        prompt, scent_id, match_score = cls.result_prompt(json_str, "설문지")
+        data = cls.ask_gemini(prompt)
         if data is None:
             raise Http404()
 
         scent_data = get_object_or_404(Scent, id=scent_id)
 
-        scent_data.thumbnail_url = Service.s3_image(scent_data.thumbnail_url) if scent_data.thumbnail_url else None
-        result = Service.keyword_save(user_id, scent_id, data, json_str, "S", match_score)
+        scent_data.thumbnail_url = cls.s3_image(scent_data.thumbnail_url) if scent_data.thumbnail_url else None
+        result = cls.keyword_save(user_id, scent_id, data, json_str, "S", match_score)
 
         filter_data = {
             "id": result.id,

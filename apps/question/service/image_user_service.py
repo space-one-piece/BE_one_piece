@@ -1,15 +1,15 @@
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 
-from apps.question.gool_ai_studio import image_gemini
+from apps.question.gool_ai_studio import Gemini
 from apps.question.models import QuestionsResults
 from apps.question.service.service import Service
 from apps.users.models.models import User
 
 
-class ImageUserService(Service):
-    @staticmethod
-    def image_new(user_id: int, results_id: int) -> str | None:
+class ImageUserService(Service, Gemini):
+    @classmethod
+    def image_new(cls, user_id: int, results_id: int) -> str | None:
         quest_data = get_object_or_404(QuestionsResults, pk=results_id)
 
         if quest_data.user_id != user_id:
@@ -28,14 +28,14 @@ class ImageUserService(Service):
                 high contrast, vivid colors, strong shadows, detailed objects, flowers, people, text, 
                 patterns, noise, grain, geometric shapes
             """
-        image_data = image_gemini(prompt)
+        image_data = cls.image_gemini(prompt)
         return image_data
 
-    @staticmethod
-    def user_profile_save(user_id: int, image_url: str) -> None:
+    @classmethod
+    def user_profile_save(cls, user_id: int, image_url: str) -> None:
         if image_url is None:
             raise Http404
 
         user_data = get_object_or_404(User, pk=user_id)
-        user_data.profile_image_url = Service.image_url_edit(image_url)
+        user_data.profile_image_url = cls.image_url_edit(image_url)
         user_data.save()
