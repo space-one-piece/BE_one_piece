@@ -26,9 +26,12 @@ class ScentListSerializer(serializers.ModelSerializer["Scent"]):
         fields = [
             "id",
             "name",
+            "categories",
             "tags",
             "description",
             "eng_name",
+            "intensity",
+            "season",
             "thumbnail_url",
         ]
         read_only_fields = fields
@@ -37,6 +40,8 @@ class ScentListSerializer(serializers.ModelSerializer["Scent"]):
 # 출력
 # 향 데이터(상세)
 class ScentDetailSerializer(serializers.ModelSerializer["Scent"]):
+    similar_scents = ScentListSerializer(many=True, read_only=True)
+
     class Meta:
         model = Scent
         fields = [

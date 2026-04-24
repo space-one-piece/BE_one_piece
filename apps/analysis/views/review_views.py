@@ -1,6 +1,6 @@
-from drf_spectacular.utils import OpenApiResponse, extend_schema
+from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -9,80 +9,76 @@ from ..serializers.review_serializers import AnalysisReviewSerializer
 from ..service.review_service import ReviewService
 
 
-class AnalysisReviewAPIView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    @extend_schema(
-        tags=["image_analysis_review"],
-        summary="특정 분석의 리뷰 조회",
-        responses={
-            200: AnalysisReviewSerializer,
-            404: OpenApiResponse(description="분석 결과를 찾을 수 없음"),
-        },
-    )
-    def get(self, request: Request, id: int) -> Response:
-        review_data = ReviewService.get_review(analysis_id=id, user=request.user)  # type: ignore
-
-        output_serializer = AnalysisReviewSerializer(review_data)
-
-        return Response(output_serializer.data)
-
-    @extend_schema(
-        tags=["image_analysis_review"],
-        summary="분석 결과에 대한 리뷰 작성/수정",
-        description="""
-        - 최초 작성 시: `review`와 `rating` 둘 다 필수
-        - 수정 시: 두 필드 중 하나만 보내도 수정 가능
-        """,
-        request=AnalysisReviewSerializer,
-        responses={
-            200: OpenApiResponse(description="리뷰 저장 성공"),
-            400: OpenApiResponse(description="잘못된 입력값"),
-        },
-    )
-    def patch(self, request: Request, id: int) -> Response:
-        input_serializer = AnalysisReviewSerializer(data=request.data, partial=True)
-        input_serializer.is_valid(raise_exception=True)
-
-        updated_analysis = ReviewService.patch_review(
-            analysis_id=id,
-            user=request.user,  # type: ignore
-            data=input_serializer.validated_data,
-        )
-
-        output_serializer = AnalysisReviewSerializer(updated_analysis)
-
-        return Response(output_serializer.data)
-
-    @extend_schema(
-        tags=["image_analysis_review"],
-        summary="작성한 리뷰 삭제",
-        description="작성한 리뷰 삭제",
-        responses={
-            204: OpenApiResponse(description="리뷰 삭제 성공"),
-            404: OpenApiResponse(description="분석글 찾을 수 없음"),
-        },
-    )
-    def delete(self, request: Request, id: int) -> Response:
-        ReviewService.delete_review(analysis_id=id, user=request.user)  # type: ignore
-
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-
 class MyReviewListAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
+    type_param = OpenApiParameter(
+        name="type",
+        type=str,
+        required=False,
+        description="조회할 리뷰 타입 (image, chatbot, keyword, survey). 목록 조회시 비워두면 전체 반환.",
+    )
+
     @extend_schema(
-        tags=["image_analysis_review"],
-        summary="내 리뷰 전체 목록",
-        description="내 리뷰 전체 목록",
-        responses={
-            200: AnalysisReviewSerializer(many=True),
-        },
+        tags=["analysis_reviews"],
+        summary="리뷰 목록 조회 또는 특정 리뷰 상세 조회",
+        parameters=[type_param],
+        responses={200: AnalysisReviewSerializer(many=True)},
+    )
+    def get(self, request: Request, id: int | None = None) -> Response:
+        analysis_type = request.query_params.get("type")
+
+        if id is None:
+            reviews = ReviewService.get_my_reviews(user_id=request.user.id, analysis_type=analysis_type)
+            return Response(AnalysisReviewSerializer(reviews, many=True).data)
+
+        if not analysis_type:
+            analysis_type = "image"
+
+        instance = ReviewService.get_review(analysis_id=id, user=request.user, analysis_type=analysis_type)  # type: ignore
+        return Response(AnalysisReviewSerializer(instance).data)
+
+    @extend_schema(
+        tags=["analysis_reviews"],
+        summary="리뷰 작성 및 수정",
+        parameters=[type_param],
+        request=AnalysisReviewSerializer,
+        responses={200: AnalysisReviewSerializer},
+    )
+    def patch(self, request: Request, id: int) -> Response:
+        analysis_type = request.query_params.get("type", "image")
+        serializer = AnalysisReviewSerializer(data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+
+        updated = ReviewService.patch_review(
+            analysis_id=id,
+            user=request.user,  # type: ignore
+            analysis_type=analysis_type,
+            data=serializer.validated_data,
+        )
+        return Response(AnalysisReviewSerializer(updated).data)
+
+    @extend_schema(
+        tags=["analysis_reviews"],
+        summary="리뷰 삭제 (초기화)",
+        parameters=[type_param],
+        responses={204: OpenApiResponse(description="삭제 성공")},
+    )
+    def delete(self, request: Request, id: int) -> Response:
+        analysis_type = request.query_params.get("type", "image")
+        ReviewService.delete_review(id, request.user, analysis_type)  # type: ignore
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class RecentReviewListAPIView(APIView):
+    permission_classes = [AllowAny]
+
+    @extend_schema(
+        tags=["analysis_reviews"],
+        summary="최신 통합 리뷰 목록 조회 (메인용)",
+        description="최신순으로 5개 가져오도록",
+        responses={200: AnalysisReviewSerializer(many=True)},
     )
     def get(self, request: Request) -> Response:
-        user_id = request.user.id
-        review_list = ReviewService.get_my_reviews(user_id=user_id)
-        output_serializer = AnalysisReviewSerializer(review_list, many=True)
-
-        return Response(output_serializer.data)
+        recent_reviews = ReviewService.get_recent_reviews(limit=5)
+        return Response(AnalysisReviewSerializer(recent_reviews, many=True).data)
