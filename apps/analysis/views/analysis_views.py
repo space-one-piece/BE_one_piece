@@ -1,4 +1,4 @@
-from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
+from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema, inline_serializer
 from rest_framework import serializers, status
 from rest_framework.exceptions import NotFound, ValidationError
 from rest_framework.permissions import IsAuthenticated
@@ -210,6 +210,14 @@ class AnalysisTotalDetailAPIView(APIView):
         tags=["analysis_intergrations"],
         summary="통합 분석 결과 상세 조회",
         description="ID와 Type을 받아 이미지/챗봇/키워드 중 적절한 분석 결과를 반환합니다.",
+        parameters=[
+            OpenApiParameter(
+                name="type",
+                type=str,
+                required=True,
+                description="분석 타입 (허용값: image, chatbot, keyword, survey)",
+            )
+        ],
     )
     def get(self, request: Request, id: int) -> Response:
         analysis_type = request.query_params.get("type")

@@ -80,5 +80,5 @@ class RecentReviewListAPIView(APIView):
         responses={200: AnalysisReviewSerializer(many=True)},
     )
     def get(self, request: Request) -> Response:
-        recent_reviews = ReviewService.get_recent_reviews(limit=5)
+        recent_reviews = ReviewService.get_recent_reviews(limit=10)
         return Response(AnalysisReviewSerializer(recent_reviews, many=True).data)
