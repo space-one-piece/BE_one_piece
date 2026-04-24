@@ -6,7 +6,7 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404
 
 from apps.analysis.models import Scent
-from apps.question.goole_ai_studio import Gemini
+from apps.question.google_ai_studio import Gemini
 from apps.question.models import Keyword
 from apps.question.service.service import Service
 
