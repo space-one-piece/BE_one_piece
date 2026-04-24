@@ -40,6 +40,8 @@ dependencies = [
     "opencv-python-headless>=4.13.0.92",
     "redis>=7.4.0",
     "solapi>=5.0.3",
+    "korcen>=1.0.2",
+    "colorama>=0.4.6",
 ]
 
 [dependency-groups]
