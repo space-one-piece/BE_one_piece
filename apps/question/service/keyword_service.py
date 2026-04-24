@@ -19,7 +19,7 @@ class KeywordService(Service, Gemini):
 
     @classmethod
     def keyword_result(cls, user_id: int, validated_data: list[dict[str, Any]]) -> dict[str, Any]:
-        if validated_data:
+        if validated_data is None:
             raise Http404()
         keyword_strings = [{"division": data["division"], "name": data["name"]} for data in validated_data]
 
@@ -32,6 +32,8 @@ class KeywordService(Service, Gemini):
         scent_data = get_object_or_404(Scent, pk=scent_id)
 
         scent_data.thumbnail_url = cls.s3_image(scent_data.thumbnail_url)
+
+        scent_data.recommended_places = cls.list_url(scent_data.recommended_places)
 
         result = cls.keyword_save(user_id, scent_id, data, json_str, "K", match_score)
 

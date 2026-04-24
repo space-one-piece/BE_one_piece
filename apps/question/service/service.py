@@ -24,14 +24,20 @@ class Service:
 
     @classmethod
     def s3_image(cls, image_url: str | None) -> str | None:
-        if image_url is not None:
-            image_key = cls.image_url_edit(image_url)
-            try:
-                return cls._s3handler.generate_get_presigned_url(image_key)
-            except ClientError as e:
-                logger = logging.getLogger(__name__)
-                logger.error(e)
-                return image_url
+        if not image_url:
+            return None
+
+        image_key = cls.image_url_edit(image_url)
+
+        if not image_key:
+            return None
+
+        try:
+            return cls._s3handler.generate_get_presigned_url(image_key)
+        except ClientError as e:
+            logger = logging.getLogger(__name__)
+            logger.error(e)
+            return image_url
 
         return None
 
@@ -200,3 +206,13 @@ class Service:
             answer_ai=answer_ai,
             match_score=match_score,
         )
+
+    @classmethod
+    def list_url(cls, data: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        return [
+            {
+                **place,
+                "imageUrl": cls.s3_image(place["imageUrl"]),
+            }
+            for place in data
+        ]

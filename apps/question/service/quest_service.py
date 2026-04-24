@@ -37,7 +37,10 @@ class QuestService(Service, Gemini):
 
         scent_data = get_object_or_404(Scent, id=scent_id)
 
-        scent_data.thumbnail_url = cls.s3_image(scent_data.thumbnail_url) if scent_data.thumbnail_url else None
+        scent_data.thumbnail_url = cls.s3_image(scent_data.thumbnail_url)
+
+        scent_data.recommended_places = cls.list_url(scent_data.recommended_places)
+
         result = cls.keyword_save(user_id, scent_id, data, json_str, "S", match_score)
 
         filter_data = {
