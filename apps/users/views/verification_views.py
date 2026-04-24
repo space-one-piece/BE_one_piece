@@ -38,7 +38,7 @@ class EmailConfirmView(APIView):
         description="이메일로 발송된 인증번호를 검증하고 회원가입용 토큰을 발급합니다.",
         request=EmailVerifySerializer,
         responses={
-            200: {"example": {"detail": "이메일 인증에 성공했습니다.", "email_token": "uuid_string"}},
+            200: {"example": {"detail": "이메일 인증에 성공했습니다."}},
             400: {"example": {"detail": "인증번호가 잘못되었거나 만료되었습니다.."}},
         },
         tags=["Verification"],
@@ -82,7 +82,7 @@ class SmsConfirmView(APIView):
         description="휴대폰으로 발송된 인증번호를 검증하고 회원가입용 토큰을 발급합니다.",
         request=SmsVerifySerializer,
         responses={
-            200: {"example": {"detail": "휴대폰 인증에 성공했습니다.", "phone_token": "uuid_string"}},
+            200: {"example": {"detail": "휴대폰 인증에 성공했습니다."}},
             400: {"example": {"detail": "인증번호가 잘못되었거나 만료되었습니다.."}},
         },
         tags=["Verification"],
