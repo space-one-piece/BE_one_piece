@@ -69,8 +69,6 @@ class AnalysisService:
         resource = ImageResource.objects.filter(user=user, img_key=img_key).first()
         if not resource:
             raise ValueError("유효하지 않은 이미지 키이거나 접근 권한이 없습니다.")
-        if not resource.is_uploaded:
-            raise ValueError("이미지가 아직 업로드되지 않았습니다.")
 
         try:
             s3_client = boto3.client(
