@@ -28,7 +28,7 @@ class AnalysisCreateSerializer(serializers.Serializer[Any]):
 # 출력
 # 향 데이터(목록)
 class ScentListSerializer(serializers.ModelSerializer["Scent"]):
-    thumbnail_url = serializers.SerializerMethodField()
+    # thumbnail_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Scent
@@ -45,10 +45,10 @@ class ScentListSerializer(serializers.ModelSerializer["Scent"]):
         ]
         read_only_fields = fields
 
-    def get_thumbnail_url(self, obj: Scent) -> str | None:
-        if not obj.thumbnail_url:
-            return None
-        return image_url_cloud(obj.thumbnail_url)
+    # def get_thumbnail_url(self, obj: Scent) -> str | None:
+    #     if not obj.thumbnail_url:
+    #         return None
+    #     return image_url_cloud(obj.thumbnail_url)
 
 
 # 출력
