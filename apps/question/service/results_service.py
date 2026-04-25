@@ -5,6 +5,7 @@ from django.utils import timezone
 from rest_framework.exceptions import PermissionDenied
 
 from apps.analysis.models import Scent
+from apps.core.utils.cloud_front import image_url_cloud
 from apps.core.utils.hashids import decode_id, encode_id
 from apps.question.models import QuestionsResults
 from apps.question.service.service import Service
@@ -31,7 +32,7 @@ class ResultsService(Service):
     ) -> dict[str, Any]:
         scent = get_object_or_404(Scent, pk=scent_id)
 
-        scent.thumbnail_url = cls.s3_image(scent.thumbnail_url) if scent.thumbnail_url else None
+        scent.thumbnail_url = image_url_cloud(scent.thumbnail_url) if scent.thumbnail_url else None
 
         scent.recommended_places = cls.list_url(scent.recommended_places) if scent.recommended_places else None
 
@@ -60,7 +61,7 @@ class ResultsService(Service):
         question_data = get_object_or_404(QuestionsResults, pk=question_id)
 
         question_data.scent.thumbnail_url = (
-            cls.s3_image(question_data.scent.thumbnail_url) if question_data.scent.thumbnail_url else None
+            cls._s3handler.s3_image(question_data.scent.thumbnail_url) if question_data.scent.thumbnail_url else None
         )
 
         question_data.scent.recommended_places = (
@@ -95,7 +96,6 @@ class ResultsService(Service):
                     "name": item.scent.name,
                     "description": item.scent.description,
                     "eng_name": item.scent.eng_name,
-                    "thumbnail_url": cls.s3_image(item.scent.thumbnail_url) if item.scent.thumbnail_url else None,
                 },
                 "ai_comment": item.answer_ai,
                 "match_score": item.match_score,
@@ -119,7 +119,7 @@ class ResultsService(Service):
             raise PermissionDenied()
 
         questin_data.scent.thumbnail_url = (
-            cls.s3_image(questin_data.scent.thumbnail_url) if questin_data.scent.thumbnail_url else None
+            cls._s3handler.s3_image(questin_data.scent.thumbnail_url) if questin_data.scent.thumbnail_url else None
         )
 
         data = {

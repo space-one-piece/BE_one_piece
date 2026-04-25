@@ -1,45 +1,19 @@
 import json
-import logging
 import math
 import random
 from typing import Any, cast
-from urllib.parse import urlparse
 
-from botocore.exceptions import ClientError
 from django.core.cache import cache
 from django.db.models import JSONField
 
 from apps.analysis.models import Scent
+from apps.core.utils.cloud_front import image_url_cloud
 from apps.core.utils.s3_handler import S3Handler
 from apps.question.models import Keyword, Question, QuestionsAnswer, QuestionsResults
 
 
 class Service:
     _s3handler = S3Handler()
-
-    @staticmethod
-    def image_url_edit(image_url: str) -> str:
-        parsed = urlparse(image_url)
-        return parsed.path.lstrip("/") if parsed is not None else image_url
-
-    @classmethod
-    def s3_image(cls, image_url: str | None) -> str | None:
-        if not image_url:
-            return None
-
-        image_key = cls.image_url_edit(image_url)
-
-        if not image_key:
-            return None
-
-        try:
-            return cls._s3handler.generate_get_presigned_url(image_key)
-        except ClientError as e:
-            logger = logging.getLogger(__name__)
-            logger.error(e)
-            return image_url
-
-        return None
 
     @staticmethod
     def get_cached_data() -> tuple[dict[str, str], dict[str, int], dict[str, JSONField | Any]] | Any:
@@ -213,7 +187,7 @@ class Service:
             {
                 "name": place["name"],
                 "description": place["description"],
-                "imageUrl": cls.s3_image(place["imageUrl"]),
+                "imageUrl": image_url_cloud(place["imageUrl"]),
                 "matchScore": place["matchScore"],
             }
             for place in data

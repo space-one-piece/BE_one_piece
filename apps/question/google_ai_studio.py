@@ -20,7 +20,7 @@ class Gemini:
     @classmethod
     def ask_gemini(cls, prompt: str, max_retries: int = 3) -> str | None:
         if max_retries == 0:
-            raise CustomBadRequest()
+            return None
 
         try:
             response = cls._client.models.generate_content(model=GEMINI_MODEL, contents=prompt)

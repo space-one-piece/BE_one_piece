@@ -1,6 +1,9 @@
 # AWS S3에 실제로 연결하는 도구. boto3(AWS 서비스 전부 다룰 수 있는놈)가 presigned URL, img_url 생성
+import logging
+from urllib.parse import urlparse
 
 import boto3
+from botocore.exceptions import ClientError
 from django.conf import settings
 
 
@@ -41,3 +44,24 @@ class S3Handler:
     # 이미지 URL 생성
     def get_img_url(self, key: str) -> str:
         return f"https://{self.bucket_name}.s3.{self.region}.amazonaws.com/{key}"
+
+    def s3_image(self, image_url: str | None) -> str | None:
+        if not image_url:
+            return None
+
+        image_key = image_url_edit(image_url)
+
+        if not image_key:
+            return None
+
+        try:
+            return self.generate_get_presigned_url(image_key)
+        except ClientError as e:
+            logger = logging.getLogger(__name__)
+            logger.error(e)
+            return image_url
+
+
+def image_url_edit(image_url: str) -> str:
+    parsed = urlparse(image_url)
+    return parsed.path.lstrip("/") if parsed is not None else image_url

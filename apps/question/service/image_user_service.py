@@ -1,6 +1,7 @@
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 
+from apps.core.utils.s3_handler import image_url_edit
 from apps.question.google_ai_studio import Gemini
 from apps.question.models import QuestionsResults
 from apps.question.service.service import Service
@@ -37,5 +38,5 @@ class ImageUserService(Service, Gemini):
             raise Http404
 
         user_data = get_object_or_404(User, pk=user_id)
-        user_data.profile_image_url = cls.image_url_edit(image_url)
+        user_data.profile_image_url = image_url_edit(image_url)
         user_data.save()
