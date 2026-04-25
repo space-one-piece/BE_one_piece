@@ -1,5 +1,5 @@
 import json
-from typing import Any
+from typing import Any, cast
 
 from django.db.models import QuerySet
 from django.http import Http404
@@ -8,10 +8,10 @@ from django.shortcuts import get_object_or_404
 from apps.analysis.models import Scent
 from apps.question.google_ai_studio import Gemini
 from apps.question.models import Keyword
-from apps.question.service.service import QuestService
+from apps.question.service.service import QuestServices
 
 
-class KeywordService(QuestService, Gemini):
+class KeywordService(QuestServices, Gemini):
     @staticmethod
     def keyword_select() -> QuerySet[Keyword]:
         keyword_data = Keyword.objects.all()
@@ -31,7 +31,7 @@ class KeywordService(QuestService, Gemini):
 
         scent_data = get_object_or_404(Scent, pk=scent_id)
 
-        scent_data = cls.scent_edit(scent_data)
+        scent_data = cast(Any, cls.scent_edit(scent_data)) if scent_data else None
 
         result = cls.keyword_save(user_id, scent_id, data, json_str, "K", match_score)
 

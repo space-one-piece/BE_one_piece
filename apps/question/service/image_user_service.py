@@ -4,11 +4,11 @@ from django.shortcuts import get_object_or_404
 from apps.core.utils.s3_handler import image_url_edit
 from apps.question.google_ai_studio import Gemini
 from apps.question.models import QuestionsResults
-from apps.question.service.service import QuestService
+from apps.question.service.service import QuestServices
 from apps.users.models.models import User
 
 
-class ImageUserService(QuestService, Gemini):
+class ImageUserService(QuestServices, Gemini):
     @classmethod
     def image_new(cls, user_id: int, results_id: int) -> str | None:
         quest_data = get_object_or_404(QuestionsResults, pk=results_id)

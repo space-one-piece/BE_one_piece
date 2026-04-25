@@ -9,7 +9,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from ...question.service.service import QuestService
+from ...question.service.service import QuestServices
 from ..models import ChatbotRecommendation, ChatSession
 from ..serializers import ChatbotRecommendationDetailSerializer
 from ..services.chatbot_completion_policy import MAX_RETRY_COUNT
@@ -222,7 +222,7 @@ class ChatbotRecommendationDetailView(APIView):
         except ChatbotRecommendation.DoesNotExist:
             raise NotFound()
 
-        recommendation.scent = QuestService.scent_edit(recommendation.scent)
+        recommendation.scent = QuestServices.scent_edit(recommendation.scent)
 
         serializer = ChatbotRecommendationDetailSerializer(recommendation)
         return Response(

@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, cast
 
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
@@ -8,10 +8,10 @@ from apps.analysis.models import Scent
 from apps.core.utils.cloud_front import image_url_cloud
 from apps.core.utils.hashids import decode_id, encode_id
 from apps.question.models import QuestionsResults
-from apps.question.service.service import QuestService
+from apps.question.service.service import QuestServices
 
 
-class ResultsService(QuestService):
+class ResultsService(QuestServices):
     @classmethod
     def review_save(cls, user_id: int, result_id: int, review: str, rating: int) -> dict[str, Any]:
         data = get_object_or_404(QuestionsResults, pk=result_id)
@@ -118,11 +118,11 @@ class ResultsService(QuestService):
         if questin_data.user_id != user_id:
             raise PermissionDenied()
 
-        questin_data.scent = cls.scent_edit(questin_data.scent)
+        scent_data = cast(Any, cls.scent_edit(questin_data.scent)) if questin_data.scent else None
 
         data = {
             "id": questin_data.id,
-            "recommended_scent": questin_data.scent,
+            "recommended_scent": scent_data,
             "ai_comment": questin_data.answer_ai,
             "match_score": questin_data.match_score,
             "review": questin_data.review,
