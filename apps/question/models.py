@@ -78,6 +78,7 @@ class QuestionsResults(TimeStampModel):
     review = models.TextField(null=True, blank=True, max_length=300)
     rating = models.IntegerField(null=True, blank=True)
     match_score = models.IntegerField(null=False, blank=False, default=0)
+    is_helpful = models.BooleanField(default=False)
 
     def __str__(self) -> str:
         return f"결과는{self.scent.name} 향이고 이유는 {self.answer_ai}"
