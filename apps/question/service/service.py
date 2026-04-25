@@ -192,3 +192,12 @@ class Service:
             }
             for place in data
         ]
+
+    @classmethod
+    def scent_edit(cls, scent_data: Scent) -> Scent:
+        scent_data.thumbnail_url = image_url_cloud(scent_data.thumbnail_url) if scent_data.thumbnail_url else None
+
+        scent_data.recommended_places = (
+            cls.list_url(scent_data.recommended_places) if scent_data.recommended_places else None
+        )
+        return scent_data

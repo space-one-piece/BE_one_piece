@@ -118,13 +118,7 @@ class ResultsService(Service):
         if questin_data.user_id != user_id:
             raise PermissionDenied()
 
-        questin_data.scent.thumbnail_url = (
-            image_url_cloud(questin_data.scent.thumbnail_url) if questin_data.scent.thumbnail_url else None
-        )
-
-        questin_data.scent.recommended_places = (
-            cls.list_url(questin_data.scent.recommended_places) if questin_data.scent.recommended_places else None
-        )
+        questin_data.scent = cls.scent_edit(questin_data.scent)
 
         data = {
             "id": questin_data.id,
