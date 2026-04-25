@@ -2,14 +2,21 @@ from typing import Any
 
 from rest_framework import serializers
 
+from apps.core.utils.cloud_front import image_url_cloud
+
+from ...core.utils.s3_handler import S3Handler
 from ..models import ImageAnalysis, ImageColorAnalysis, Scent
+
+allowed_mine_types = ["image/jpeg", "image/png", "image/webp", "image/gif"]
 
 
 # 입력
 # 이미지 업로드(프리사인URL 요청)
 class UploadURLSerializer(serializers.Serializer[Any]):
     file_name = serializers.CharField(required=True, help_text="올릴 파일 이름 (예: image.jpg)")
-    file_type = serializers.CharField(required=True, help_text="파일 확장자 타입 (예: image/jpeg)")
+    file_type = serializers.ChoiceField(
+        choices=allowed_mine_types, required=True, help_text="허용 타입: image/jpeg, image/png, image/webp"
+    )
 
 
 # 입력
@@ -21,6 +28,8 @@ class AnalysisCreateSerializer(serializers.Serializer[Any]):
 # 출력
 # 향 데이터(목록)
 class ScentListSerializer(serializers.ModelSerializer["Scent"]):
+    thumbnail_url = serializers.SerializerMethodField()
+
     class Meta:
         model = Scent
         fields = [
@@ -36,11 +45,18 @@ class ScentListSerializer(serializers.ModelSerializer["Scent"]):
         ]
         read_only_fields = fields
 
+    def get_thumbnail_url(self, obj: Scent) -> str | None:
+        if not obj.thumbnail_url:
+            return None
+        return image_url_cloud(obj.thumbnail_url)
+
 
 # 출력
 # 향 데이터(상세)
 class ScentDetailSerializer(serializers.ModelSerializer["Scent"]):
     similar_scents = ScentListSerializer(many=True, read_only=True)
+    thumbnail_url = serializers.SerializerMethodField()
+    recommended_places = serializers.SerializerMethodField()
 
     class Meta:
         model = Scent
@@ -63,6 +79,25 @@ class ScentDetailSerializer(serializers.ModelSerializer["Scent"]):
             "created_at",
         ]
         read_only_fields = fields
+
+    def get_thumbnail_url(self, obj: Scent) -> str | None:
+        if not obj.thumbnail_url:
+            return None
+        return image_url_cloud(obj.thumbnail_url)
+
+    def get_recommended_places(self, obj: Scent) -> list[dict[str, Any]]:
+        places = obj.recommended_places
+        if not places:
+            return []
+
+        result = []
+        for place in places:
+            place_copy = dict(place)
+            if isinstance(place_copy, dict) and place_copy.get("imageUrl"):
+                place_copy["imageUrl"] = image_url_cloud(place_copy["imageUrl"])
+            result.append(place_copy)
+
+        return result
 
 
 # 출력
@@ -121,10 +156,13 @@ class AnalysisDetailSerializer(serializers.ModelSerializer["ImageAnalysis"]):
     recommended_scent = ScentDetailSerializer(read_only=True)
     image_metadata = ImageColorAnalysisSerializer(read_only=True)
 
+    presigned_image_url = serializers.SerializerMethodField()
+
     class Meta:
         model = ImageAnalysis
         fields = [
             "id",
+            "presigned_image_url",
             "recommended_scent",
             "image_metadata",
             "ai_tags",
@@ -136,3 +174,8 @@ class AnalysisDetailSerializer(serializers.ModelSerializer["ImageAnalysis"]):
             "created_at",
         ]
         read_only_fields = fields
+
+    def get_presigned_image_url(self, obj: ImageAnalysis) -> str | None:
+        if not obj.s3_image_url:
+            return None
+        return S3Handler().s3_image(obj.s3_image_url)
