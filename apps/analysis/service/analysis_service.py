@@ -18,6 +18,7 @@ from apps.chatbot.models import ChatbotRecommendation
 from apps.chatbot.serializers import ChatbotRecommendationDetailSerializer
 from apps.chatbot.services.recommendation_history_list import get_chatbot_recommendation_history
 from apps.core.services.presigned_url_service import PresignedUrlService
+from apps.core.utils.cloud_front import image_url_cloud
 from apps.question.serializers.results_serializers import ResultWebShareSerializer
 from apps.question.service.results_service import ResultsService
 from apps.users.models.models import User
@@ -68,6 +69,8 @@ class AnalysisService:
         resource = ImageResource.objects.filter(user=user, img_key=img_key).first()
         if not resource:
             raise ValueError("유효하지 않은 이미지 키이거나 접근 권한이 없습니다.")
+        if not resource.is_uploaded:
+            raise ValueError("이미지가 아직 업로드되지 않았습니다.")
 
         try:
             s3_client = boto3.client(
@@ -184,7 +187,7 @@ class AnalysisService:
                     "id": item.recommended_scent.id,
                     "name": item.recommended_scent.name,
                     "eng_name": item.recommended_scent.eng_name,
-                    "thumbnail_url": item.recommended_scent.thumbnail_url,
+                    "thumbnail_url": image_url_cloud(item.recommended_scent.thumbnail_url),
                 }
                 if item.recommended_scent
                 else None,
