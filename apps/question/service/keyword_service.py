@@ -8,10 +8,10 @@ from django.shortcuts import get_object_or_404
 from apps.analysis.models import Scent
 from apps.question.google_ai_studio import Gemini
 from apps.question.models import Keyword
-from apps.question.service.service import Service
+from apps.question.service.service import QuestService
 
 
-class KeywordService(Service, Gemini):
+class KeywordService(QuestService, Gemini):
     @staticmethod
     def keyword_select() -> QuerySet[Keyword]:
         keyword_data = Keyword.objects.all()

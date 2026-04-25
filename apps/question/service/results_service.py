@@ -8,10 +8,10 @@ from apps.analysis.models import Scent
 from apps.core.utils.cloud_front import image_url_cloud
 from apps.core.utils.hashids import decode_id, encode_id
 from apps.question.models import QuestionsResults
-from apps.question.service.service import Service
+from apps.question.service.service import QuestService
 
 
-class ResultsService(Service):
+class ResultsService(QuestService):
     @classmethod
     def review_save(cls, user_id: int, result_id: int, review: str, rating: int) -> dict[str, Any]:
         data = get_object_or_404(QuestionsResults, pk=result_id)

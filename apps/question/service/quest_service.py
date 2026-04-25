@@ -9,10 +9,10 @@ from django.shortcuts import get_object_or_404
 from apps.analysis.models import Scent
 from apps.question.google_ai_studio import Gemini
 from apps.question.models import Question
-from apps.question.service.service import Service
+from apps.question.service.service import QuestService
 
 
-class QuestService(Service, Gemini):
+class QuestService(QuestService, Gemini):
     @staticmethod
     def quest_select() -> QuerySet[Question]:
         id_data = list(Question.objects.values_list("id", flat=True))

@@ -12,7 +12,7 @@ from apps.core.utils.s3_handler import S3Handler
 from apps.question.models import Keyword, Question, QuestionsAnswer, QuestionsResults
 
 
-class Service:
+class QuestService:
     _s3handler = S3Handler()
 
     @staticmethod
@@ -194,7 +194,10 @@ class Service:
         ]
 
     @classmethod
-    def scent_edit(cls, scent_data: Scent) -> Scent:
+    def scent_edit(cls, scent_data: Scent) -> Scent | None:
+        if not scent_data:
+            return None
+
         scent_data.thumbnail_url = image_url_cloud(scent_data.thumbnail_url) if scent_data.thumbnail_url else None
 
         scent_data.recommended_places = (
