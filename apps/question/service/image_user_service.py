@@ -1,7 +1,7 @@
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 
-from apps.core.utils.s3_handler import S3Handler, image_url_edit
+from apps.core.utils.s3_handler import image_url_edit
 from apps.question.google_ai_studio import Gemini
 from apps.question.models import QuestionsResults
 from apps.question.service.service import Service
@@ -9,8 +9,6 @@ from apps.users.models.models import User
 
 
 class ImageUserService(Service, Gemini):
-    _s3handler = S3Handler()
-
     @classmethod
     def image_new(cls, user_id: int, results_id: int) -> str | None:
         quest_data = get_object_or_404(QuestionsResults, pk=results_id)

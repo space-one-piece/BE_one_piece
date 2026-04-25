@@ -8,10 +8,13 @@ from django.db.models import JSONField
 
 from apps.analysis.models import Scent
 from apps.core.utils.cloud_front import image_url_cloud
+from apps.core.utils.s3_handler import S3Handler
 from apps.question.models import Keyword, Question, QuestionsAnswer, QuestionsResults
 
 
 class Service:
+    _s3handler = S3Handler()
+
     @staticmethod
     def get_cached_data() -> tuple[dict[str, str], dict[str, int], dict[str, JSONField | Any]] | Any:
         cached_data = cache.get("scent_logic_maps")

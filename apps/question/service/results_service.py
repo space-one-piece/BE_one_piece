@@ -61,7 +61,7 @@ class ResultsService(Service):
         question_data = get_object_or_404(QuestionsResults, pk=question_id)
 
         question_data.scent.thumbnail_url = (
-            cls.s3_image(question_data.scent.thumbnail_url) if question_data.scent.thumbnail_url else None
+            cls._s3handler.s3_image(question_data.scent.thumbnail_url) if question_data.scent.thumbnail_url else None
         )
 
         question_data.scent.recommended_places = (
@@ -119,7 +119,7 @@ class ResultsService(Service):
             raise PermissionDenied()
 
         questin_data.scent.thumbnail_url = (
-            cls.s3_image(questin_data.scent.thumbnail_url) if questin_data.scent.thumbnail_url else None
+            cls._s3handler.s3_image(questin_data.scent.thumbnail_url) if questin_data.scent.thumbnail_url else None
         )
 
         data = {
