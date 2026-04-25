@@ -1,5 +1,6 @@
 from typing import Any
 
+from ...core.utils.cloud_front import image_url_cloud
 from ..models import ChatbotRecommendation
 
 
@@ -22,7 +23,7 @@ def get_chatbot_recommendation_history(user_id: int) -> list[dict[str, Any]]:
                 "name": r.scent.name,
                 "description": r.scent.description,
                 "eng_name": r.scent.eng_name,
-                "thumbnail_url": r.scent.thumbnail_url,
+                "thumbnail_url": image_url_cloud(r.scent.thumbnail_url),
             },
             "review": r.review,
             "rating": r.rating,
