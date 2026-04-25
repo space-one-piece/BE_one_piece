@@ -1,19 +1,18 @@
 import json
 import random
-from typing import Any
+from typing import Any, cast
 
 from django.db.models import QuerySet
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 
 from apps.analysis.models import Scent
-from apps.core.utils.cloud_front import image_url_cloud
 from apps.question.google_ai_studio import Gemini
 from apps.question.models import Question
-from apps.question.service.service import Service
+from apps.question.service.service import QuestServices
 
 
-class QuestService(Service, Gemini):
+class QuestService(QuestServices, Gemini):
     @staticmethod
     def quest_select() -> QuerySet[Question]:
         id_data = list(Question.objects.values_list("id", flat=True))
@@ -38,11 +37,7 @@ class QuestService(Service, Gemini):
 
         scent_data = get_object_or_404(Scent, id=scent_id)
 
-        scent_data.thumbnail_url = image_url_cloud(scent_data.thumbnail_url) if scent_data.thumbnail_url else None
-
-        scent_data.recommended_places = (
-            cls.list_url(scent_data.recommended_places) if scent_data.recommended_places else None
-        )
+        scent_data = cast(Any, cls.scent_edit(scent_data)) if scent_data else None
 
         result = cls.keyword_save(user_id, scent_id, data, json_str, "S", match_score)
 
