@@ -1,6 +1,7 @@
 from typing import Any
 
 from apps.analysis.models import Scent
+from apps.core.utils.cloud_front import image_url_cloud
 
 
 def get_scent_list(
@@ -18,7 +19,13 @@ def get_scent_list(
     if is_bestseller is not None:
         qs = qs.filter(is_bestseller=is_bestseller)
 
-    return list(qs.order_by(ordering))
+    result = list(qs.order_by(ordering))
+
+    for i in result:
+        if i.thumbnail_url:
+            i.thumbnail_url = image_url_cloud(i.thumbnail_url)
+
+    return result
 
 
 def get_scent_detail(scent_id: int) -> Scent:
