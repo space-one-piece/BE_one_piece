@@ -26,11 +26,21 @@ from apps.users.models.models import User
 logger = logging.getLogger(__name__)
 
 
+def _jaccard_similarity(set_a: set[Any], set_b: set[Any]) -> float:
+    if not set_a and not set_b:
+        return 0.0
+    return len(set_a & set_b) / len(set_a | set_b)
+
+
 class AnalysisService:
+    _TAG_WEIGHT = 0.7
+    _KEYWORD_WEIGHT = 0.3
+
     @staticmethod
     def _find_best_matching_scent(ai_tags: list[str], ai_keywords: list[str]) -> tuple[Scent | None, float]:
-        all_scents_qs = Scent.objects.only("id", "tags", "keywords", "is_bestseller").order_by("-is_bestseller", "id")
-        all_scents = list(all_scents_qs)
+        all_scents = list(
+            Scent.objects.only("id", "tags", "keywords", "is_bestseller").order_by("-is_bestseller", "id")
+        )
 
         if not all_scents:
             return None, 0.0
@@ -38,12 +48,12 @@ class AnalysisService:
         ai_tags_set = set(ai_tags)
         ai_keywords_set = set(ai_keywords)
 
-        tag_score = 5.0
-        keyword_score = 2.0
-        max_score = (len(ai_tags_set) * tag_score) + (len(ai_keywords_set) * keyword_score)
-
-        if max_score == 0:
+        if not ai_tags_set and not ai_keywords_set:
             return all_scents[0], 0.0
+
+        effective_tag_weight = AnalysisService._TAG_WEIGHT if ai_tags_set else 0.0
+        effective_keyword_weight = AnalysisService._KEYWORD_WEIGHT if ai_keywords_set else 0.0
+        total_weight = effective_tag_weight + effective_keyword_weight
 
         best_scent = all_scents[0]
         highest_score = 0.0
@@ -52,17 +62,18 @@ class AnalysisService:
             scent_tags_set = set(scent.tags)
             scent_keywords_set = set(scent.keywords)
 
-            matching_tags_count = len(ai_tags_set.intersection(scent_tags_set))
-            matching_keywords_count = len(ai_keywords_set.intersection(scent_keywords_set))
+            tag_sim = _jaccard_similarity(ai_tags_set, scent_tags_set)
+            keyword_sim = _jaccard_similarity(ai_keywords_set, scent_keywords_set)
 
-            current_score = (matching_tags_count * tag_score) + (matching_keywords_count * keyword_score)
+            combined_score = (
+                (tag_sim * effective_tag_weight) + (keyword_sim * effective_keyword_weight)
+            ) / total_weight
 
-            if current_score > highest_score:
-                highest_score = current_score
+            if combined_score > highest_score:
+                highest_score = combined_score
                 best_scent = scent
 
-        match_score_percentage = round((highest_score / max_score) * 100, 1)
-        return best_scent, match_score_percentage
+        return best_scent, round(highest_score * 100, 1)
 
     @staticmethod
     def image_analysis_process(user: User, img_key: str) -> tuple[ImageAnalysis, ImageColorAnalysis]:
