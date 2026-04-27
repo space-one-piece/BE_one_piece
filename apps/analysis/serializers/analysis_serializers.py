@@ -142,8 +142,8 @@ class AnalysisListSerializer(serializers.ModelSerializer["ImageAnalysis"]):
             "id",
             "type",
             "recommended_scent",
-            "review",
-            "rating",
+            # "review",
+            # "rating",
             "created_at",
         ]
         read_only_fields = fields

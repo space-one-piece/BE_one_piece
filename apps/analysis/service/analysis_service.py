@@ -207,6 +207,8 @@ class AnalysisService:
                 "recommended_scent": {
                     "id": item.recommended_scent.id,
                     "name": item.recommended_scent.name,
+                    "description": item.recommended_scent.description,
+                    "season": item.recommended_scent.season,
                     "eng_name": item.recommended_scent.eng_name,
                     "thumbnail_url": image_url_cloud(item.recommended_scent.thumbnail_url),
                 }
