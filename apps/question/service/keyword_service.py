@@ -21,7 +21,8 @@ class KeywordService(QuestServices, Gemini):
     def keyword_result(cls, user_id: int, validated_data: list[dict[str, Any]]) -> dict[str, Any]:
         if validated_data is None:
             raise Http404()
-        keyword_strings = [{"division": data["division"], "name": data["name"]} for data in validated_data]
+        print(validated_data)
+        keyword_strings = [{"id": data["id"], "name": data["name"]} for data in validated_data]
 
         json_str = json.dumps(keyword_strings, ensure_ascii=False)
         prompt, scent_id, match_score = cls.result_prompt(json_str, "키워드")
