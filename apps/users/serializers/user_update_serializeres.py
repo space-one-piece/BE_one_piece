@@ -8,4 +8,10 @@ from apps.users.models.models import User
 class UserProfileUpdateSerializer(serializers.ModelSerializer[Any]):
     class Meta:
         model = User
-        fields = ["name", "birthday", "profile_image_url", "updated_at"]
+        fields = ["name", "birthday", "updated_at"]
+
+
+class ProfileImageUpdateSerializer(serializers.ModelSerializer[Any]):
+    class Meta:
+        model = User
+        fields = ["profile_image_url"]
