@@ -21,7 +21,7 @@ class QuestServices:
         if cached_data is not None:
             return cached_data
 
-        q_map = {q.content: q.category for q in Question.objects.all()}
+        q_map = {q.content: q.get_category_display() for q in Question.objects.all()}
         a_map = {a.answer: a.score for a in QuestionsAnswer.objects.all()}
         k_map = {k.name: k.score for k in Keyword.objects.all()}
 

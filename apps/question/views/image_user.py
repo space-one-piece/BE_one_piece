@@ -26,8 +26,8 @@ class ImageUserAPIView(APIView):
             404: OpenApiResponse(response=OpenApiTypes.OBJECT, examples=[value_list["404"]]),
         },
     )
-    def post(self, request: Request, requests_id: int) -> Response:
-        data = ImageUserService.image_new(request.user.id, requests_id)
+    def post(self, request: Request) -> Response:
+        data = ImageUserService.image_new(request.user.id)
         return Response({"message": data})
 
 

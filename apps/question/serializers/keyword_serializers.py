@@ -15,7 +15,7 @@ class KeywordSerializer(serializers.ModelSerializer[Keyword]):
 
 class KeywordPostSerializer(serializers.ModelSerializer[Keyword]):
     keyword_id = serializers.IntegerField(source="id")
-    keyword_division = serializers.CharField(source="division")
+    keyword_division = serializers.CharField(source="get_division_display", read_only=True)
     keyword_name = serializers.CharField(source="name")
 
     class Meta:

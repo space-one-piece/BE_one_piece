@@ -1,5 +1,7 @@
+import json
+
 from django.http import Http404
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_list_or_404, get_object_or_404
 
 from apps.core.utils.s3_handler import image_url_edit
 from apps.question.google_ai_studio import Gemini
@@ -10,13 +12,13 @@ from apps.users.models.models import User
 
 class ImageUserService(QuestServices, Gemini):
     @classmethod
-    def image_new(cls, user_id: int, results_id: int) -> str | None:
-        quest_data = get_object_or_404(QuestionsResults, pk=results_id)
+    def image_new(cls, user_id: int) -> str | None:
+        quest_data = get_list_or_404(QuestionsResults, user=user_id)
 
-        if quest_data.user_id != user_id:
+        if quest_data is None:
             raise Http404
 
-        json_data = quest_data.questions_json
+        json_data = [json.loads(item.questions_json) for item in quest_data if item.questions_json]
 
         prompt = f"""
                 {json_data}
