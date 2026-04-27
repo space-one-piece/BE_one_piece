@@ -139,9 +139,17 @@ class AnalysisFeedbackAPIView(APIView):
     @extend_schema(
         tags=["analysis_intergration"],
         summary="분석 결과 저장",
+        parameters=[
+            OpenApiParameter(
+                name="type",
+                type=str,
+                required=False,
+                description="분석 타입 (image, chatbot, keyword, survey). 기본값: image",
+            )
+        ],
         request=inline_serializer(
             name="FeedbackInput",
-            fields={"is_helpful": serializers.BooleanField(help_text="도움이 되었는지 여부 (true/false)")},
+            fields={"status": serializers.BooleanField(help_text="도움/저장 여부 (true/false)")},
         ),
         responses={
             200: OpenApiResponse(description="분석 저장 성공"),
