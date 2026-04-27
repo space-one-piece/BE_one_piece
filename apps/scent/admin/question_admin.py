@@ -1,4 +1,3 @@
-# Register your models here.
 from django.contrib import admin
 
 from apps.question.models import Keyword, Question, QuestionsAnswer, QuestionsResults
@@ -39,7 +38,6 @@ class QuestionsResultsAdmin(admin.ModelAdmin):  # type: ignore[type-arg]
         "id",
         "get_scent",
         "division",
-        "questions_json",
         "answer_ai",
         "review",
         "rating",
@@ -54,7 +52,6 @@ class QuestionsResultsAdmin(admin.ModelAdmin):  # type: ignore[type-arg]
         "id",
         "get_scent",
         "division",
-        "questions_json",
         "answer_ai",
         "review",
         "rating",
