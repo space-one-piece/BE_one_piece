@@ -46,9 +46,14 @@ class ScentListSerializer(serializers.ModelSerializer["Scent"]):
         read_only_fields = fields
 
     def get_thumbnail_url(self, obj: Scent) -> str | None:
-        if not obj.thumbnail_url:
+        if isinstance(obj, dict):
+            url = obj.get("thumbnail_url")
+        else:
+            url = obj.thumbnail_url
+
+        if not url:
             return None
-        return image_url_cloud(obj.thumbnail_url)
+        return image_url_cloud(url)
 
 
 # 출력
@@ -129,7 +134,7 @@ class ImageColorAnalysisSerializer(serializers.ModelSerializer["ImageColorAnalys
 # 분석 히스토리 목록 조회용
 class AnalysisListSerializer(serializers.ModelSerializer["ImageAnalysis"]):
     recommended_scent = ScentListSerializer(read_only=True)
-    type = serializers.CharField(default="analyses", read_only=True)
+    type = serializers.CharField(default="image", read_only=True)
 
     class Meta:
         model = ImageAnalysis
