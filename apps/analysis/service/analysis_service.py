@@ -26,37 +26,22 @@ from apps.users.models.models import User
 logger = logging.getLogger(__name__)
 
 
-def _jaccard_similarity(set_a: set[Any], set_b: set[Any]) -> float:
-    if not set_a and not set_b:
+def _dice_coefficient(set_a: set[Any], set_b: set[Any]) -> float:
+    if not set_a or not set_b:
         return 0.0
-    return len(set_a & set_b) / len(set_a | set_b)
 
-
-def _containment_score(ai_set: set[Any], scent_set: set[Any]) -> float:
-    if not ai_set:
-        return 0.0
-    return len(ai_set & scent_set) / len(ai_set)
+    intersection = len(set_a & set_b)
+    return (2.0 * intersection) / (len(set_a) + len(set_b))
 
 
 class AnalysisService:
     _TAG_WEIGHT = 0.7
     _KEYWORD_WEIGHT = 0.3
+    _BASE_SCORE = 50.0
+    _SCALE_FACTOR = 50.0
 
-    _JACCARD_RATIO = 0.4
-    _CONTAINMENT_RATIO = 0.6
-
-    @staticmethod
-    def _hybrid_similarity(ai_set: set[Any], scent_set: set[Any]) -> float:
-        if not ai_set and not scent_set:
-            return 0.0
-
-        jaccard = _jaccard_similarity(ai_set, scent_set)
-        containment = _containment_score(ai_set, scent_set)
-
-        return jaccard * AnalysisService._JACCARD_RATIO + containment * AnalysisService._CONTAINMENT_RATIO
-
-    @staticmethod
-    def _find_best_matching_scent(ai_tags: list[str], ai_keywords: list[str]) -> tuple[Scent | None, float]:
+    @classmethod
+    def _find_best_matching_scent(cls, ai_tags: list[str], ai_keywords: list[str]) -> tuple[Any, float]:
         all_scents = list(
             Scent.objects.only("id", "tags", "keywords", "is_bestseller").order_by("-is_bestseller", "id")
         )
@@ -70,8 +55,8 @@ class AnalysisService:
         if not ai_tags_set and not ai_keywords_set:
             return all_scents[0], 0.0
 
-        effective_tag_weight = AnalysisService._TAG_WEIGHT if ai_tags_set else 0.0
-        effective_keyword_weight = AnalysisService._KEYWORD_WEIGHT if ai_keywords_set else 0.0
+        effective_tag_weight = cls._TAG_WEIGHT if ai_tags_set else 0.0
+        effective_keyword_weight = cls._KEYWORD_WEIGHT if ai_keywords_set else 0.0
         total_weight = effective_tag_weight + effective_keyword_weight
 
         best_scent = all_scents[0]
@@ -81,8 +66,8 @@ class AnalysisService:
             scent_tags_set = set(scent.tags)
             scent_keywords_set = set(scent.keywords)
 
-            tag_sim = AnalysisService._hybrid_similarity(ai_tags_set, scent_tags_set)
-            keyword_sim = AnalysisService._hybrid_similarity(ai_keywords_set, scent_keywords_set)
+            tag_sim = _dice_coefficient(ai_tags_set, scent_tags_set)
+            keyword_sim = _dice_coefficient(ai_keywords_set, scent_keywords_set)
 
             combined_score = (
                 (tag_sim * effective_tag_weight) + (keyword_sim * effective_keyword_weight)
@@ -92,7 +77,14 @@ class AnalysisService:
                 highest_score = combined_score
                 best_scent = scent
 
-        return best_scent, round(highest_score * 100, 1)
+        if highest_score == 0.0:
+            return best_scent, 0.0
+
+        ux_score = cls._BASE_SCORE + (highest_score * cls._SCALE_FACTOR)
+
+        final_percentage = round(min(ux_score, 100.0), 1)
+
+        return best_scent, final_percentage
 
     @staticmethod
     def image_analysis_process(user: User, img_key: str) -> tuple[ImageAnalysis, ImageColorAnalysis]:
