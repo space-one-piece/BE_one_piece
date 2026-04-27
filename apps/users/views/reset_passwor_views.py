@@ -7,7 +7,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from apps.users.serializers.Error_Response_Serializers import ErrorResponseSerializer
+from apps.users.serializers.error_response_serializers import ErrorResponseSerializer
 from apps.users.serializers.reset_password_serializers import PasswordResetSerializer
 from apps.users.services.reset_password_services import passwordservice
 

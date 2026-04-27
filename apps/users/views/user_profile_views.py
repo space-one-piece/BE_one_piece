@@ -10,7 +10,7 @@ from rest_framework.views import APIView
 from apps.core.serializers.presigned_url_serializer import PresignedUrlRequestSerializer
 from apps.core.views.presigned_url import BasePresignedUrlView
 from apps.users.models.models import User
-from apps.users.serializers.Error_Response_Serializers import ErrorResponseSerializer
+from apps.users.serializers.error_response_serializers import ErrorResponseSerializer
 from apps.users.serializers.user_profile_serailzers import UserProfileSerializer
 from apps.users.serializers.user_update_serializeres import ProfileImageUpdateSerializer, UserProfileUpdateSerializer
 from apps.users.services.user_profile_update_services import UserProfileUpdateService

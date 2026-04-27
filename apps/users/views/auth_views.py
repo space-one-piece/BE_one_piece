@@ -17,7 +17,7 @@ from apps.users.serializers.auth_serializers import (
     LogoutSerializer,
     UserWithdrawalSerializer,
 )
-from apps.users.serializers.Error_Response_Serializers import ErrorResponseSerializer
+from apps.users.serializers.error_response_serializers import ErrorResponseSerializer
 from apps.users.services.auth_services import LoginService, LogoutService, RecoveryService, WithdrawalService
 
 
