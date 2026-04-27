@@ -95,6 +95,7 @@ class ResultsService(QuestServices):
                     "id": item.scent.id,
                     "name": item.scent.name,
                     "description": item.scent.description,
+                    "season": item.scent.season,
                     "eng_name": item.scent.eng_name,
                 },
                 "ai_comment": item.answer_ai,

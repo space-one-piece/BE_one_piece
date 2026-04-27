@@ -22,6 +22,7 @@ def get_chatbot_recommendation_history(user_id: int) -> list[dict[str, Any]]:
                 "id": r.scent.id,
                 "name": r.scent.name,
                 "description": r.scent.description,
+                "season": r.scent.season,
                 "eng_name": r.scent.eng_name,
                 "thumbnail_url": image_url_cloud(r.scent.thumbnail_url) if r.scent.thumbnail_url else None,
             },
