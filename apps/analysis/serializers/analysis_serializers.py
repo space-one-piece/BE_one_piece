@@ -187,3 +187,23 @@ class AnalysisDetailSerializer(serializers.ModelSerializer["ImageAnalysis"]):
         if not obj.s3_image_url:
             return None
         return S3Handler().s3_image(obj.s3_image_url)
+
+
+class IntegratedFeedbackSerializer(serializers.Serializer[Any]):
+    id = serializers.IntegerField()
+    type = serializers.CharField()
+    created_at = serializers.DateTimeField()
+    scent = serializers.SerializerMethodField()
+
+    def get_scent(self, obj: Any) -> dict[str, Any] | None:
+        scent_obj = None
+
+        if hasattr(obj, "recommended_scent"):
+            scent_obj = obj.recommended_scent
+        elif hasattr(obj, "scent"):
+            scent_obj = obj.scent
+
+        if scent_obj:
+            return ScentListSerializer(scent_obj, context=self.context).data
+
+        return None

@@ -2,11 +2,24 @@ from typing import Any
 
 from rest_framework import serializers
 
+from apps.core.utils.cloud_front import image_url_cloud
+
 
 class AnalysisReviewSerializer(serializers.Serializer[Any]):
     id = serializers.IntegerField(read_only=True)
-    type = serializers.CharField(read_only=True, help_text="분석 타입 (image, chatbot, keyword, survey)")
-    eng_name = serializers.CharField(read_only=True, required=False, help_text="추천된 향의 영문 이름")
-    review = serializers.CharField(max_length=500, required=True, help_text="유저가 남긴 리뷰 내용")
-    rating = serializers.IntegerField(min_value=1, max_value=5, required=False, help_text="1~5 사이의 별점")
+    type = serializers.CharField(read_only=True)
+
+    name = serializers.CharField(source="user.name", read_only=True)
+    thumbnail_url = serializers.SerializerMethodField()
+
+    eng_name = serializers.CharField(read_only=True)
+    review = serializers.CharField(max_length=500)
+    rating = serializers.IntegerField()
     created_at = serializers.DateTimeField(read_only=True)
+
+    def get_thumbnail_url(self, obj: Any) -> str | None:
+        scent_obj = getattr(obj, "recommended_scent", None) or getattr(obj, "scent", None)
+
+        if scent_obj and hasattr(scent_obj, "thumbnail_url"):
+            return image_url_cloud(scent_obj.thumbnail_url)
+        return None

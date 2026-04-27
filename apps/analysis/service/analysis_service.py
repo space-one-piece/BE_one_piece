@@ -19,6 +19,7 @@ from apps.chatbot.serializers import ChatbotRecommendationDetailSerializer
 from apps.chatbot.services.recommendation_history_list import get_chatbot_recommendation_history
 from apps.core.services.presigned_url_service import PresignedUrlService
 from apps.core.utils.cloud_front import image_url_cloud
+from apps.question.models import QuestionsResults
 from apps.question.serializers.results_serializers import ResultWebShareSerializer
 from apps.question.service.results_service import ResultsService
 from apps.users.models.models import User
@@ -305,17 +306,71 @@ class AnalysisService:
             raise ValidationError({"detail": f"유효하지 않은 analysis_type입니다. ({analysis_type})"})
 
     @staticmethod
-    def update_analysis_feedback(user_id: int, analysis_id: int, is_helpful: bool) -> ImageAnalysis | None:
-        analysis = ImageAnalysis.objects.filter(id=analysis_id, user_id=user_id).first()
+    def update_analysis_feedback(user_id: int, analysis_id: int, analysis_type: str, status: bool) -> Any:
+        if analysis_type == "image":
+            analysis = ImageAnalysis.objects.filter(id=analysis_id, user_id=user_id).first()
+            if not analysis:
+                return None
+            analysis.is_helpful = status
+            analysis.save(update_fields=["is_helpful", "updated_at"])
+            return analysis
 
-        if not analysis:
-            return None
+        elif analysis_type == "chatbot":
+            chat = ChatbotRecommendation.objects.filter(id=analysis_id, user_id=user_id).first()
+            if not chat:
+                return None
+            chat.is_saved = status
+            chat.save(update_fields=["is_saved", "updated_at"])
+            return chat
 
-        analysis.is_helpful = is_helpful
+        elif analysis_type in ["keyword", "survey"]:
+            q_res = QuestionsResults.objects.filter(id=analysis_id, user_id=user_id).first()
+            if not q_res:
+                return None
+            q_res.is_helpful = status
+            q_res.save(update_fields=["is_helpful", "updated_at"])
+            return q_res
 
-        analysis.save(update_fields=["is_helpful"])
+        else:
+            raise ValidationError("유효하지 않은 analysis_type입니다.")
 
-        return analysis
+    @classmethod
+    def get_integrated_feedback_list(cls, user_id: int, analysis_type: str | None = None) -> list[Any]:
+        combined: list[Any] = []
+        div_to_type = {"K": "keyword", "S": "survey"}
+
+        if analysis_type in [None, "image"]:
+            img_list = list(
+                ImageAnalysis.objects.select_related("recommended_scent").filter(user_id=user_id, is_helpful=True)
+            )
+            for img in img_list:
+                setattr(img, "type", "image")
+            combined.extend(img_list)
+
+        if analysis_type in [None, "chatbot"]:
+            chat_list = list(
+                ChatbotRecommendation.objects.select_related("scent").filter(user_id=user_id, is_saved=True)
+            )
+            for chat in chat_list:
+                setattr(chat, "type", "chatbot")
+            combined.extend(chat_list)
+
+        if analysis_type in [None, "keyword", "survey"]:
+            q_qs = QuestionsResults.objects.select_related("scent").filter(user_id=user_id, is_helpful=True)
+
+            if analysis_type == "keyword":
+                q_qs = q_qs.filter(division="K")
+            elif analysis_type == "survey":
+                q_qs = q_qs.filter(division="S")
+
+            q_list = list(q_qs)
+            for q in q_list:
+                db_division = getattr(q, "division", "K")
+                setattr(q, "type", div_to_type.get(db_division, "keyword"))
+            combined.extend(q_list)
+
+        combined.sort(key=lambda x: getattr(x, "created_at"), reverse=True)
+        return combined
 
     @staticmethod
     def get_user_statistics(user_id: int) -> dict[str, Any]:
