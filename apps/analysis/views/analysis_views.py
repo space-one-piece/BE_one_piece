@@ -10,6 +10,7 @@ from apps.analysis.serializers.analysis_serializers import (
     AnalysisCreateSerializer,
     AnalysisDetailSerializer,
     AnalysisListSerializer,
+    IntegratedFeedbackSerializer,
 )
 from apps.analysis.service.analysis_service import AnalysisService
 from apps.core.paginations import StandardCustomPagination
@@ -136,7 +137,7 @@ class AnalysisFeedbackAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     @extend_schema(
-        tags=["image_analysis"],
+        tags=["analysis_intergration"],
         summary="분석 결과 저장",
         request=inline_serializer(
             name="FeedbackInput",
@@ -149,21 +150,64 @@ class AnalysisFeedbackAPIView(APIView):
         },
     )
     def patch(self, request: Request, id: int) -> Response:
-        is_helpful = request.data.get("is_helpful")
+        analysis_type = request.query_params.get("type", "image")
+        valid_types = {"image", "chatbot", "keyword", "survey"}
 
-        if is_helpful is None:
-            raise ValidationError({"detail": "is_helpful 필드는 필수"})
-        if not isinstance(is_helpful, bool):
-            raise ValidationError({"detail": "is_helpful는 boolean 타입"})
+        if analysis_type not in valid_types:
+            raise ValidationError({"detail": f"유효하지 않은 type. 허용값: {valid_types}"})
+
+        status_val = request.data.get("status")
+
+        if status_val is None:
+            raise ValidationError({"detail": "status 필드는 필수입니다. (true/false)"})
+        if not isinstance(status_val, bool):
+            raise ValidationError({"detail": "status는 boolean 타입이어야 합니다."})
 
         updated_analysis = AnalysisService.update_analysis_feedback(
-            user_id=request.user.id, analysis_id=id, is_helpful=is_helpful
+            user_id=request.user.id, analysis_id=id, analysis_type=analysis_type, status=status_val
         )
 
         if not updated_analysis:
-            raise NotFound(detail="해당 이미지 분석 결과를 찾을 수 없거나 접근 권한이 없습니다.")
+            raise NotFound(detail=f"해당 {analysis_type} 분석 결과를 찾을 수 없거나 접근 권한이 없습니다.")
 
         return Response({"detail": "피드백이 성공적으로 반영되었습니다."}, status=status.HTTP_200_OK)
+
+
+class AnalysisFeedbackListAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(
+        tags=["analysis_intergration"],
+        summary="내가 저장한 통합 리스트 향 조회",
+        description="분석/추천 결과를 최신순으로 가져옵니다.",
+        parameters=[
+            OpenApiParameter(
+                name="type",
+                type=str,
+                required=False,
+                description="특정 타입만 필터링 (image, chatbot, keyword, survey). 없으면 전체 반환",
+            )
+        ],
+        responses={
+            200: OpenApiResponse(description="성공"),
+        },
+    )
+    def get(self, request: Request) -> Response:
+        analysis_type = request.query_params.get("type")
+        valid_types = {"image", "chatbot", "keyword", "survey"}
+
+        if analysis_type and analysis_type not in valid_types:
+            raise ValidationError({"detail": f"유효하지 않은 type. 허용값: {valid_types}"})
+
+        feedback_list = AnalysisService.get_integrated_feedback_list(
+            user_id=request.user.id, analysis_type=analysis_type
+        )
+
+        paginator = StandardCustomPagination()
+        paginated_queryset = paginator.paginate_queryset(feedback_list, request, view=self)  # type: ignore
+
+        output_serializer = IntegratedFeedbackSerializer(paginated_queryset, many=True)
+        return Response(output_serializer.data)
 
 
 # 유저 분석 통계 반환
