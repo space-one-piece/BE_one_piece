@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from apps.analysis.models import Scent
+from apps.analysis.serializers.analysis_serializers import ScentDetailSerializer
 
 from .models import ChatbotRecommendation, ChatSession
 
@@ -17,31 +17,8 @@ class ChatbotRecommendationSerializer(serializers.ModelSerializer[ChatbotRecomme
         fields = ["id", "scent_id", "retry_count", "is_saved", "saved_at", "created_at"]
 
 
-class ChatbotScentDetailSerializer(serializers.ModelSerializer[Scent]):
-    class Meta:
-        model = Scent
-        fields = [
-            "id",
-            "name",
-            "eng_name",
-            "description",
-            "categories",
-            "tags",
-            "keywords",
-            "intensity",
-            "is_bestseller",
-            "scent_notes",
-            "profile",
-            "season",
-            "recommended_places",
-            "similar_scents",
-            "thumbnail_url",
-            "created_at",
-        ]
-
-
 class ChatbotRecommendationDetailSerializer(serializers.ModelSerializer[ChatbotRecommendation]):
-    recommended_scent = ChatbotScentDetailSerializer(source="scent")
+    recommended_scent = ScentDetailSerializer(source="scent")
     ai_comment = serializers.CharField(source="reply")
     source_type = serializers.SerializerMethodField()
     match_score = serializers.IntegerField(default=80, read_only=True)
