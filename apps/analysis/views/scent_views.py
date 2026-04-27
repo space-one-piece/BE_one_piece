@@ -1,7 +1,7 @@
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import status
 from rest_framework.exceptions import NotFound
-from rest_framework.permissions import BasePermission, IsAdminUser, IsAuthenticated
+from rest_framework.permissions import BasePermission, IsAdminUser
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -25,7 +25,7 @@ class ScentListCreateAPIView(APIView):
     def get_permissions(self) -> list[BasePermission]:
         if self.request.method == "POST":
             return [IsAdminUser()]
-        return [IsAuthenticated()]
+        return []
 
     @extend_schema(
         tags=["scent_management"],
@@ -63,7 +63,7 @@ class ScentDetailAPIView(APIView):
     def get_permissions(self) -> list[BasePermission]:
         if self.request.method in ["PATCH", "DELETE"]:
             return [IsAdminUser()]
-        return [IsAuthenticated()]
+        return []
 
     def get_object(self, id: int) -> Scent:
         try:
