@@ -1,4 +1,5 @@
-from drf_spectacular.utils import OpenApiParameter, extend_schema
+from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
+from rest_framework import status
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAdminUser
 from rest_framework.request import Request
@@ -68,3 +69,18 @@ class AdminUserDetailView(APIView):
         user = AdminUserService.get_user_detail_admin(account_id=account_id)
         serializer = AdminUserDetailSerializer(user)
         return Response(serializer.data)
+
+    @extend_schema(
+        summary="어드민 - 회원삭제",
+        description="관리자 권한으로 특정 회원의 데이터를 삭제합니다.",
+        responses={
+            200: OpenApiResponse(description="삭제 성공"),
+            401: ErrorResponseSerializer,
+            403: ErrorResponseSerializer,
+            404: ErrorResponseSerializer,
+        },
+        tags=["admin"],
+    )
+    def delete(self, request: Request, account_id: int) -> Response:
+        deleted_id = AdminUserService.delete_user_admin(account_id=account_id)
+        return Response({"detail": f"유저 데이터가 삭제되었습니다. -pk:{deleted_id}"}, status=status.HTTP_200_OK)
