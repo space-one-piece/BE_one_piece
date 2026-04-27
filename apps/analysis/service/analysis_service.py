@@ -203,7 +203,7 @@ class AnalysisService:
         image_data = [
             {
                 "id": item.id,
-                "type": "analyses",
+                "type": "image",
                 "recommended_scent": {
                     "id": item.recommended_scent.id,
                     "name": item.recommended_scent.name,
