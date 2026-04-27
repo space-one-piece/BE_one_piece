@@ -29,7 +29,8 @@ class ProfileView(APIView):
         tags=["accounts"],
     )
     def get(self, request: Request) -> Response:
-        serializer = UserProfileSerializer(request.user)
+        user_data = UserProfileUpdateService.get_user_profile(user_id=request.user.id)
+        serializer = UserProfileSerializer(user_data)
         return Response(serializer.data)
 
     @extend_schema(
