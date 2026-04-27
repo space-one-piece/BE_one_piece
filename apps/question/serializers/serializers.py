@@ -2,31 +2,7 @@ from typing import Any
 
 from rest_framework import serializers
 
-from apps.analysis.models import Scent
 from apps.analysis.serializers.analysis_serializers import ScentDetailSerializer
-
-
-class QuestionScentDetailSerializer(serializers.ModelSerializer[Scent]):
-    class Meta:
-        model = Scent
-        fields = [
-            "id",
-            "name",
-            "eng_name",
-            "description",
-            "categories",
-            "tags",
-            "keywords",
-            "intensity",
-            "is_bestseller",
-            "scent_notes",
-            "profile",
-            "season",
-            "recommended_places",
-            "similar_scents",
-            "thumbnail_url",
-            "created_at",
-        ]
 
 
 class QuestionsInputSerializer(serializers.Serializer[dict[str, Any]]):

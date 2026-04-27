@@ -30,7 +30,6 @@ class KeywordAPIView(APIView):
     def get(self, request: Request, *args: object, **kwargs: object) -> Response:
         data = KeywordService.keyword_select()
         serializer = KeywordSerializer(data, many=True)
-
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @extend_schema(
