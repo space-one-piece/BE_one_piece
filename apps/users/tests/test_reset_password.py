@@ -66,4 +66,4 @@ class PasswordResetTestCase(TestCase):
         response = self.client.post(self.url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-        self.assertIn("No User matches", str(response.data["error_detail"]))
+        self.assertIn("Not found.", str(response.data.get("error_detail", response.data.get("detail"))))

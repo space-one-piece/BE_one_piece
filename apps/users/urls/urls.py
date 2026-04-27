@@ -13,7 +13,7 @@ from apps.users.views.social_login_views import (
     NaverSocialLoginCallbackView,
     NaverSocialLoginView,
 )
-from apps.users.views.user_profile_views import ProfileView
+from apps.users.views.user_profile_views import ProfileImagePresignedUrlView, ProfileImageView, ProfileView
 from apps.users.views.verification_views import EmailConfirmView, EmailSendView, SmsConfirmView, SmsSendView
 
 app_name = "users"
@@ -38,6 +38,9 @@ urlpatterns = [
     path("me/refresh", RefreshTokenView.as_view(), name="token_refresh"),
     # 내정보 조회
     path("me/profile", ProfileView.as_view(), name="profile"),
+    # 프로필 이미지
+    path("me/profile-image", ProfileImageView.as_view(), name="profile_image"),
+    path("me/profile-image/presigned-url", ProfileImagePresignedUrlView.as_view(), name="presigned_url"),
     # 소셜 로그인
     path("social-login/naver", NaverSocialLoginView.as_view(), name="naver_social_login"),
     path("social-login/naver/callback", NaverSocialLoginCallbackView.as_view(), name="naver_social_callback"),
