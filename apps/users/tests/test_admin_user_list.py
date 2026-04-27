@@ -25,7 +25,11 @@ class AdminUserListTest(TestCase):
             email="test@test.com", password="pw1234!@", name="테스터", phone_number="01015240923", birthday="2000-11-21"
         )
         cls.user = User.objects.create_user(
-            email="user@user.com", password="pw1234!@", name="검색대상", phone_number="01015240223", birthday="2000-11-11"
+            email="user@user.com",
+            password="pw1234!@",
+            name="검색대상",
+            phone_number="01015240223",
+            birthday="2000-11-11",
         )
         cls.url = reverse("admin_users:admin-list")
 
