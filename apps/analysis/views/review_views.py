@@ -8,33 +8,40 @@ from rest_framework.views import APIView
 from ..serializers.review_serializers import AnalysisReviewSerializer
 from ..service.review_service import ReviewService
 
+type_param = OpenApiParameter(
+    name="type",
+    type=str,
+    required=False,
+    description="조회할 리뷰 타입 (image, chatbot, keyword, survey).",
+)
+
 
 class MyReviewListAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
-    type_param = OpenApiParameter(
-        name="type",
-        type=str,
-        required=False,
-        description="조회할 리뷰 타입 (image, chatbot, keyword, survey). 목록 조회시 비워두면 전체 반환.",
-    )
-
     @extend_schema(
         tags=["analysis_reviews"],
-        summary="리뷰 목록 조회 또는 특정 리뷰 상세 조회",
+        summary="내 리뷰 목록 전체 조회",
         parameters=[type_param],
         responses={200: AnalysisReviewSerializer(many=True)},
     )
-    def get(self, request: Request, id: int | None = None) -> Response:
+    def get(self, request: Request) -> Response:
         analysis_type = request.query_params.get("type")
+        reviews = ReviewService.get_my_reviews(user_id=request.user.id, analysis_type=analysis_type)
+        return Response(AnalysisReviewSerializer(reviews, many=True).data)
 
-        if id is None:
-            reviews = ReviewService.get_my_reviews(user_id=request.user.id, analysis_type=analysis_type)
-            return Response(AnalysisReviewSerializer(reviews, many=True).data)
 
-        if not analysis_type:
-            analysis_type = "image"
+class MyReviewDetailAPIView(APIView):
+    permission_classes = [IsAuthenticated]
 
+    @extend_schema(
+        tags=["analysis_reviews"],
+        summary="특정 리뷰 상세 조회",
+        parameters=[type_param],
+        responses={200: AnalysisReviewSerializer},
+    )
+    def get(self, request: Request, id: int) -> Response:
+        analysis_type = request.query_params.get("type", "image")
         instance = ReviewService.get_review(analysis_id=id, user=request.user, analysis_type=analysis_type)  # type: ignore
         return Response(AnalysisReviewSerializer(instance).data)
 

@@ -32,9 +32,28 @@ def _jaccard_similarity(set_a: set[Any], set_b: set[Any]) -> float:
     return len(set_a & set_b) / len(set_a | set_b)
 
 
+def _containment_score(ai_set: set[Any], scent_set: set[Any]) -> float:
+    if not ai_set:
+        return 0.0
+    return len(ai_set & scent_set) / len(ai_set)
+
+
 class AnalysisService:
     _TAG_WEIGHT = 0.7
     _KEYWORD_WEIGHT = 0.3
+
+    _JACCARD_RATIO = 0.4
+    _CONTAINMENT_RATIO = 0.6
+
+    @staticmethod
+    def _hybrid_similarity(ai_set: set[Any], scent_set: set[Any]) -> float:
+        if not ai_set and not scent_set:
+            return 0.0
+
+        jaccard = _jaccard_similarity(ai_set, scent_set)
+        containment = _containment_score(ai_set, scent_set)
+
+        return jaccard * AnalysisService._JACCARD_RATIO + containment * AnalysisService._CONTAINMENT_RATIO
 
     @staticmethod
     def _find_best_matching_scent(ai_tags: list[str], ai_keywords: list[str]) -> tuple[Scent | None, float]:
@@ -62,8 +81,8 @@ class AnalysisService:
             scent_tags_set = set(scent.tags)
             scent_keywords_set = set(scent.keywords)
 
-            tag_sim = _jaccard_similarity(ai_tags_set, scent_tags_set)
-            keyword_sim = _jaccard_similarity(ai_keywords_set, scent_keywords_set)
+            tag_sim = AnalysisService._hybrid_similarity(ai_tags_set, scent_tags_set)
+            keyword_sim = AnalysisService._hybrid_similarity(ai_keywords_set, scent_keywords_set)
 
             combined_score = (
                 (tag_sim * effective_tag_weight) + (keyword_sim * effective_keyword_weight)
