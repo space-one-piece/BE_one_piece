@@ -28,18 +28,16 @@ class QuestService(QuestServices, Gemini):
         keyword_strings = [
             {"title": data["title"], "answer": data["results"], "id": data["question_num"]} for data in validated_data
         ]
-
+        print(keyword_strings)
         json_str = json.dumps(keyword_strings, ensure_ascii=False)
         prompt, scent_id, match_score = cls.result_prompt(json_str, "설문지")
         data = cls.ask_gemini(prompt)
-        if data is None:
-            raise Http404()
 
         scent_data = get_object_or_404(Scent, id=scent_id)
 
         scent_data = cast(Any, cls.scent_edit(scent_data)) if scent_data else None
 
-        result = cls.keyword_save(user_id, scent_id, data, json_str, "S", match_score)
+        result = cls.keyword_save(user_id, scent_id, data or "", json_str, "S", match_score)
 
         filter_data = {
             "id": result.id,

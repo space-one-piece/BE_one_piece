@@ -26,14 +26,12 @@ class KeywordService(QuestServices, Gemini):
         json_str = json.dumps(keyword_strings, ensure_ascii=False)
         prompt, scent_id, match_score = cls.result_prompt(json_str, "키워드")
         data = cls.ask_gemini(prompt)
-        if data is None:
-            raise Http404()
 
         scent_data = get_object_or_404(Scent, pk=scent_id)
 
         scent_data = cast(Any, cls.scent_edit(scent_data)) if scent_data else None
 
-        result = cls.keyword_save(user_id, scent_id, data, json_str, "K", match_score)
+        result = cls.keyword_save(user_id, scent_id, data or "", json_str, "K", match_score)
 
         filter_data = {
             "id": result.id,
