@@ -207,7 +207,7 @@ class AnalysisTotalDetailAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     @extend_schema(
-        tags=["analysis_intergrations"],
+        tags=["analysis_intergration"],
         summary="통합 분석 결과 상세 조회",
         description="ID와 Type을 받아 이미지/챗봇/키워드 중 적절한 분석 결과를 반환합니다.",
         parameters=[
