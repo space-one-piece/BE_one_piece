@@ -136,11 +136,14 @@ class ChatMessageView(APIView):
             is_recommendation = True
             store["excluded_ids"].append(scent_id_from_ai)
 
+            user_msgs = [msg["parts"][0]["text"] for msg in store["messages"] if msg["role"] == "user"][-2:]
+
             recommendation = ChatbotRecommendation.objects.create(
                 user=user,
                 session=session,
                 scent_id=scent_id_from_ai,
                 reply=reply,
+                user_message=user_msgs,
             )
             recommendation_id = recommendation.id
 
