@@ -3,7 +3,7 @@ from typing import Any
 from rest_framework import serializers
 
 from apps.analysis.models import Scent
-from apps.question.serializers.serializers import QuestionScentDetailSerializer
+from apps.analysis.serializers.analysis_serializers import ScentDetailSerializer
 
 
 class ResultsSerializer(serializers.Serializer[dict[str, Any]]):
@@ -17,7 +17,7 @@ class ResultsIntSerializer(serializers.Serializer[dict[str, Any]]):
 
 class ResultsOutSerializer(serializers.Serializer[Any]):
     id = serializers.IntegerField()
-    recommended_scent = QuestionScentDetailSerializer()
+    recommended_scent = ScentDetailSerializer()
     ai_comment = serializers.CharField()
     match_score = serializers.IntegerField()
     review = serializers.CharField()
@@ -26,7 +26,7 @@ class ResultsOutSerializer(serializers.Serializer[Any]):
 
 class ResultWebShareSerializer(serializers.Serializer[Any]):
     id = serializers.IntegerField()
-    recommended_scent = QuestionScentDetailSerializer()
+    recommended_scent = ScentDetailSerializer()
     ai_comment = serializers.CharField()
     match_score = serializers.IntegerField()
     review = serializers.CharField()

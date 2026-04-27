@@ -6,19 +6,19 @@ from apps.question.models import Keyword, Question, QuestionsAnswer, QuestionsRe
 
 @admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):  # type: ignore[type-arg]
-    list_display = ("id", "content", "additional", "created_at", "updated_at")
+    list_display = ("id", "content", "additional", "left_label", "right_label", "category", "created_at", "updated_at")
     search_fields = ("content",)
     list_display_links = ("id", "content", "additional", "created_at", "updated_at")
 
 
 @admin.register(QuestionsAnswer)
 class QuestionAsterAdmin(admin.ModelAdmin):  # type: ignore[type-arg]
-    list_display = ("id", "get_question", "answer", "created_at", "updated_at")
+    list_display = ("id", "get_question", "answer", "score", "created_at", "updated_at")
     search_fields = (
         "answer",
         "question__content",
     )
-    list_display_links = ("id", "get_question", "answer", "created_at", "updated_at")
+    list_display_links = ("id", "get_question", "answer", "score", "created_at", "updated_at")
 
     @admin.display(ordering="question__content", description="question")
     def get_question(self, obj: QuestionsAnswer) -> str:
