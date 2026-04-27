@@ -17,3 +17,19 @@ class AdminUserListSerializer(serializers.ModelSerializer[Any]):
             "status",
             "created_at",
         ]
+
+
+class AdminUserDetailSerializer(serializers.ModelSerializer[Any]):
+    class Meta:
+        model = User
+        fields = [
+            "id",
+            "email",
+            "name",
+            "phone_number",
+            "birthday",
+            "social_type",
+            "status",
+            "profile_image_url",
+            "created_at",
+        ]

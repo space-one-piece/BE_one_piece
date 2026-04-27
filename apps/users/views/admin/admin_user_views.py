@@ -5,7 +5,8 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from apps.users.serializers.admin.admin_user_serializers import AdminUserListSerializer
+from apps.users.serializers.admin.admin_user_serializers import AdminUserDetailSerializer, AdminUserListSerializer
+from apps.users.serializers.error_response_serializers import ErrorResponseSerializer
 from apps.users.services.admin.admin_user_services import AdminUserService
 
 
@@ -45,4 +46,25 @@ class AdminUserListView(APIView):
             return paginator.get_paginated_response(serializer.data)
 
         serializer = AdminUserListSerializer(users_queryset, many=True)
+        return Response(serializer.data)
+
+
+class AdminUserDetailView(APIView):
+    permission_classes = [IsAdminUser]
+    serializer_class = AdminUserDetailSerializer
+
+    @extend_schema(
+        summary="어드민 - 회원 상세 조회",
+        description="관리자 권한으로 특정 회원의 상세 정보를 조횝합니다.",
+        responses={
+            200: AdminUserDetailSerializer,
+            401: ErrorResponseSerializer,
+            403: ErrorResponseSerializer,
+            404: ErrorResponseSerializer,
+        },
+        tags=["admin"],
+    )
+    def get(self, request: Request, account_id: int) -> Response:
+        user = AdminUserService.get_user_detail_admin(account_id=account_id)
+        serializer = AdminUserDetailSerializer(user)
         return Response(serializer.data)

@@ -5,7 +5,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from apps.users.serializers.Error_Response_Serializers import ErrorResponseSerializer
+from apps.users.serializers.error_response_serializers import ErrorResponseSerializer
 from apps.users.serializers.find_email_serializers import FindEmailSerializer
 from apps.users.services.find_email_services import FindEmailService
 
