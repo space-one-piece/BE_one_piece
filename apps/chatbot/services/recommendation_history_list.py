@@ -19,6 +19,7 @@ def get_chatbot_recommendation_history(user_id: int) -> list[dict[str, Any]]:
             "type": "chatbot",
             "recommended_scent": {
                 "id": r.scent.id,
+                "tags": r.scent.tags,
                 "name": r.scent.name,
                 "description": r.scent.description,
                 "season": r.scent.season,

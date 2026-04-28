@@ -168,7 +168,7 @@ class ScentAnalysisDataSerializer(serializers.ModelSerializer["ImageAnalysis"]):
 class AnalysisDetailSerializer(serializers.ModelSerializer["ImageAnalysis"]):
     recommended_scent = ScentDetailSerializer(read_only=True)
     image_metadata = ImageColorAnalysisSerializer(read_only=True)
-
+    is_saved = serializers.BooleanField(source="is_helpful")
     presigned_image_url = serializers.SerializerMethodField()
 
     class Meta:
@@ -184,6 +184,7 @@ class AnalysisDetailSerializer(serializers.ModelSerializer["ImageAnalysis"]):
             "ai_comment",
             "match_score",
             "is_fallback",
+            "is_saved",
             "created_at",
         ]
         read_only_fields = fields

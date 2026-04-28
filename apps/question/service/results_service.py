@@ -94,6 +94,7 @@ class ResultsService(QuestServices):
                 "type": division,
                 "recommended_scent": {
                     "id": item.scent.id,
+                    "tags": item.scent.tags,
                     "name": item.scent.name,
                     "description": item.scent.description,
                     "season": item.scent.season,
