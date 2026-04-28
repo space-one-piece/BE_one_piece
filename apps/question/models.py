@@ -65,8 +65,8 @@ class QuestionsAnswer(TimeStampModel):
 
 class QuestionsResults(TimeStampModel):
     TYPE_CHOICES = [
-        ("Q", "Question"),
-        ("K", "Keyword"),
+        ("S", "survey"),
+        ("K", "keyword"),
     ]
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)

@@ -1,3 +1,4 @@
+import json
 from typing import Any, cast
 
 from django.shortcuts import get_object_or_404
@@ -120,6 +121,29 @@ class ResultsService(QuestServices):
         if questin_data.user_id != user_id:
             raise PermissionDenied()
 
+        raw_json = questin_data.questions_json
+        if isinstance(raw_json, str):
+            raw_json = json.loads(raw_json)
+
+        input_list = []
+        if isinstance(raw_json, list):
+            if questin_data.division == "K":
+                for item in raw_json:
+                    input_list.append(
+                        {
+                            "title": "",
+                            "answer": item.get("name"),
+                        }
+                    )
+            else:
+                for item in raw_json:
+                    input_list.append(
+                        {
+                            "title": item.get("title"),
+                            "answer": item.get("answer"),
+                        }
+                    )
+
         scent_data = cast(Any, cls.scent_edit(questin_data.scent)) if questin_data.scent else None
 
         data = {
@@ -129,6 +153,8 @@ class ResultsService(QuestServices):
             "match_score": questin_data.match_score,
             "review": questin_data.review,
             "rating": questin_data.rating,
+            "is_saved": questin_data.is_helpful,
+            "user_input": input_list,
         }
 
         return data

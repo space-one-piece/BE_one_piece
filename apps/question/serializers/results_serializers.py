@@ -24,6 +24,11 @@ class ResultsOutSerializer(serializers.Serializer[Any]):
     rating = serializers.IntegerField()
 
 
+class UserInput(serializers.Serializer[Any]):
+    title = serializers.CharField()
+    answer = serializers.CharField()
+
+
 class ResultWebShareSerializer(serializers.Serializer[Any]):
     id = serializers.IntegerField()
     recommended_scent = ScentDetailSerializer()
@@ -31,6 +36,8 @@ class ResultWebShareSerializer(serializers.Serializer[Any]):
     match_score = serializers.IntegerField()
     review = serializers.CharField()
     rating = serializers.IntegerField()
+    user_input = UserInput(many=True)
+    is_saved = serializers.BooleanField()
 
 
 class ResultRecommendedScentSerializer(serializers.ModelSerializer[Scent]):
