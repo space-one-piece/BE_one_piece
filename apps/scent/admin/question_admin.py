@@ -1,10 +1,12 @@
+from typing import Any
+
 from django import forms
 from django.contrib import admin
 
 from apps.question.models import Keyword, Question, QuestionsAnswer, QuestionsResults
 
 
-class KeywordAdminForm(forms.ModelForm):
+class KeywordAdminForm(forms.ModelForm):  # type: ignore[type-arg]
     freshness = forms.IntegerField(label="Freshness (신선도)", min_value=0, max_value=100, required=False)
     warmth = forms.IntegerField(label="Warmth (따뜻함)", min_value=0, max_value=100, required=False)
     softness = forms.IntegerField(label="Softness (부드러움)", min_value=0, max_value=100, required=False)
@@ -15,7 +17,7 @@ class KeywordAdminForm(forms.ModelForm):
         model = Keyword
         fields = "__all__"
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
         if self.instance and self.instance.score:
             score = self.instance.score
@@ -25,7 +27,7 @@ class KeywordAdminForm(forms.ModelForm):
             self.fields["depth"].initial = score.get("depth")
             self.fields["sweetness"].initial = score.get("sweetness")
 
-    def save(self, commit=True):
+    def save(self, commit: bool = True) -> Any:
         instance = super().save(commit=False)
         instance.score = {
             "freshness": self.cleaned_data.get("freshness"),
