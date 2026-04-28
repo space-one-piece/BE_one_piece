@@ -112,7 +112,7 @@ class ResultsService(QuestServices):
 
     @classmethod
     def out_results(cls, user_id: int, requests_id: int, division: str) -> dict[str, Any]:
-        check = "K" if division == "keyword" else "Q"
+        check = "K" if division == "keyword" else "S"
         questin_data = get_object_or_404(
             QuestionsResults.objects.select_related("scent"), pk=requests_id, division=check
         )
