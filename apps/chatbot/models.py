@@ -32,6 +32,7 @@ class ChatbotRecommendation(TimeStampModel):
     rating = models.IntegerField(null=True, blank=True)
     review = models.TextField(null=True, blank=True)
     reply = models.TextField(null=True, blank=True)
+    user_message = models.JSONField(null=True, blank=True)
 
     class Meta:
         db_table = "chatbot_recommendation"
