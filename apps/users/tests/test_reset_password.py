@@ -37,7 +37,12 @@ class PasswordResetTestCase(TestCase):
         token = "valid-uuid-token"
         cache.set(f"signup_token_{token}", self.email, timeout=600)
 
-        data = {"email": self.email, "token": token, "new_password": "new-secure-password213!"}
+        data = {
+            "email": self.email,
+            "token": token,
+            "new_password": "new-secure-password213!",
+            "new_password_confirm": "new-secure-password213!",
+        }
 
         response = self.client.post(self.url, data, format="json")
 
@@ -49,11 +54,15 @@ class PasswordResetTestCase(TestCase):
 
     # 실패 검증
     def test_password_reset_invalid_token(self) -> None:
-        data = {"email": self.email, "token": "invalid-token-123", "new_password": "dfewer1234"}
+        data = {
+            "email": self.email,
+            "token": "invalid-token-123",
+            "new_password": "dfewer1234",
+            "new_password_confirm": "dfewer1234",
+        }
         response = self.client.post(self.url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertIn("error_detail", response.data)
         self.assertEqual(response.data["error_detail"], "인증 토큰이 유효하지 않거나 만료되었습니다.")
 
     def test_password_reset_user_not_found(self) -> None:
@@ -61,7 +70,12 @@ class PasswordResetTestCase(TestCase):
         non_existent_email = "none@test.com"
         cache.set(f"signup_token_{token}", non_existent_email, timeout=600)
 
-        data = {"email": non_existent_email, "token": token, "new_password": "new-password123!"}
+        data = {
+            "email": non_existent_email,
+            "token": token,
+            "new_password": "new-password123!",
+            "new_password_confirm": "new-password123!",
+        }
 
         response = self.client.post(self.url, data, format="json")
 
