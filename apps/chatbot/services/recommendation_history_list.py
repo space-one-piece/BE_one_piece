@@ -8,7 +8,6 @@ def get_chatbot_recommendation_history(user_id: int) -> list[dict[str, Any]]:
     recommendations = (
         ChatbotRecommendation.objects.filter(
             user_id=user_id,
-            is_saved=True,
         )
         .select_related("scent")
         .order_by("-created_at")
