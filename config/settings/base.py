@@ -312,6 +312,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:5173",
     "https://fragmnt.pics",
     "https://www.fragmnt.pics",
+    "https://fe-one-piece.vercel.app",
 ]
 REDIS_HOST = os.getenv("REDIS_HOST", "redis")
 REDIS_PORT = int(os.getenv("REDIS_PORT", "6379"))
