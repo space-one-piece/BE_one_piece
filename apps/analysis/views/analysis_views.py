@@ -50,7 +50,7 @@ class AnalysisListCreateAPIView(APIView):
 
     @extend_schema(
         tags=["image_analysis"],
-        summary="이미지 분석 목록 조회",
+        summary="이미지 분석결과 히스토리 목록 조회",
         responses={
             200: AnalysisListSerializer(many=True),
             403: OpenApiResponse(description="권한 없음"),
@@ -138,7 +138,7 @@ class AnalysisFeedbackAPIView(APIView):
 
     @extend_schema(
         tags=["analysis_intergration"],
-        summary="분석 결과 저장",
+        summary="분석결과 내 향기 저장",
         parameters=[
             OpenApiParameter(
                 name="type",
@@ -186,7 +186,7 @@ class AnalysisFeedbackListAPIView(APIView):
 
     @extend_schema(
         tags=["analysis_intergration"],
-        summary="내가 저장한 통합 리스트 향 조회",
+        summary="내가 저장한 컬렉션 조회",
         description="분석/추천 결과를 최신순으로 가져옵니다.",
         parameters=[
             OpenApiParameter(
