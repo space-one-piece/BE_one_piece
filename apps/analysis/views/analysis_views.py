@@ -50,7 +50,7 @@ class AnalysisListCreateAPIView(APIView):
 
     @extend_schema(
         tags=["image_analysis"],
-        summary="내 분석 히스토리 목록 조회",
+        summary="이미지 분석 목록 조회",
         responses={
             200: AnalysisListSerializer(many=True),
             403: OpenApiResponse(description="권한 없음"),

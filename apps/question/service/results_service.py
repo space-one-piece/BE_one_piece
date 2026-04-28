@@ -80,7 +80,7 @@ class ResultsService(QuestServices):
 
     @classmethod
     def result_list(cls, user_id: int, division: str) -> list[dict[str, Any]]:
-        div = "K" if division == "keyword" else "S"
+        div = "K" if division == "keywords" else "S"
 
         questions_data = (
             QuestionsResults.objects.filter(user_id=user_id, division=div)
@@ -97,6 +97,7 @@ class ResultsService(QuestServices):
                     "description": item.scent.description,
                     "season": item.scent.season,
                     "eng_name": item.scent.eng_name,
+                    "thumbnail_url": item.scent.thumbnail_url,
                 },
                 "ai_comment": item.answer_ai,
                 "match_score": item.match_score,
