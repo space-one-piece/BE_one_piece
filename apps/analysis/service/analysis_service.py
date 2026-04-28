@@ -206,6 +206,7 @@ class AnalysisService:
                 "type": "image",
                 "recommended_scent": {
                     "id": item.recommended_scent.id,
+                    "tags": item.recommended_scent.tags,
                     "name": item.recommended_scent.name,
                     "description": item.recommended_scent.description,
                     "season": item.recommended_scent.season,
