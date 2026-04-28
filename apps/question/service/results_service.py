@@ -127,12 +127,20 @@ class ResultsService(QuestServices):
 
         input_list = []
         if isinstance(raw_json, list):
-            for item in raw_json:
-                for title, answer in item.items():
+            if questin_data.division == "K":
+                for item in raw_json:
                     input_list.append(
                         {
-                            "title": title,
-                            "answer": answer,
+                            "title": "",
+                            "answer": item.get("name"),
+                        }
+                    )
+            else:
+                for item in raw_json:
+                    input_list.append(
+                        {
+                            "title": item.get("title"),
+                            "answer": item.get("answer"),
                         }
                     )
 
