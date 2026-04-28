@@ -37,6 +37,7 @@ class ResultWebShareSerializer(serializers.Serializer[Any]):
     review = serializers.CharField()
     rating = serializers.IntegerField()
     user_input = UserInput(many=True)
+    is_saved = serializers.BooleanField()
 
 
 class ResultRecommendedScentSerializer(serializers.ModelSerializer[Scent]):

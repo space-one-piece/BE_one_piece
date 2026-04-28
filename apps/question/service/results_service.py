@@ -153,6 +153,7 @@ class ResultsService(QuestServices):
             "match_score": questin_data.match_score,
             "review": questin_data.review,
             "rating": questin_data.rating,
+            "is_saved": questin_data.is_helpful,
             "user_input": input_list,
         }
 
