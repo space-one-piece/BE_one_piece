@@ -222,7 +222,7 @@ class AnalysisService:
         ]
 
         survey_data = ResultsService.result_list(user_id, "survey")
-        keyword_data = ResultsService.result_list(user_id, "keywords")
+        keyword_data = ResultsService.result_list(user_id, "keyword")
         chatbot_data = get_chatbot_recommendation_history(user_id)
 
         combined = image_data + survey_data + keyword_data + chatbot_data
