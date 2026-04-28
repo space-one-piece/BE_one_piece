@@ -1,5 +1,6 @@
 import random
 import string
+import uuid
 
 from django.conf import settings
 from django.core.cache import cache
@@ -64,9 +65,9 @@ class VerificationService:
 
     # 공통 확인 로직(토큰 발행)
     @classmethod
-    def confirm_code(cls, identifier: str, code: str, auth_type: str) -> bool:
+    def confirm_code(cls, identifier: str, code: str, auth_type: str) -> str | None:
         if auth_type not in ["email", "phone"]:
-            return False
+            return None
 
         clean_id = identifier.strip()
         if auth_type == "phone":
@@ -76,9 +77,9 @@ class VerificationService:
         saved_code = cache.get(cache_key)
 
         if saved_code and str(saved_code) == str(code):
-            verified_Key = f"verified_{auth_type}_{clean_id}"
-            cache.set(verified_Key, True, timeout=cls.TOKEN_EXPIRY_TIME)
+            token = str(uuid.uuid4())
+            cache.set(f"signup_token_{token}", clean_id, timeout=cls.TOKEN_EXPIRY_TIME)
 
             cache.delete(cache_key)
-            return True
-        return False
+            return token
+        return None

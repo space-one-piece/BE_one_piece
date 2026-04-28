@@ -50,10 +50,10 @@ class EmailConfirmView(APIView):
         email = serializer.validated_data["email"]
         code = serializer.validated_data["code"]
 
-        is_success = VerificationService.confirm_code(email, code, "email")
+        token = VerificationService.confirm_code(email, code, "email")
 
-        if is_success:
-            return Response({"detail": "이메일 인증에 성공했습니다."}, status=status.HTTP_200_OK)
+        if token:
+            return Response({"detail": "이메일 인증에 성공했습니다.", "token": token}, status=status.HTTP_200_OK)
         return Response({"detail": "인증번호가 잘못되었거나 만료되었습니다."}, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -94,8 +94,8 @@ class SmsConfirmView(APIView):
         phone_number = serializer.validated_data["phone_number"]
         code = serializer.validated_data["code"]
 
-        is_success = VerificationService.confirm_code(phone_number, code, "phone")
+        token = VerificationService.confirm_code(phone_number, code, "phone")
 
-        if is_success:
-            return Response({"detail": "휴대폰 인증에 성공했습니다."}, status=status.HTTP_200_OK)
+        if token:
+            return Response({"detail": "휴대폰 인증에 성공했습니다.", "sms_token": token}, status=status.HTTP_200_OK)
         return Response({"detail": "인증번호가 잘못되었거나 만료되었습니다."}, status=status.HTTP_400_BAD_REQUEST)
