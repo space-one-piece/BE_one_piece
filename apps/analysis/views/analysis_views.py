@@ -63,7 +63,8 @@ class AnalysisListCreateAPIView(APIView):
         paginated_queryset = paginator.paginate_queryset(queryset, request, view=self)
 
         output_serializer = AnalysisListSerializer(paginated_queryset, many=True)
-        return paginator.get_paginated_response(output_serializer.data)
+        # return paginator.get_paginated_response(output_serializer.data)
+        return Response(output_serializer.data)
 
     @extend_schema(
         tags=["image_analysis"],
@@ -216,7 +217,8 @@ class AnalysisFeedbackListAPIView(APIView):
         paginated_queryset = paginator.paginate_queryset(feedback_list, request, view=self)  # type: ignore
 
         output_serializer = IntegratedFeedbackSerializer(paginated_queryset, many=True)
-        return paginator.get_paginated_response(output_serializer.data)
+        # return paginator.get_paginated_response(output_serializer.data)
+        return Response(output_serializer.data)
 
 
 # 유저 분석 통계 반환
@@ -254,7 +256,8 @@ class IntegratedHistoryListAPIView(APIView):
         paginated_queryset = paginator.paginate_queryset(history_list, request, view=self)  # type: ignore
 
         output_serializer = AnalysisListSerializer(paginated_queryset, many=True)
-        return paginator.get_paginated_response(output_serializer.data)
+        # return paginator.get_paginated_response(output_serializer.data)
+        return Response(output_serializer.data)
 
 
 # 분석 통합 결과 상세조회
