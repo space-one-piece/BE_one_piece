@@ -28,8 +28,8 @@ urlpatterns = [
     # 4. 통합 분석 리스트
     path("/history", IntegratedHistoryListAPIView.as_view(), name="my-history"),  # get
     # 5. 통합 상세 분석/추천
-    path("/detail/<int:id>", AnalysisTotalDetailAPIView.as_view(), name="my-detail"),  # get
+    path("/history/<int:id>", AnalysisTotalDetailAPIView.as_view(), name="my-detail"),  # get
     # 6. 통합 분석결과 저장
     path("/feedback", AnalysisFeedbackListAPIView.as_view(), name="feedback"),  # get
-    path("/feedback/<int:id>", AnalysisFeedbackAPIView.as_view(), name="feedback"),  # patch
+    path("/feedback/<int:id>", AnalysisFeedbackAPIView.as_view(), name="feedback-detail"),  # patch
 ]

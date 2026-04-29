@@ -48,23 +48,23 @@ class UploadURLAPIView(APIView):
 class AnalysisListCreateAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
-    @extend_schema(
-        tags=["image_analysis"],
-        summary="이미지 분석결과 히스토리 목록 조회",
-        responses={
-            200: AnalysisListSerializer(many=True),
-            403: OpenApiResponse(description="권한 없음"),
-        },
-    )
-    def get(self, request: Request) -> Response:
-        queryset = AnalysisService.get_analysis_list(user_id=request.user.id)
-
-        paginator = StandardCustomPagination()
-        paginated_queryset = paginator.paginate_queryset(queryset, request, view=self)
-
-        output_serializer = AnalysisListSerializer(paginated_queryset, many=True)
-        # return paginator.get_paginated_response(output_serializer.data)
-        return Response(output_serializer.data)
+    # @extend_schema(
+    #     tags=["image_analysis"],
+    #     summary="이미지 분석결과 히스토리 목록 조회",
+    #     responses={
+    #         200: AnalysisListSerializer(many=True),
+    #         403: OpenApiResponse(description="권한 없음"),
+    #     },
+    # )
+    # def get(self, request: Request) -> Response:
+    #     queryset = AnalysisService.get_analysis_list(user_id=request.user.id)
+    #
+    #     paginator = StandardCustomPagination()
+    #     paginated_queryset = paginator.paginate_queryset(queryset, request, view=self)
+    #
+    #     output_serializer = AnalysisListSerializer(paginated_queryset, many=True)
+    #     # return paginator.get_paginated_response(output_serializer.data)
+    #     return Response(output_serializer.data)
 
     @extend_schema(
         tags=["image_analysis"],
@@ -95,42 +95,42 @@ class AnalysisListCreateAPIView(APIView):
 
 
 # 이미지 분석 상세 조회
-class AnalysisDetailAPIView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    @extend_schema(
-        tags=["image_analysis"],
-        summary="특정 분석 결과 상세 조회",
-        responses={
-            200: AnalysisDetailSerializer,
-            404: OpenApiResponse(description="존재하지 않는 분석 데이터"),
-        },
-    )
-    def get(self, request: Request, id: int) -> Response:
-        data = AnalysisService.get_my_analysis(user_id=request.user.id, analysis_id=id)
-
-        if not data:
-            raise NotFound(detail="접근권한이 없거나 존재하지 않는 분석 데이터")
-
-        output_serializer = AnalysisDetailSerializer(data)
-        return Response(output_serializer.data)
-
-    @extend_schema(
-        tags=["image_analysis"],
-        summary="특정 분석 결과 삭제",
-        responses={
-            204: OpenApiResponse(description="삭제 성공 (본문 없음)"),
-            404: OpenApiResponse(description="존재하지 않는 분석 데이터"),
-            500: OpenApiResponse(description="서버통신 오류"),
-        },
-    )
-    def delete(self, request: Request, id: int) -> Response:
-        success = AnalysisService.delete_analysis(user_id=request.user.id, analysis_id=id)
-
-        if not success:
-            raise NotFound(detail="삭제할 분석 결과가 없거나 접근 권한이 없습니다.")
-
-        return Response(status=status.HTTP_204_NO_CONTENT)
+# class AnalysisDetailAPIView(APIView):
+#     permission_classes = [IsAuthenticated]
+#
+#     @extend_schema(
+#         tags=["image_analysis"],
+#         summary="특정 분석 결과 상세 조회",
+#         responses={
+#             200: AnalysisDetailSerializer,
+#             404: OpenApiResponse(description="존재하지 않는 분석 데이터"),
+#         },
+#     )
+#     def get(self, request: Request, id: int) -> Response:
+#         data = AnalysisService.get_my_analysis(user_id=request.user.id, analysis_id=id)
+#
+#         if not data:
+#             raise NotFound(detail="접근권한이 없거나 존재하지 않는 분석 데이터")
+#
+#         output_serializer = AnalysisDetailSerializer(data)
+#         return Response(output_serializer.data)
+#
+#     @extend_schema(
+#         tags=["image_analysis"],
+#         summary="특정 분석 결과 삭제",
+#         responses={
+#             204: OpenApiResponse(description="삭제 성공 (본문 없음)"),
+#             404: OpenApiResponse(description="존재하지 않는 분석 데이터"),
+#             500: OpenApiResponse(description="서버통신 오류"),
+#         },
+#     )
+#     def delete(self, request: Request, id: int) -> Response:
+#         success = AnalysisService.delete_analysis(user_id=request.user.id, analysis_id=id)
+#
+#         if not success:
+#             raise NotFound(detail="삭제할 분석 결과가 없거나 접근 권한이 없습니다.")
+#
+#         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 # 분석 결과 저장
