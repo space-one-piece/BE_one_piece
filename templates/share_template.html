@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #F9F9F7;
+            margin: 0; padding: 0;
+
+            /* --- [중앙 정렬을 위한 핵심 설정] --- */
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* 가로 중앙 정렬 */
+            min-height: 100vh;
+        }
+
+        .container {
+            padding: 40px 20px;
+            width: 500px; /* 캡처할 영역의 너비 고정 */
+            box-sizing: border-box; /* 패딩이 너비에 영향을 주지 않도록 설정 */
+        }
+
+        .logo { text-align: center; font-weight: bold; font-size: 22px; margin-bottom: 35px; letter-spacing: 1px; }
+
+        .header { text-align: center; margin-bottom: 30px; }
+        .header h2 { font-size: 26px; color: #333; margin-bottom: 12px; font-weight: 700; }
+        .header p { font-size: 14px; color: #888; line-height: 1.5; margin: 0; }
+
+        .main-card {
+            background: white; border-radius: 20px; padding: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04); margin-bottom: 20px;
+            display: flex; gap: 20px; align-items: center;
+        }
+        .scent-img { width: 170px; height: 170px; border-radius: 15px; object-fit: cover; }
+        .main-info { flex: 1; }
+        .tag { font-size: 11px; color: #A0A080; margin-bottom: 6px; font-weight: 700; }
+        .title { font-size: 22px; font-weight: bold; margin-bottom: 10px; color: #222; }
+        .desc { font-size: 13px; color: #666; line-height: 1.5; }
+
+        .section { background: white; border-radius: 20px; padding: 25px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); }
+        .section-title { font-size: 13px; font-weight: bold; margin-bottom: 18px; color: #333; }
+
+        .ai-text { font-size: 13px; line-height: 1.7; color: #444; word-break: keep-all; }
+
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .sub-box { background: white; border-radius: 20px; padding: 22px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); }
+
+        .bar-item { margin-bottom: 14px; }
+        .bar-info { display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 5px; color: #444; }
+        .bar-bg { height: 6px; background: #F0F0F0; border-radius: 3px; overflow: hidden; }
+        .bar-fill { height: 100%; background: #4A5A4D; border-radius: 3px; }
+
+        .note-item { margin-bottom: 18px; }
+        .note-item:last-child { margin-bottom: 0; }
+        .note-name { font-size: 12px; font-weight: bold; margin-bottom: 4px; color: #222; }
+        .note-desc { font-size: 10px; color: #888; margin-bottom: 8px; }
+        .chip-group { display: flex; flex-wrap: wrap; gap: 6px; }
+        .chip {
+            background: #F7F7F7; padding: 4px 10px; border-radius: 12px;
+            font-size: 10.5px; color: #666; border: 1px solid #EDEDED;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">fragmnt</div>
+
+        <div class="header">
+            <h2>당신을 위한 향기 추천 결과</h2>
+            <p>당신의 취향과 정보를 분석하여,<br>가장 어울리는 향기를 찾았습니다.</p>
+        </div>
+
+        <div class="main-card">
+            <img src="{{ scent_image_url }}" class="scent-img">
+            <div class="main-info">
+                <div class="tag">MATCHING SCENT</div>
+                <div class="title">{{ scent_name }}</div>
+                <div class="desc">{{ description }}</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">✨ AI 분석 결과</div>
+            <div class="ai-text">{{ ai_comment }}</div>
+        </div>
+
+        <div class="grid">
+            <div class="sub-box">
+                <div class="section-title">SCENT PROFILE</div>
+                {% for profile in profiles %}
+                <div class="bar-item">
+                    <div class="bar-info">
+                        <span>{{ profile.name }}</span>
+                        <span>{{ profile.value }}%</span>
+                    </div>
+                    <div class="bar-bg">
+                        <div class="bar-fill" style="width: {{ profile.value }}%;"></div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="sub-box">
+                <div class="section-title">NOTE COMPOSITION</div>
+                {% for note in notes_list %}
+                <div class="note-item">
+                    <div class="note-name">{{ note.title }}</div>
+                    <div class="note-desc">{{ note.description }}</div>
+                    <div class="chip-group">
+                        {% for item in note.items %}
+                        <span class="chip">{{ item }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

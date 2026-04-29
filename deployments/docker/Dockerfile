@@ -25,5 +25,11 @@ COPY ../../pyproject.toml uv.lock ./
 # --no-cache를 넣어주면 이미지 용량이 줄어듭니다.
 RUN uv sync --no-cache
 
+# Playwright 브라우저 엔진(Chromium) 설치
+RUN uv run playwright install chromium
+
+# 브라우저 실행에 필요한 시스템 의존성 및 폰트 설치 (중요!)
+RUN uv run playwright install-deps chromium
+
 # 5. 프로젝트 파일 복사
 COPY ../.. .

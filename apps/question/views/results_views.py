@@ -1,18 +1,20 @@
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.question.extend_schema import value_list
 from apps.question.serializers.results_serializers import (
+    ResultImageSerializer,
     ResultsIntSerializer,
     ResultsOutSerializer,
     ResultWebShareSerializer,
     WebShareSerializer,
 )
+from apps.question.service.image_user_service import ImageUserService
 from apps.question.service.results_service import ResultsService
 
 
@@ -158,3 +160,34 @@ class ResultDetailAPIView(APIView):
         data = ResultWebShareSerializer(serializer_data)
 
         return Response(data.data, status=status.HTTP_200_OK)
+
+
+class ResultImageAPIView(APIView):
+    permission_classes = [AllowAny]
+
+    @extend_schema(
+        tags=["quest"],
+        summary="결과 이미지 생성 API",
+        description="결과 이미지 생성 API",
+        request=None,
+        responses={
+            200: OpenApiResponse(
+                response=OpenApiTypes.OBJECT,
+                examples=[value_list["200_web_image"]],
+            ),
+            404: OpenApiResponse(
+                response=OpenApiTypes.OBJECT,
+                examples=[value_list["404"]],
+            ),
+            429: OpenApiResponse(
+                response=OpenApiTypes.OBJECT,
+                examples=[value_list["429"]],
+            ),
+        },
+    )
+    def post(self, request: Request, results_id: int, division: str) -> Response:
+        byte = ImageUserService.web_share(request.user.id, results_id, division)
+        serializer = ResultImageSerializer(data=byte)
+        serializer.is_valid()
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
