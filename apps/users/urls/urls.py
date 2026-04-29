@@ -51,9 +51,9 @@ urlpatterns = [
     # 이메일 찾기
     path("find-email", FindEmailView.as_view(), name="find_email"),
     # 비밀번호 재설정
-    path("chang-password", PasswordResetView.as_view(), name="change_password"),
+    path("change-password", PasswordResetView.as_view(), name="change_password"),
     # 회원탈퇴
-    path("me", UserWithdrawalView.as_view(), name="me"),
+    path("me/withdrawal", UserWithdrawalView.as_view(), name="me"),
     # 계정 복구
     path("recovery", AccountRecoveryView.as_view(), name="account_recovery"),
     # 인증 관련 include
