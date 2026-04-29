@@ -1,3 +1,4 @@
+import uuid
 from datetime import timedelta
 
 from django.core.cache import cache
@@ -46,9 +47,10 @@ class UserRecoveryTest(TestCase):
 
     # 복구 성공
     def test_user_recovery_success(self) -> None:
-        cache.set(f"verified_email_{self.email}", True, timeout=600)
+        recovery_token = str(uuid.uuid4())
+        cache.set(f"signup_token_{recovery_token}", self.email, timeout=600)
 
-        data = {"email": self.email, "password": self.password, "code": "123456"}
+        data = {"email": self.email, "password": self.password, "recovery_token": recovery_token}
 
         response = self.client.post(self.url, data, format="json")
 
@@ -62,9 +64,10 @@ class UserRecoveryTest(TestCase):
 
     # 비밀번호 불일치
     def test_user_recovery_failure(self) -> None:
-        cache.set(f"verified_email_{self.email}", True, timeout=600)
+        recovery_token = str(uuid.uuid4())
+        cache.set(f"signup_token_{recovery_token}", self.email, timeout=600)
 
-        data = {"email": self.email, "password": "funpassword", "code": "123456"}
+        data = {"email": self.email, "password": "funpassword", "recovery_token": recovery_token}
 
         response = self.client.post(self.url, data, format="json")
 
@@ -75,13 +78,14 @@ class UserRecoveryTest(TestCase):
 
     # 유예기간이 지난 경우
     def test_user_recovery_fail_expired_period(self) -> None:
-        cache.set(f"verified_email_{self.email}", True, timeout=600)
+        recovery_token = str(uuid.uuid4())
+        cache.set(f"signup_token_{recovery_token}", self.email, timeout=600)
 
         withdrawal_info = UserWithdrawal.objects.get(user=self.user)
         withdrawal_info.scheduled_delete_at = timezone.now() - timedelta(days=14)
         withdrawal_info.save()
 
-        data = {"email": self.email, "password": self.password, "code": "123456"}
+        data = {"email": self.email, "password": self.password, "recovery_token": recovery_token}
 
         response = self.client.post(self.url, data, format="json")
 

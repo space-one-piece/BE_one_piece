@@ -147,7 +147,7 @@ class AccountRecoveryView(APIView):
 
     @extend_schema(
         summary="계정 복구",
-        description="이메일 인증번호와 기존 비밀번호를 입력하여 계정을 복구합니다.",
+        description="이메일 인증 후 발급받은 UUID 토큰과 기존 비밀번호를 입력하여 계정을 복구합니다.",
         request=AccountRecoverySerializer,
         responses={
             200: OpenApiResponse(description="복구 성공"),
@@ -162,7 +162,7 @@ class AccountRecoveryView(APIView):
         RecoveryService.recover_user(
             email=serializer.validated_data["email"],
             password=serializer.validated_data["password"],
-            code=serializer.validated_data["code"],
+            recovery_token=serializer.validated_data["recovery_token"],
         )
 
         return Response(

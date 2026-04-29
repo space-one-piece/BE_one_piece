@@ -72,12 +72,12 @@ class WithdrawalService:
 class RecoveryService:
     @staticmethod
     @transaction.atomic
-    def recover_user(email: str, password: str, code: str) -> User:
-        verified_key = f"verified_email_{email.strip()}"
-        is_verified = cache.get(verified_key)
+    def recover_user(email: str, password: str, recovery_token: str) -> User:
+        cache_key = f"signup_token_{recovery_token}"
+        cached_email = cache.get(cache_key)
 
-        if not is_verified:
-            raise ValidationError("이메일 인증이 완료되지 않았거나 인증 시간이 만료되었습니다.")
+        if not cached_email or cached_email != email.strip():
+            raise ValidationError("유효하지 않거나 만료된 복구 토큰입니다.")
 
         user = User.objects.filter(email=email).first()
         if not user:
@@ -98,5 +98,7 @@ class RecoveryService:
         user.save()
 
         withdrawal_info.delete()
+
+        cache.delete(cache_key)
 
         return user

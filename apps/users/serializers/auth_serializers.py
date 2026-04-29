@@ -3,7 +3,6 @@ from typing import Any
 from rest_framework import serializers
 
 from apps.users.choices import WithdrawalReason
-from apps.users.serializers.verification_serializers import EmailVerifySerializer
 
 
 # 유저 로그인 요청 데이터
@@ -41,5 +40,7 @@ class UserWithdrawalSerializer(serializers.Serializer[Any]):
 
 
 # 계정복구
-class AccountRecoverySerializer(EmailVerifySerializer):
+class AccountRecoverySerializer(serializers.Serializer[Any]):
+    email = serializers.EmailField(label="이메일")
     password = serializers.CharField(write_only=True, style={"input_type": "password"}, label="비밀번호 확인")
+    recovery_token = serializers.CharField(label="복구 토큰", help_text="이메일 인증 완료 후 발급된 UUID 토큰")
