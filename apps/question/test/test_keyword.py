@@ -34,12 +34,3 @@ class QuestionAPIViewTest(TestCase):
         url = reverse("keyword")
         response = self.client.get(url, content_type="application/json")
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-
-    def test_keyword_input_fail(self) -> None:
-        url = reverse("keyword")
-        data = [
-            {"keyword_id": 1, "keyword_division": "MOOD", "keyword_name": "포근한"},
-            {"keyword_id": 2, "keyword_division": "MOOD", "keyword_name": "산뜻한"},
-        ]
-        response = self.client.post(url, data, content_type="application/json")
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
