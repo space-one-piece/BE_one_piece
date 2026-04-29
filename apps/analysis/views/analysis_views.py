@@ -62,8 +62,8 @@ class AnalysisListCreateAPIView(APIView):
         paginator = StandardCustomPagination()
         paginated_queryset = paginator.paginate_queryset(queryset, request, view=self)
 
-        serializer = AnalysisListSerializer(paginated_queryset, many=True)
-        return Response(serializer.data)
+        output_serializer = AnalysisListSerializer(paginated_queryset, many=True)
+        return paginator.get_paginated_response(output_serializer.data)
 
     @extend_schema(
         tags=["image_analysis"],
@@ -132,7 +132,7 @@ class AnalysisDetailAPIView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-# 이미지 분석 결과 저장
+# 분석 결과 저장
 class AnalysisFeedbackAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -181,6 +181,7 @@ class AnalysisFeedbackAPIView(APIView):
         return Response({"detail": "피드백이 성공적으로 반영되었습니다."}, status=status.HTTP_200_OK)
 
 
+# 분석결과 저장한 리스트 반환
 class AnalysisFeedbackListAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -215,7 +216,7 @@ class AnalysisFeedbackListAPIView(APIView):
         paginated_queryset = paginator.paginate_queryset(feedback_list, request, view=self)  # type: ignore
 
         output_serializer = IntegratedFeedbackSerializer(paginated_queryset, many=True)
-        return Response(output_serializer.data)
+        return paginator.get_paginated_response(output_serializer.data)
 
 
 # 유저 분석 통계 반환
@@ -235,6 +236,7 @@ class AnalysisStatsAPIView(APIView):
         return Response({"data": stats_data})
 
 
+# 통합 분석 결과 리스트
 class IntegratedHistoryListAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -251,10 +253,11 @@ class IntegratedHistoryListAPIView(APIView):
         paginator = StandardCustomPagination()
         paginated_queryset = paginator.paginate_queryset(history_list, request, view=self)  # type: ignore
 
-        serializer = AnalysisListSerializer(paginated_queryset, many=True)
-        return Response(serializer.data)
+        output_serializer = AnalysisListSerializer(paginated_queryset, many=True)
+        return paginator.get_paginated_response(output_serializer.data)
 
 
+# 분석 통합 결과 상세조회
 class AnalysisTotalDetailAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
