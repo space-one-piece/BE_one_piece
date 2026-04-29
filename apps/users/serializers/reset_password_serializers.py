@@ -7,7 +7,7 @@ from rest_framework import serializers
 
 class PasswordResetSerializer(serializers.Serializer[Any]):
     email = serializers.EmailField(help_text="인증을 완료한 유저의 이메일")
-    token = serializers.CharField(help_text="이메일 인증 성공 시 발급된 UUID 토큰")
+    email_uuid_token = serializers.CharField(help_text="이메일 인증 성공 시 발급된 UUID 토큰")
     new_password = serializers.CharField(write_only=True, help_text="새로 설정할 비밀번호")
     new_password_confirm = serializers.CharField(write_only=True)
 

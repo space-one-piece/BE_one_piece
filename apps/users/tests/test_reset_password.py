@@ -39,7 +39,7 @@ class PasswordResetTestCase(TestCase):
 
         data = {
             "email": self.email,
-            "token": token,
+            "email_uuid_token": token,
             "new_password": "new-secure-password213!",
             "new_password_confirm": "new-secure-password213!",
         }
@@ -56,7 +56,7 @@ class PasswordResetTestCase(TestCase):
     def test_password_reset_invalid_token(self) -> None:
         data = {
             "email": self.email,
-            "token": "invalid-token-123",
+            "email_uuid_token": "invalid-token-123",
             "new_password": "dfewer1234",
             "new_password_confirm": "dfewer1234",
         }
@@ -72,7 +72,7 @@ class PasswordResetTestCase(TestCase):
 
         data = {
             "email": non_existent_email,
-            "token": token,
+            "email_uuid_token": token,
             "new_password": "new-password123!",
             "new_password_confirm": "new-password123!",
         }

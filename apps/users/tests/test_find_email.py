@@ -38,7 +38,7 @@ class FindEmailTest(TestCase):
         test_token = "valid_sms_token_123"
         cache.set(f"signup_token_{test_token}", self.phone_number, timeout=300)
 
-        data = {"name": self.name, "phone_number": self.phone_number, "sms_token": test_token}
+        data = {"name": self.name, "phone_number": self.phone_number, "sms_uuid_token": test_token}
 
         response = self.client.post(self.url, data, format="json")
 
@@ -52,7 +52,7 @@ class FindEmailTest(TestCase):
     def test_find_email_invalid_token(self) -> None:
         db_user = User.objects.get(phone_number=self.phone_number)
         print(f"--- DB에 저장된 실제 이메일: {db_user.email} ---")
-        data = {"name": self.name, "phone_number": self.phone_number, "sms_token": "invalid_token"}
+        data = {"name": self.name, "phone_number": self.phone_number, "sms_uuid_token": "invalid_token"}
 
         response = self.client.post(self.url, data, format="json")
 
@@ -65,7 +65,7 @@ class FindEmailTest(TestCase):
         other_phone = "01043211234"
         cache.set(f"signup_token_{test_token}", other_phone, timeout=300)
 
-        data = {"name": "누구냐넌", "phone_number": other_phone, "sms_token": test_token}
+        data = {"name": "누구냐넌", "phone_number": other_phone, "sms_uuid_token": test_token}
 
         response = self.client.post(self.url, data=data, content_type="application/json")
 
