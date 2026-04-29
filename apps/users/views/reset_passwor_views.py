@@ -41,7 +41,7 @@ class PasswordResetView(APIView):
 
         passwordservice.reset_password(
             email=serializer.validated_data["email"],
-            token=serializer.validated_data["token"],
+            email_uuid_token=serializer.validated_data["email_uuid_token"],
             new_password=serializer.validated_data["new_password"],
         )
 

@@ -18,14 +18,16 @@ class SignUpService:
         input_email: str = str(validated_data.pop("email"))
         input_phone: str = str(validated_data.pop("phone_number")).replace("-", "")
         password: str = validated_data.pop("password")
+        email_uuid_token: str = validated_data.pop("email_token")
+        sms_uuid_token: str = validated_data.pop("sms_token")
 
-        email_verified_key = f"verified_email_{input_email}"
-        phone_verified_key = f"verified_phone_{input_phone}"
+        cached_email = cache.get(f"signup_token_{email_uuid_token}")
+        cached_phone = cache.get(f"signup_token_{sms_uuid_token}")
 
-        if not cache.get(email_verified_key):
+        if not cached_email or cached_email != input_email:
             raise ValidationError("이메일 인증이 완료되지 않았습니다.")
 
-        if not cache.get(phone_verified_key):
+        if not cached_phone or cached_phone != input_phone:
             raise ValidationError("휴대폰 인증이 완료되지 않았습니다.")
 
         if User.objects.filter(email=input_email).exists():
@@ -43,6 +45,6 @@ class SignUpService:
             **validated_data,
         )
 
-        cache.delete(email_verified_key)
-        cache.delete(phone_verified_key)
+        cache.delete(f"signup_token_{email_uuid_token}")
+        cache.delete(f"signup_token_{sms_uuid_token}")
         return user

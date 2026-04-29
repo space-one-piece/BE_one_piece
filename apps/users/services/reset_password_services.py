@@ -7,8 +7,8 @@ from apps.users.models.models import User
 
 class passwordservice:
     @staticmethod
-    def reset_password(email: str, token: str, new_password: str) -> None:
-        cache_key = f"signup_token_{token}"
+    def reset_password(email: str, email_uuid_token: str, new_password: str) -> None:
+        cache_key = f"signup_token_{email_uuid_token}"
         cached_email = cache.get(cache_key)
 
         if not cached_email or cached_email != email.strip():
