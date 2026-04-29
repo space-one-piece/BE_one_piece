@@ -4,6 +4,7 @@ from typing import Any, Literal, cast
 from django.conf import settings
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import status
+from rest_framework.exceptions import NotAuthenticated
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -94,8 +95,12 @@ class LogoutView(APIView):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
 
+        user = request.user
+        if not isinstance(user, User):
+            raise NotAuthenticated()
+
         refresh_token: str = serializer.validated_data["refresh"]
-        LogoutService.logout(refresh_token)
+        LogoutService.logout(refresh_token, request.user)  # type: ignore[arg-type]
 
         return Response({"detail": "성공적으로 로그아웃 되었습니다."}, status=status.HTTP_200_OK)
 

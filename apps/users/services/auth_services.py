@@ -10,6 +10,8 @@ from rest_framework import exceptions
 from rest_framework.exceptions import ValidationError
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from apps.chatbot.models import ChatSession
+from apps.chatbot.views.chat_views import delete_session_store
 from apps.users.choices import UserStatus
 from apps.users.models.models import User, UserWithdrawal
 
@@ -36,12 +38,18 @@ class LoginService:
 # 로그아웃
 class LogoutService:
     @staticmethod
-    def logout(refresh_token_str: str) -> None:
+    def logout(refresh_token_str: str, user: User) -> None:
         try:
             token = RefreshToken(refresh_token_str)  # type: ignore
             token.blacklist()
         except Exception:
             raise ValidationError({"code": "invalid_token", "message": "유효하지 않거나 이미 만료된 토큰입니다."})
+
+        active_session = ChatSession.objects.filter(user=user, status="active").first()
+        if active_session:
+            active_session.status = "inactive"
+            active_session.save()
+            delete_session_store(active_session.id)
 
 
 # 계정 탈퇴

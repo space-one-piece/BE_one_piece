@@ -155,7 +155,7 @@ class ChatMessageView(APIView):
             {
                 "status": "success",
                 "data": {
-                    "reply": reply,
+                    "ai_comment": reply,
                     "is_recommendation": is_recommendation,
                     "recommendation_id": recommendation_id,
                     "scent_id": scent_id_from_ai if is_recommendation else None,
