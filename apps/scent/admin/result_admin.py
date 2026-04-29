@@ -29,7 +29,6 @@ class ResultDataAdmin(admin.ModelAdmin):  # type: ignore[type-arg]
             row["is_first_of_group"] = row["source"] != previous_source
             previous_source = row["source"]
 
-        # ✅ 직접 HTML 생성
         rows_html = ""
 
         for row in combined_results:

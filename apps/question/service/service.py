@@ -1,12 +1,14 @@
 import json
 import math
 import random
-from typing import Any, cast
+from typing import Any, Union, cast
 
 from django.core.cache import cache
 from django.db.models import JSONField
+from django.shortcuts import get_object_or_404
 
-from apps.analysis.models import Scent
+from apps.analysis.models import ImageAnalysis, Scent
+from apps.chatbot.models import ChatbotRecommendation
 from apps.core.utils.cloud_front import image_url_cloud
 from apps.core.utils.s3_handler import S3Handler
 from apps.question.models import Keyword, Question, QuestionsAnswer, QuestionsResults
@@ -227,3 +229,15 @@ class QuestServices:
                         }
                     )
         return input_list
+
+    @staticmethod
+    def result_division(requestion_id: int, division: str) -> ImageAnalysis | ChatbotRecommendation | QuestionsResults:
+        data: Union[ImageAnalysis, ChatbotRecommendation, QuestionsResults]
+        if division == "image":
+            data = get_object_or_404(ImageAnalysis, pk=requestion_id)
+        elif division == "chatbot":
+            data = get_object_or_404(ChatbotRecommendation, pk=requestion_id)
+        else:
+            data = get_object_or_404(QuestionsResults, pk=requestion_id)
+
+        return data

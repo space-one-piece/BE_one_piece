@@ -58,3 +58,7 @@ class ResultListSerializer(serializers.Serializer[Any]):
     review = serializers.CharField()
     rating = serializers.IntegerField()
     created_at = serializers.DateTimeField()
+
+
+class ResultImageSerializer(serializers.Serializer[Any]):
+    image_data = serializers.CharField()

@@ -307,6 +307,7 @@ value_list = {
     "400_keyword": extend_schema(
         "Bad Request", {"error_detail": {"keyword_name": ["선택된 키워드가 없습니다."]}}, "400"
     ),
+    "200_web_image": extend_schema("OK", {"image_data": "d2lb...."}, "200"),
     "400": extend_schema("Bad Request", {"error_detail": "이미지가 없습니다."}, "400"),
     "401": extend_schema("Unauthorized", {"error_detail": "자격 인증 데이터가 제공되 않았습니다."}, "401"),
     "403": extend_schema("Forbidden", {"error_detail": "권한이 없습니다."}, "403"),
