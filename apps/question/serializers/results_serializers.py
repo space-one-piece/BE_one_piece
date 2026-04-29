@@ -29,9 +29,14 @@ class UserInput(serializers.Serializer[Any]):
     answer = serializers.CharField()
 
 
+class WebShareSerializer(serializers.Serializer[Any]):
+    web_share_url = serializers.CharField()
+
+
 class ResultWebShareSerializer(serializers.Serializer[Any]):
     id = serializers.IntegerField()
     recommended_scent = ScentDetailSerializer()
+    created_at = serializers.CharField()
     ai_comment = serializers.CharField()
     match_score = serializers.IntegerField()
     review = serializers.CharField()

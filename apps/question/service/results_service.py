@@ -1,4 +1,3 @@
-import json
 from typing import Any, cast
 
 from django.shortcuts import get_object_or_404
@@ -69,13 +68,18 @@ class ResultsService(QuestServices):
             cls.list_url(question_data.scent.recommended_places) if question_data.scent.recommended_places else None
         )
 
+        raw_json = cls.js_lod(question_data.questions_json, question_data.division)
+
         data = {
             "id": question_data.id,
             "recommended_scent": question_data.scent,
+            "created_at": question_data.created_at,
             "ai_comment": question_data.answer_ai,
             "match_score": question_data.match_score,
             "review": question_data.review,
             "rating": question_data.rating,
+            "user_input": raw_json,
+            "is_saved": question_data.is_helpful,
         }
         return data
 
@@ -122,40 +126,20 @@ class ResultsService(QuestServices):
         if questin_data.user_id != user_id:
             raise PermissionDenied()
 
-        raw_json = questin_data.questions_json
-        if isinstance(raw_json, str):
-            raw_json = json.loads(raw_json)
-
-        input_list = []
-        if isinstance(raw_json, list):
-            if questin_data.division == "K":
-                for item in raw_json:
-                    input_list.append(
-                        {
-                            "title": "",
-                            "answer": item.get("name"),
-                        }
-                    )
-            else:
-                for item in raw_json:
-                    input_list.append(
-                        {
-                            "title": item.get("title"),
-                            "answer": item.get("answer"),
-                        }
-                    )
+        raw_json = cls.js_lod(questin_data.questions_json, questin_data.division)
 
         scent_data = cast(Any, cls.scent_edit(questin_data.scent)) if questin_data.scent else None
 
         data = {
             "id": questin_data.id,
             "recommended_scent": scent_data,
+            "created_at": questin_data.created_at,
             "ai_comment": questin_data.answer_ai,
             "match_score": questin_data.match_score,
             "review": questin_data.review,
             "rating": questin_data.rating,
             "is_saved": questin_data.is_helpful,
-            "user_input": input_list,
+            "user_input": raw_json,
         }
 
         return data

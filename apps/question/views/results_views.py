@@ -10,8 +10,8 @@ from apps.question.extend_schema import value_list
 from apps.question.serializers.results_serializers import (
     ResultsIntSerializer,
     ResultsOutSerializer,
-    ResultsSerializer,
     ResultWebShareSerializer,
+    WebShareSerializer,
 )
 from apps.question.service.results_service import ResultsService
 
@@ -25,7 +25,7 @@ class ResultsCreateUrlAPIView(APIView):
         description="web share 생성 API",
         request=None,
         responses={
-            200: OpenApiResponse(response=ResultsSerializer, examples=[value_list["200_web_get"]]),
+            200: OpenApiResponse(response=WebShareSerializer, examples=[value_list["200_web_post"]]),
             401: OpenApiResponse(response=OpenApiTypes.OBJECT, examples=[value_list["401"]]),
             404: OpenApiResponse(response=OpenApiTypes.OBJECT, examples=[value_list["404"]]),
         },
@@ -42,13 +42,15 @@ class ResultsCreateUrlAPIView(APIView):
         request=None,
         responses={
             200: OpenApiResponse(
-                response=OpenApiTypes.OBJECT,
+                response=ResultWebShareSerializer,
                 examples=[value_list["200_web_get"]],
             ),
             404: OpenApiResponse(
+                response=OpenApiTypes.OBJECT,
                 examples=[value_list["404"]],
             ),
             429: OpenApiResponse(
+                response=OpenApiTypes.OBJECT,
                 examples=[value_list["429"]],
             ),
         },
@@ -73,12 +75,15 @@ class ReviewViewAPIView(APIView):
                 examples=[value_list["200_review"]],
             ),
             401: OpenApiResponse(
+                response=OpenApiTypes.OBJECT,
                 examples=[value_list["401"]],
             ),
             403: OpenApiResponse(
+                response=OpenApiTypes.OBJECT,
                 examples=[value_list["403"]],
             ),
             404: OpenApiResponse(
+                response=OpenApiTypes.OBJECT,
                 examples=[value_list["404"]],
             ),
         },
@@ -139,9 +144,11 @@ class ResultDetailAPIView(APIView):
                 examples=[value_list["200_web_get"]],
             ),
             404: OpenApiResponse(
+                response=OpenApiTypes.OBJECT,
                 examples=[value_list["404"]],
             ),
             429: OpenApiResponse(
+                response=OpenApiTypes.OBJECT,
                 examples=[value_list["429"]],
             ),
         },

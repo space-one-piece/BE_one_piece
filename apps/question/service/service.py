@@ -201,3 +201,29 @@ class QuestServices:
             cls.list_url(scent_data.recommended_places) if scent_data.recommended_places else None
         )
         return scent_data
+
+    @staticmethod
+    def js_lod(data: str, division: str) -> list[dict[str, Any]]:
+        raw_json = data
+        if isinstance(raw_json, str):
+            raw_json = json.loads(raw_json)
+
+        input_list: list[dict[str, Any]] = []
+        if isinstance(raw_json, list):
+            if division == "K":
+                for item in raw_json:
+                    input_list.append(
+                        {
+                            "title": "",
+                            "answer": item.get("name"),
+                        }
+                    )
+            else:
+                for item in raw_json:
+                    input_list.append(
+                        {
+                            "title": item.get("title"),
+                            "answer": item.get("answer"),
+                        }
+                    )
+        return input_list
