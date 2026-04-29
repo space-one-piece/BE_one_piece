@@ -36,6 +36,7 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 DJANGO_APPS = [
+    "jazzmin",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -324,3 +325,76 @@ REDIS_HOST = os.getenv("REDIS_HOST", "redis")
 REDIS_PORT = int(os.getenv("REDIS_PORT", "6379"))
 
 CF_DOMAIN = os.getenv("CF_DOMAIN", "")
+
+
+JAZZMIN_SETTINGS = {
+    # 기본 설정
+    "site_title": "My Admin",
+    "site_header": "My Admin",
+    "site_brand": "My Admin",
+    "welcome_sign": "환영합니다",
+    # 로고 (없으면 텍스트로 표시)
+    # "site_logo": "img/logo.png",
+    # 상단 링크
+    "topmenu_links": [
+        {"name": "홈", "url": "admin:index"},
+        {"name": "사이트 보기", "url": "/"},
+    ],
+    # 사이드바 아이콘 (Font Awesome 사용)
+    "icons": {
+        "auth.Group": "fas fa-users",
+        "auth.User": "fas fa-user",
+        # 앱별 아이콘
+        "question.questionsresults": "fas fa-list",
+        "chatbot.chatbotrecommendation": "fas fa-robot",
+        "analysis.imageanalysis": "fas fa-image",
+        "scent.scent": "fas fa-leaf",
+    },
+    # 앱 순서 및 이름 변경
+    "order_with_respect_to": [
+        "auth",
+        "scent",
+        "chatbot",
+        "analysis",
+        "question",
+    ],
+    # 사이드바 설정
+    "show_sidebar": True,
+    "navigation_expanded": True,
+    # 검색창
+    "search_model": [],
+    # 테마
+    "show_ui_builder": False,  # True 하면 우측 하단에 UI 커스터마이저 버튼 생김
+}
+
+JAZZMIN_UI_TWEAKS = {
+    "navbar_small_text": False,
+    "footer_small_text": False,
+    "body_small_text": False,
+    "brand_small_text": False,
+    "brand_colour": False,
+    "accent": "accent-primary",  # 포인트 색상
+    "navbar": "navbar-dark",  # 상단바 색상
+    "no_navbar_border": False,
+    "navbar_fixed": False,
+    "layout_boxed": False,
+    "footer_fixed": False,
+    "sidebar_fixed": False,
+    "sidebar": "sidebar-dark-primary",  # 사이드바 색상
+    "sidebar_nav_small_text": False,
+    "sidebar_disable_expand": False,
+    "sidebar_nav_child_indent": False,
+    "sidebar_nav_compact_style": False,
+    "sidebar_nav_legacy_style": False,
+    "sidebar_nav_flat_style": False,
+    "theme": "default",  # 테마 선택
+    "dark_mode_theme": None,
+    "button_classes": {
+        "primary": "btn-primary",
+        "secondary": "btn-secondary",
+        "info": "btn-info",
+        "warning": "btn-warning",
+        "danger": "btn-danger",
+        "success": "btn-success",
+    },
+}
