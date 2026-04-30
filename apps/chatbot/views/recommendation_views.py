@@ -173,6 +173,7 @@ class ChatbotRecommendationRetryView(APIView):
                     retry_count=retry_count + 1,
                 )
                 recommendation_id = recommendation.id
+                scent = recommendation.scent
 
         # 재추천 대화 흐름 저장 (user 재추천 요청 + model 응답)
         store["messages"].append({"role": "user", "parts": [{"text": "다른 향수로 재추천해줘"}]})
@@ -190,6 +191,9 @@ class ChatbotRecommendationRetryView(APIView):
                     "scent_id": scent_id_from_ai if recommendation_id else None,
                     "retry_count": retry_count + 1,
                     "source_type": "chatbot",
+                    "is_saved": False,
+                    "user_message": None,
+                    "ai_keywords": scent.tags if scent else [],
                 },
             },
             status=status.HTTP_200_OK,
