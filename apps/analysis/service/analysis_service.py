@@ -111,18 +111,22 @@ class AnalysisService:
         max_attempt = 2
 
         for current_model in model_lineup:
-            gemini = GeminiClient(model_name=current_model)
+            gemini = GeminiClient(model_name=current_model, timeout=15)
 
             for attempt in range(max_attempt):
                 try:
                     logger.info(f"[{current_model}] 모델 AI 분석 시도 ({attempt + 1}/{max_attempt})")
                     ai_result = gemini.analyze_scent_from_image(image_bytes)
                     break
-                except Exception:
-                    logger.warning(f"[{current_model}] 분석 실패", exc_info=True)
-                    if attempt < max_attempt - 1:
-                        time.sleep(2)
+                except Exception as e:
+                    error_msg = str(e).lower()
+                    if "timeout" in error_msg or "503" in error_msg or "unavailable" in error_msg:
+                        logger.warning(f"[{current_model}] AI 서버 지연/과부하 발생 (시도 {attempt + 1})")
+                    else:
+                        logger.error(f"[{current_model}] 분석 중 알 수 없는 에러 발생: {e}", exc_info=True)
 
+                    if attempt < max_attempt - 1:
+                        time.sleep(2)  # 2초 대기 후 재시도
             if ai_result:
                 break
 

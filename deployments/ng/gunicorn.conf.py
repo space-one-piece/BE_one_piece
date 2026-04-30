@@ -15,7 +15,7 @@ preload_app = False
 
 # 스레드 워커 사용
 worker_class = "gthread"
-threads = 1
+threads = 4
 
 # 연결 유지 시간
 keepalive = 5

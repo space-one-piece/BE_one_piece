@@ -1,14 +1,22 @@
 import json
-from typing import Any
+from typing import Any, TypedDict
 
 from django.conf import settings
 from google import genai
 from google.genai import types
 
 
+class HttpOptionsDict(TypedDict, total=False):
+    timeout: int
+
+
 class GeminiClient:
-    def __init__(self, model_name: str | None = None) -> None:
-        self.client = genai.Client(api_key=settings.HHJ_GEMINI_KEY)
+    def __init__(self, model_name: str | None = None, timeout: int = 15) -> None:
+        http_options: HttpOptionsDict = {"timeout": timeout}
+        self.client = genai.Client(
+            api_key=settings.HHJ_GEMINI_KEY,
+            http_options=http_options,  # type: ignore[arg-type]
+        )
         self.model_name = model_name or settings.GEMINI_MODEL
 
     def analyze_scent_from_image(self, image_bytes: bytes) -> dict[str, Any]:
