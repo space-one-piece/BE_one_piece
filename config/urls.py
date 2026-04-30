@@ -27,6 +27,8 @@ from apps.question.views.results_views import ResultsCreateUrlAPIView
 
 urlpatterns = [
     path("api/admin/", admin.site.urls),
+    # web share
+    path("api/v1/<str:type>/web_share/<str:results_id>", ResultsCreateUrlAPIView.as_view(), name="web_share"),
     # 유저 어드민
     path("api/v1/admin/", include(("apps.users.urls.admin-urls", "admin"))),
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
@@ -43,8 +45,6 @@ urlpatterns = [
     # 향 데이터
     path("api/v1/scents", ScentListCreateAPIView.as_view(), name="scent-list-create"),
     path("api/v1/scents/<int:id>", ScentDetailAPIView.as_view(), name="scent-detail"),
-    # web share
-    path("api/v1/<str:type>/web_share/<str:results_id>", ResultsCreateUrlAPIView.as_view(), name="web_share"),
 ]
 
 if settings.DEBUG:

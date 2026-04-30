@@ -61,7 +61,7 @@ class ResultsService(QuestServices):
             raise PermissionDenied()
 
         question_id = encode_id(result_id)
-        return f"https://framnt.pics/api/v1/{type_data}/web_share/{question_id}"
+        return f"https://fragmnt.pics/api/v1/{type_data}/web_share/{question_id}"
 
     @classmethod
     def select_web_share(cls, type_data: str, result_id: str) -> dict[str, Any]:
