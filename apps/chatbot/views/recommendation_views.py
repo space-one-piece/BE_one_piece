@@ -193,7 +193,7 @@ class ChatbotRecommendationRetryView(APIView):
                     "source_type": "chatbot",
                     "is_saved": False,
                     "user_message": None,
-                    "ai_keywords": recommendation.scent.tags if recommendation_id else [],
+                    "ai_keywords": recommendation.scent.tags if recommendation else [],
                 },
             },
             status=status.HTTP_200_OK,
