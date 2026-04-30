@@ -13,7 +13,10 @@ router = routers.DefaultRouter()
 urlpatterns = [
     path("survey", QuestAPIView.as_view(), name="question"),
     path("web_share/<str:results_id>", ResultsCreateUrlAPIView.as_view(), name="web_share"),
+    # path("results/<int:results_id>/review", ReviewViewAPIView.as_view(), name="review_results"),
     path("keyword", KeywordAPIView.as_view(), name="keyword"),
     path("image", ImageUserAPIView.as_view(), name="user_image"),
     path("user-image", UserImageAPIView.as_view(), name="image_user"),
+    # path("<str:division>/results", ResultListAPIView.as_view(), name="results"),
+    # path("<str:division>/detail/<int:requests_id>", ResultDetailAPIView.as_view(), name="detail"),
 ]
