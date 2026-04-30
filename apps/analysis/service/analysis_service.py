@@ -111,7 +111,7 @@ class AnalysisService:
         max_attempt = 2
 
         for current_model in model_lineup:
-            gemini = GeminiClient(model_name=current_model, timeout=30)
+            gemini = GeminiClient(model_name=current_model)
 
             for attempt in range(max_attempt):
                 try:
