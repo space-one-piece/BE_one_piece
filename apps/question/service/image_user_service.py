@@ -30,16 +30,56 @@ class ImageUserService(QuestServices, Gemini):
         last_data = max(result, key=lambda x: x.created_at)
 
         category_data = {
-            "floral": "dusty rose, soft peony pink, pale lilac, creamy coral, hints of apricot",
-            "fruity": "sweet peach, pastel raspberry, soft mango yellow, pale strawberry pink, hints of apricot",
-            "woody": "soft sage green, warm taupe, dusty cedar, pale sand, muted amber, ivory",
-            "citrus": "pale lemon yellow, bright lime zest, soft aqua, misty white, sheer mandarin",
-            "musk": "milky white, soft pearl grey, ivory silk, misty lavender, creamy beige",
-            "green": "fresh mint, soft leaf green, pale pistachio, misty teal, dew-drop white",
-            "spicy": "muted terracotta, soft copper, warm cinnamon, dusty gold, creamy sand",
-            "powdery": "pale violet, soft baby pink, misty white, pearl silver, vanilla cream",
-            "aquatic": "soft ocean blue, misty cyan, pale turquoise, airy silver, sheer seafoam",
-            "amber": "warm honey gold, soft amber orange, muted bronze, deep cream, sunset glow",
+            "floral": """A elegant crystal perfume bottle labeled "( )" placed on white marble slab,
+            surrounded by blooming roses, jasmine flowers, peony petals scattered around,
+            soft pink and ivory bokeh background, romantic and feminine atmosphere,
+            delicate floral mist drifting around the bottle,
+            golden hour diffused lighting, macro product photography, ultra realistic, 8k""",
+            "fruity": """A vibrant glass perfume bottle labeled "( )" on a rustic wooden surface,
+            surrounded by fresh peach slices, ripe berries, fig halves, and passion fruit,
+            warm coral and golden yellow bokeh background, playful and juicy atmosphere,
+            fine fruit mist sparkling around the bottle,
+            bright natural sunlight, macro product photography, ultra realistic, 8k""",
+            "woody": """A dark matte perfume bottle labeled "( )" resting on aged oak wood slab,
+            surrounded by cedarwood chips, sandalwood shavings, dry bark and forest moss,
+            deep brown and forest green bokeh background, warm and grounded atmosphere,
+            smoky woody mist curling around the bottle,
+            warm amber side lighting, macro product photography, ultra realistic, 8k""",
+            "citrus": """A sleek transparent perfume bottle labeled "( )" on wet white stone,
+            surrounded by sliced lemon, bergamot, grapefruit halves and fresh orange peel,
+            bright yellow and crisp white bokeh background, fresh and energetic atmosphere,
+            sparkling citrus droplets bursting around the bottle,
+            sharp natural daylight, macro product photography, ultra realistic, 8k""",
+            "musk": """A minimalist frosted perfume bottle labeled "( )" on soft white linen fabric,
+            surrounded by white cotton flowers, soft feathers and sheer silk cloth,
+            clean white and pale grey bokeh background, soft and skin-like atmosphere,
+            barely visible warm mist hovering around the bottle,
+            soft diffused studio lighting, macro product photography, ultra realistic, 8k""",
+            "green": """A fresh matte green perfume bottle labeled "( )" on damp dark soil,
+            surrounded by cut grass, fern leaves, eucalyptus branches and morning dew drops,
+            deep emerald and cool green bokeh background, natural and earthy atmosphere,
+            light green herbal mist rising around the bottle,
+            cool morning light with soft shadows, macro product photography, ultra realistic, 8k""",
+            "spicy": """A bold dark red perfume bottle labeled "( )" on black volcanic stone,
+            surrounded by cinnamon sticks, black pepper, cloves, dried chili and cardamom pods,
+            deep crimson and burnt orange bokeh background, intense and fiery atmosphere,
+            spiced dark smoke swirling dramatically around the bottle,
+            strong dramatic side lighting, macro product photography, ultra realistic, 8k""",
+            "powdery": """A soft pastel perfume bottle labeled "( )" on a vintage vanity tray,
+            surrounded by loose powder, dried iris petals, soft cotton and white talc dust,
+            blush pink and lavender bokeh background, nostalgic and delicate atmosphere,
+            fine powder particles floating gently around the bottle,
+            warm soft candlelight, macro product photography, ultra realistic, 8k""",
+            "aquatic": """A translucent blue perfume bottle labeled "( )" on smooth ocean pebbles,
+            surrounded by sea salt crystals, coral fragments, driftwood and ocean foam,
+            deep ocean blue and seafoam teal bokeh background, cool and breezy atmosphere,
+            fine ocean mist and water droplets suspended around the bottle,
+            soft coastal morning light, macro product photography, ultra realistic, 8k""",
+            "amber": """A luxurious gold-tinted perfume bottle labeled "( )" on dark resin surface,
+            surrounded by amber resin chunks, dried vanilla pods, benzoin and labdanum pieces,
+            rich golden and deep copper bokeh background, warm and opulent atmosphere,
+            golden resinous haze glowing around the bottle,
+            warm dramatic candlelight, macro product photography, ultra realistic, 8k""",
         }
 
         if isinstance(last_data, ImageAnalysis):
@@ -49,19 +89,7 @@ class ImageUserService(QuestServices, Gemini):
             last_sent_data = last_data.scent.eng_name if last_data.scent else ""
             color_palette = category_data[last_data.scent.categories] if last_data.scent else ""
 
-        prompt = f"""
-                {last_sent_data}
-                t's perfect for this scent. Dreamy pastel abstract background, soft blurry gradation, 
-                Air cloud-like color blending, ({color_palette}), 
-                ivory, subtle creamy tones, soft and blurry transitions, subtle atmosphere, 
-                minimal abstract wallpaper, soft focus, delicate glow, clean and bright, no sharp edges, 
-                no objects, no text, high resolution clear lines.
-                [Negative Prompt]
-                high contrast, vivid colors, strong shadows, detailed objects, flowers, people, 
-                text, pattern, noise, particles, geometric shapes, watercolor splashes, paint splatter,
-                 water stains, watercolor texture, brush strokes, paint drips, liquid drips, bleeding colors, 
-                 messy edges, textured paper effect, drawing texture, sketchy lines, artistic mess.
-            """
+        prompt = color_palette.replace("( )", last_sent_data)
         generated_image_url: str | None = cls.image_gemini(prompt)
         return generated_image_url
 
