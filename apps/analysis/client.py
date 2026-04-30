@@ -11,7 +11,7 @@ class HttpOptionsDict(TypedDict, total=False):
 
 
 class GeminiClient:
-    def __init__(self, model_name: str | None = None, timeout: int = 15) -> None:
+    def __init__(self, model_name: str | None = None, timeout: int = 30) -> None:
         http_options: HttpOptionsDict = {"timeout": timeout}
         self.client = genai.Client(
             api_key=settings.HHJ_GEMINI_KEY,

@@ -39,7 +39,6 @@ urlpatterns = [
     path("api/v1/accounts/", include("apps.users.urls.urls")),
     # 이미지 분석
     path("api/v1/analyses", include("apps.analysis.urls.analysis_urls")),
-    path("api/v1/admin/analyses", include("apps.analysis.urls.admin_urls")),
     # 향 데이터
     path("api/v1/scents", ScentListCreateAPIView.as_view(), name="scent-list-create"),
     path("api/v1/scents/<int:id>", ScentDetailAPIView.as_view(), name="scent-detail"),
