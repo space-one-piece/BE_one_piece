@@ -319,7 +319,7 @@ value_list = {
         },
         "200",
     ),
-    "200_web_post": extend_schema("OK", {"share_id": "LV3Xyp0yKJYo"}, "200"),
+    "201_web_post": extend_schema("OK", {"share_id": "LV3Xyp0yKJYo"}, "201"),
     "200_keyword_get": extend_schemas(
         "OK", [{"keyword_id": 1, "keyword_division": "분위기", "keyword_name": "시원함"}], "200"
     ),

@@ -30,7 +30,7 @@ class ShareCreateUrlAPIView(APIView):
         description="web share 생성 API",
         request=ShareSerializer,
         responses={
-            200: OpenApiResponse(response=ShareSerializer, examples=[value_list["200_web_post"]]),
+            201: OpenApiResponse(response=ShareSerializer, examples=[value_list["201_web_post"]]),
             401: OpenApiResponse(response=OpenApiTypes.OBJECT, examples=[value_list["401"]]),
             404: OpenApiResponse(response=OpenApiTypes.OBJECT, examples=[value_list["404"]]),
         },
@@ -44,7 +44,7 @@ class ShareCreateUrlAPIView(APIView):
 
         url = ResultsService.new_web_share(type_data, result_id)
         serializer = ResultsSerializer(url)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class ShareViewAPIView(APIView):
