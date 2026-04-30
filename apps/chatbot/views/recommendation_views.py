@@ -164,6 +164,8 @@ class ChatbotRecommendationRetryView(APIView):
         recommendation_id = None
         recommendation = None
 
+        user_msgs = [msg["parts"][0]["text"] for msg in store["messages"] if msg["role"] == "user"][-2:]
+
         if scent_id_from_ai:
             with transaction.atomic():
                 store["excluded_ids"].append(scent_id_from_ai)
@@ -172,6 +174,8 @@ class ChatbotRecommendationRetryView(APIView):
                     session=session,
                     scent_id=scent_id_from_ai,
                     retry_count=retry_count + 1,
+                    reply=reply,
+                    user_message=user_msgs,
                 )
                 recommendation_id = recommendation.id
 
@@ -192,7 +196,7 @@ class ChatbotRecommendationRetryView(APIView):
                     "retry_count": retry_count + 1,
                     "source_type": "chatbot",
                     "is_saved": False,
-                    "user_message": None,
+                    "user_message": user_msgs,
                     "ai_keywords": recommendation.scent.tags if recommendation else [],
                 },
             },
