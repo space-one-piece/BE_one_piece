@@ -32,8 +32,8 @@ class ResultsCreateUrlAPIView(APIView):
             404: OpenApiResponse(response=OpenApiTypes.OBJECT, examples=[value_list["404"]]),
         },
     )
-    def post(self, request: Request, results_id: str) -> Response:
-        url = ResultsService.new_web_share(request.user.id, int(results_id))
+    def post(self, request: Request, type: str, results_id: str) -> Response:
+        url = ResultsService.new_web_share(type, request.user.id, int(results_id))
         data = {"web_share_url": url}
         return Response(data, status=status.HTTP_200_OK)
 
@@ -57,8 +57,8 @@ class ResultsCreateUrlAPIView(APIView):
             ),
         },
     )
-    def get(self, request: Request, results_id: str) -> Response:
-        serializer = ResultsService.select_web_share(results_id)
+    def get(self, request: Request, type: str, results_id: str) -> Response:
+        serializer = ResultsService.select_web_share(type, results_id)
         data = ResultWebShareSerializer(serializer)
         return Response(data.data, status=status.HTTP_200_OK)
 

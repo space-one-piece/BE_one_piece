@@ -4,7 +4,8 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework.exceptions import PermissionDenied
 
-from apps.analysis.models import Scent
+from apps.analysis.models import ImageAnalysis, Scent
+from apps.chatbot.models import ChatbotRecommendation
 from apps.core.utils.cloud_front import image_url_cloud
 from apps.core.utils.hashids import decode_id, encode_id
 from apps.question.models import QuestionsResults
@@ -47,39 +48,81 @@ class ResultsService(QuestServices):
         return data
 
     @staticmethod
-    def new_web_share(user_id: int, result_id: int) -> str:
-        question_data = get_object_or_404(QuestionsResults, pk=result_id)
-        if user_id != question_data.user.id:
+    def new_web_share(type_data: str, user_id: int, result_id: int) -> str:
+        query_data: ImageAnalysis | ChatbotRecommendation | QuestionsResults
+        if type_data == "image":
+            query_data = get_object_or_404(ImageAnalysis, pk=result_id)
+        elif type_data == "chatbot":
+            query_data = get_object_or_404(ChatbotRecommendation, pk=result_id)
+        else:
+            query_data = get_object_or_404(QuestionsResults, pk=result_id)
+
+        if user_id != query_data.user.id:
             raise PermissionDenied()
 
         question_id = encode_id(result_id)
-        return f"https://one_piece/api/v1/question/{question_id}"
+        return f"https://framnt.pics/api/v1/{type_data}/web_share/{question_id}"
 
     @classmethod
-    def select_web_share(cls, result_id: str) -> dict[str, Any]:
+    def select_web_share(cls, type_data: str, result_id: str) -> dict[str, Any]:
         question_id = decode_id(result_id)
-        question_data = get_object_or_404(QuestionsResults, pk=question_id)
+        query_data: ImageAnalysis | ChatbotRecommendation | QuestionsResults
+        if type_data == "image":
+            query_data = get_object_or_404(ImageAnalysis, pk=question_id)
+        elif type_data == "chatbot":
+            query_data = get_object_or_404(ChatbotRecommendation, pk=question_id)
+        else:
+            query_data = get_object_or_404(QuestionsResults, pk=question_id)
 
-        question_data.scent.thumbnail_url = (
-            image_url_cloud(question_data.scent.thumbnail_url) if question_data.scent.thumbnail_url else None
-        )
+        if type_data == "image" and isinstance(query_data, ImageAnalysis):
+            scent = query_data.recommended_scent
+            if scent:
+                scent.thumbnail_url = image_url_cloud(scent.thumbnail_url) if scent.thumbnail_url else None
+                scent.recommended_places = cls.list_url(scent.recommended_places) if scent.recommended_places else None
+        else:
+            scent = getattr(query_data, "scent", None)
+            if scent:
+                scent.thumbnail_url = image_url_cloud(scent.thumbnail_url) if scent.thumbnail_url else None
+                scent.recommended_places = cls.list_url(scent.recommended_places) if scent.recommended_places else None
 
-        question_data.scent.recommended_places = (
-            cls.list_url(question_data.scent.recommended_places) if question_data.scent.recommended_places else None
-        )
+        if isinstance(query_data, QuestionsResults) and type_data not in ["keyword", "survey"]:
+            raw_json = cls.js_lod(query_data.questions_json, query_data.division)
+        else:
+            raw_json = None
 
-        raw_json = cls.js_lod(question_data.questions_json, question_data.division)
+        ai_comment: str = ""
+        if isinstance(query_data, ChatbotRecommendation):
+            ai_comment = query_data.reply or ""
+        elif isinstance(query_data, ImageAnalysis):
+            ai_comment = getattr(query_data, "ai_comment", None) or ""
+        elif isinstance(query_data, QuestionsResults):
+            ai_comment = query_data.answer_ai or ""
+        else:
+            ai_comment = ""
+
+        helpful: bool = False
+
+        if isinstance(query_data, ChatbotRecommendation):
+            helpful = query_data.is_saved
+        elif isinstance(query_data, ImageAnalysis):
+            helpful = getattr(query_data, "is_helpful", None) or False
+        elif isinstance(query_data, QuestionsResults):
+            helpful = query_data.is_helpful or False
+        else:
+            helpful = False
 
         data = {
-            "id": question_data.id,
-            "recommended_scent": question_data.scent,
-            "created_at": question_data.created_at,
-            "ai_comment": question_data.answer_ai,
-            "match_score": question_data.match_score,
-            "review": question_data.review,
-            "rating": question_data.rating,
+            "id": query_data.id,
+            "recommended_scent": query_data.recommended_scent
+            if isinstance(query_data, ImageAnalysis)
+            else query_data.scent,
+            "created_at": query_data.created_at,
+            "ai_comment": ai_comment,
+            "match_score": "" if isinstance(query_data, ChatbotRecommendation) else query_data.match_score,
+            "review": query_data.review,
+            "rating": query_data.rating,
             "user_input": raw_json,
-            "is_saved": question_data.is_helpful,
+            "is_saved": helpful,
         }
         return data
 
