@@ -169,7 +169,7 @@ value_list = {
         ],
         "200",
     ),
-    "200_review": extend_schema(
+    "201_review": extend_schema(
         "OK",
         {
             "id": 1,
@@ -282,23 +282,44 @@ value_list = {
             "review": "리뷰",
             "rating": 5,
         },
-        "200",
+        "201",
     ),
     "200_web_get": extend_schema(
         "OK",
         {
-            "sent_id": 1,
-            "scent_name": "자스민",
-            "scent_categories": [{"category": "우디", "count": 12, "percentage": 50.0}],
-            "scent_image_url": "https://aws/s3/images/question/jasmine.png",
-            "scent_keywords": "#풍성한꽃향기",
-            "scent_notes": {"top": "탑", "middle": "미들", "base": "베이스"},
-            "description": "당신의 공간을 채워줍니다.",
-            "question_image": "data:image/png;base64,iVBORw0KGg...",
+            "id": 1,
+            "recommended_scent": {
+                "name": "페어 벨벳",
+                "eng_name": "Pear Velvet",
+                "description": "잘 익은 배의 은은한 과즙감과 부드러운 머스크가 만나 밝고 사랑스러운 무드를 연출하는 향입니다. 과하지 않게 기분을 환하게 바꿔 줍니다.",
+                "tags": ["사랑스러운", "밝은", "과즙감 있는", "부드러운"],
+                "profile": {"depth": 39, "warmth": 34, "softness": 66, "freshness": 61, "sweetness": 58},
+                "scent_notes": {
+                    "top": {
+                        "items": ["배", "베르가못", "화이트 피치"],
+                        "title": "탑 노트",
+                        "description": "맑고 달콤하게 시작되는 향",
+                    },
+                    "base": {
+                        "items": ["머스크", "시더", "앰버"],
+                        "title": "베이스 노트",
+                        "description": "부드러운 잔향을 남기는 향",
+                    },
+                    "middle": {
+                        "items": ["피오니", "프리지아", "자스민"],
+                        "title": "미들 노트",
+                        "description": "과즙감 위에 꽃향이 얹히는 향",
+                    },
+                },
+                "thumbnail_url": "https://d2lb2.net/uploads/images/scent/pear-velvet.jpg",
+            },
+            "created_at": "2026-04-23T06:49:20.702339Z",
+            "ai_comment": "고객님의 소중한 공간에 '페어 벨벳' 향수를 추천해 드려요. 이 향수는 특히 화사한 거실 분위기를 연출하기에 더없이 좋습니다. 싱그러운 배의 과즙감과 부드러운 벨벳의 조화가 고객님께서 원하시는 '화사함'과 '밝은' 에너지를 공간에 가득 채워줄 거예요. 또한 은은하고 '부드러운' 잔향은 침실에 '안락함'을 더해, 편안하고 포근한 휴식처를 만드는 데 기여할 겁니다. 전반적으로 고객님의 취향과 높은 점수로 잘 맞아, 긍정적이고 사랑스러운 공간을 완성하는 데 훌륭한 선택이 될 것이라고 생각해요.",
+            "match_score": 72,
         },
         "200",
     ),
-    "200_web_post": extend_schema("OK", {"web_share_url": "https://one_piece/api/v1/question/share/uuid"}, "200"),
+    "200_web_post": extend_schema("OK", {"share_id": "LV3Xyp0yKJYo"}, "200"),
     "200_keyword_get": extend_schemas(
         "OK", [{"keyword_id": 1, "keyword_division": "분위기", "keyword_name": "시원함"}], "200"
     ),
@@ -312,5 +333,6 @@ value_list = {
     "401": extend_schema("Unauthorized", {"error_detail": "자격 인증 데이터가 제공되 않았습니다."}, "401"),
     "403": extend_schema("Forbidden", {"error_detail": "권한이 없습니다."}, "403"),
     "404": extend_schema("Not Found", {"error_detail": "질문 결과가 없습니다."}, "404"),
+    "410": extend_schema("Gone", {"error_detail": "만료된 공유 링크입니다."}, "410"),
     "429": extend_schema("Too Many Requests", {"error_detail": "너무 자주 접근하였습니다."}, "429"),
 }

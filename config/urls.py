@@ -23,12 +23,13 @@ from django.views.generic import RedirectView
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 
 from apps.analysis.views.scent_views import ScentDetailAPIView, ScentListCreateAPIView
-from apps.question.views.results_views import ResultsCreateUrlAPIView
+from apps.question.views.results_views import ShareCreateUrlAPIView, ShareViewAPIView
 
 urlpatterns = [
     path("api/admin/", admin.site.urls),
     # web share
-    path("api/v1/<str:type>/web_share/<str:results_id>", ResultsCreateUrlAPIView.as_view(), name="web_share"),
+    path("api/v1/analyses/web-share", ShareCreateUrlAPIView.as_view(), name="web_share"),
+    path("api/v1/analyses/web-share/<str:share_id>", ShareViewAPIView.as_view(), name="web_share"),
     # 유저 어드민
     path("api/v1/admin/", include(("apps.users.urls.admin-urls", "admin"))),
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),

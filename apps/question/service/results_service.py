@@ -1,15 +1,23 @@
+import datetime
 from typing import Any, cast
 
+from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import APIException, PermissionDenied
 
 from apps.analysis.models import ImageAnalysis, Scent
 from apps.chatbot.models import ChatbotRecommendation
 from apps.core.utils.cloud_front import image_url_cloud
-from apps.core.utils.hashids import decode_id, encode_id
-from apps.question.models import QuestionsResults
+from apps.core.utils.hashids import encode_id
+from apps.question.models import QuestionsResults, Share
 from apps.question.service.service import QuestServices
+
+
+class CustomGone(APIException):
+    status_code = 410
+    default_detail = "만료된 공유 링크입니다."
+    default_code = "Gone"
 
 
 class ResultsService(QuestServices):
@@ -48,7 +56,7 @@ class ResultsService(QuestServices):
         return data
 
     @staticmethod
-    def new_web_share(type_data: str, user_id: int, result_id: int) -> str:
+    def new_web_share(type_data: str, result_id: int) -> dict[str, str]:
         query_data: ImageAnalysis | ChatbotRecommendation | QuestionsResults
         if type_data == "image":
             query_data = get_object_or_404(ImageAnalysis, pk=result_id)
@@ -57,74 +65,59 @@ class ResultsService(QuestServices):
         else:
             query_data = get_object_or_404(QuestionsResults, pk=result_id)
 
-        if user_id != query_data.user.id:
-            raise PermissionDenied()
-
+        if not query_data:
+            raise Http404
         question_id = encode_id(result_id)
-        return f"https://fragmnt.pics/api/v1/{type_data}/web_share/{question_id}"
 
-    @classmethod
-    def select_web_share(cls, type_data: str, result_id: str) -> dict[str, Any]:
-        question_id = decode_id(result_id)
-        query_data: ImageAnalysis | ChatbotRecommendation | QuestionsResults
-        if type_data == "image":
-            query_data = get_object_or_404(ImageAnalysis, pk=question_id)
-        elif type_data == "chatbot":
-            query_data = get_object_or_404(ChatbotRecommendation, pk=question_id)
-        else:
-            query_data = get_object_or_404(QuestionsResults, pk=question_id)
+        expires_at = timezone.now() + datetime.timedelta(days=7)
 
-        if type_data == "image" and isinstance(query_data, ImageAnalysis):
-            scent = query_data.recommended_scent
-            if scent:
-                scent.thumbnail_url = image_url_cloud(scent.thumbnail_url) if scent.thumbnail_url else None
-                scent.recommended_places = cls.list_url(scent.recommended_places) if scent.recommended_places else None
-        else:
-            scent = getattr(query_data, "scent", None)
-            if scent:
-                scent.thumbnail_url = image_url_cloud(scent.thumbnail_url) if scent.thumbnail_url else None
-                scent.recommended_places = cls.list_url(scent.recommended_places) if scent.recommended_places else None
-
-        if isinstance(query_data, QuestionsResults) and type_data not in ["keyword", "survey"]:
-            raw_json = cls.js_lod(query_data.questions_json, query_data.division)
-        else:
-            raw_json = None
-
-        ai_comment: str = ""
-        if isinstance(query_data, ChatbotRecommendation):
-            ai_comment = query_data.reply or ""
-        elif isinstance(query_data, ImageAnalysis):
-            ai_comment = getattr(query_data, "ai_comment", None) or ""
-        elif isinstance(query_data, QuestionsResults):
-            ai_comment = query_data.answer_ai or ""
-        else:
-            ai_comment = ""
-
-        helpful: bool = False
-
-        if isinstance(query_data, ChatbotRecommendation):
-            helpful = query_data.is_saved
-        elif isinstance(query_data, ImageAnalysis):
-            helpful = getattr(query_data, "is_helpful", None) or False
-        elif isinstance(query_data, QuestionsResults):
-            helpful = query_data.is_helpful or False
-        else:
-            helpful = False
+        Share.objects.create(
+            division=type_data, result_id=question_id, content_object=query_data, holding_time=expires_at
+        )
 
         data = {
-            "id": query_data.id,
-            "recommended_scent": query_data.recommended_scent
-            if isinstance(query_data, ImageAnalysis)
-            else query_data.scent,
-            "created_at": query_data.created_at,
-            "ai_comment": ai_comment,
-            "match_score": "" if isinstance(query_data, ChatbotRecommendation) else query_data.match_score,
-            "review": query_data.review,
-            "rating": query_data.rating,
-            "user_input": raw_json,
-            "is_saved": helpful,
+            "share_id": question_id,
         }
+
         return data
+
+    @classmethod
+    def select_web_share(cls, result_id: str) -> dict[str, Any]:
+        if not result_id:
+            raise Http404
+        data = get_object_or_404(Share, result_id=result_id)
+        result_data = data.content_object
+
+        if data.holding_time < timezone.now():
+            raise CustomGone()
+
+        if not result_data:
+            raise Http404
+
+        scent = getattr(result_data, "recommended_scent", None) or getattr(result_data, "scent", None)
+
+        return_data = {
+            "id": result_data.id,
+            "recommended_scent": {
+                "name": getattr(scent, "name", None),
+                "eng_name": getattr(scent, "eng_name", None),
+                "description": getattr(scent, "description", None),
+                "tags": getattr(scent, "tags", None),
+                "profile": getattr(scent, "profile", None),
+                "scent_notes": getattr(scent, "scent_notes", None),
+                "thumbnail_url": image_url_cloud(getattr(scent, "thumbnail_url", None)),
+            }
+            if scent
+            else None,
+            "created_at": result_data.created_at,
+            "ai_comment": (
+                result_data.reply
+                if getattr(result_data, "division", None) == "chatbot"
+                else getattr(result_data, "answer_ai", None)
+            ),
+            "match_score": getattr(result_data, "match_score", None),
+        }
+        return return_data
 
     @classmethod
     def result_list(cls, user_id: int, division: str) -> list[dict[str, Any]]:
