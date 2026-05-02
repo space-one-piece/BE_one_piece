@@ -134,7 +134,8 @@ class ImageUserService(QuestServices, Gemini):
         s3_key = S3Handler.build_share_image_key(scent.name, result_id, division)
 
         if s3_handler.check_share_image_exists(s3_key):
-            return s3_handler.get_img_url(s3_key)
+            image_url_data = image_url_cloud(s3_handler.get_img_url(s3_key))
+            return image_url_data if image_url_data else ""
 
         raw_profile = scent.profile
         profile_list = []
