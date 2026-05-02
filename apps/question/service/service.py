@@ -3,15 +3,17 @@ import math
 import random
 from typing import Any, Union, cast
 
+from django.conf import settings
 from django.core.cache import cache
 from django.db.models import JSONField
+from django.http import Http404
 from django.shortcuts import get_object_or_404
 
 from apps.analysis.models import ImageAnalysis, Scent
 from apps.chatbot.models import ChatbotRecommendation
 from apps.core.utils.cloud_front import image_url_cloud
 from apps.core.utils.s3_handler import S3Handler
-from apps.question.models import Keyword, Question, QuestionsAnswer, QuestionsResults
+from apps.question.models import Keyword, Question, QuestionsAnswer, QuestionsResults, Share
 
 
 class QuestServices:
@@ -241,3 +243,22 @@ class QuestServices:
             data = get_object_or_404(QuestionsResults, pk=requestion_id)
 
         return data
+
+    @staticmethod
+    def web_data(share_id: str) -> dict[str, Any]:
+        data = get_object_or_404(Share, result_id=share_id)
+        result_data = data.content_object
+
+        scent = getattr(result_data, "recommended_scent", None) or getattr(result_data, "scent", None)
+        if not scent:
+            raise Http404
+
+        context = {
+            "og_title": f"{scent.name} - 나의 향수 추천 결과",
+            "og_description": scent.description,
+            "og_image": data.image_url,
+            "og_url": f"{settings.SERVICE_BASE_URL}/share/{share_id}/",
+            "redirect_url": f"{settings.SERVICE_BASE_URL}/result/{share_id}/",
+        }
+
+        return context

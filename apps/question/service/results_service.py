@@ -11,6 +11,7 @@ from apps.chatbot.models import ChatbotRecommendation
 from apps.core.utils.cloud_front import image_url_cloud
 from apps.core.utils.hashids import encode_id
 from apps.question.models import QuestionsResults, Share
+from apps.question.service.image_user_service import ImageUserService
 from apps.question.service.service import QuestServices
 
 
@@ -55,8 +56,8 @@ class ResultsService(QuestServices):
         }
         return data
 
-    @staticmethod
-    def new_web_share(type_data: str, result_id: int) -> dict[str, str]:
+    @classmethod
+    def new_web_share(cls, type_data: str, result_id: int) -> dict[str, str]:
         query_data: ImageAnalysis | ChatbotRecommendation | QuestionsResults
         if type_data == "image":
             query_data = get_object_or_404(ImageAnalysis, pk=result_id)
@@ -71,11 +72,21 @@ class ResultsService(QuestServices):
 
         expires_at = timezone.now() + datetime.timedelta(days=7)
 
-        Share.objects.create(
-            division=type_data, result_id=question_id, content_object=query_data, holding_time=expires_at
+        image_url = ImageUserService.web_share(
+            result_id=result_id,
+            division=type_data,
         )
+        share_data = Share.objects.filter(result_id=question_id).first()
+        if not share_data:
+            Share.objects.create(
+                division=type_data,
+                result_id=question_id,
+                content_object=query_data,
+                holding_time=expires_at,
+                image_url=image_url,
+            )
 
-        data = {"share_id": question_id, "og_crawler": f"https://fragmnt.pics/api/v1/{type_data}/share-og/{result_id}"}
+        data = {"share_id": question_id, "og_crawler": f"https://fragmnt.pics/api/v1/share-og/{question_id}"}
 
         return data
 

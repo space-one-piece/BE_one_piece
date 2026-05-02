@@ -32,7 +32,7 @@ urlpatterns = [
     path("api/v1/analyses/web-share", ShareCreateUrlAPIView.as_view(), name="web_share"),
     path("api/v1/analyses/web-share/<str:share_id>", ShareViewAPIView.as_view(), name="web_share"),
     path("api/v1/share", ShareView.as_view(), name="share"),
-    path("api/v1/<str:type>/share-og/<int:results_id>", ShareOGView.as_view(), name="share-og"),
+    path("api/v1/share-og/<str:share_id>", ShareOGView.as_view(), name="share-og"),
     # 유저 어드민
     path("api/v1/admin/", include(("apps.users.urls.admin-urls", "admin"))),
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),

@@ -1,7 +1,6 @@
 from concurrent.futures import ThreadPoolExecutor
 
-from django.conf import settings
-from django.http import Http404, HttpResponse
+from django.http import HttpResponse
 from django.shortcuts import render
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
@@ -209,23 +208,6 @@ class ShareOGView(APIView):
             ),
         },
     )
-    def get(self, request: Request, type: str, results_id: int) -> HttpResponse:
-        result = ImageUserService.result_division(results_id, type)
-        image_url = ImageUserService.web_share(
-            result_id=results_id,
-            division=type,
-        )
-
-        scent = getattr(result, "scent", None)
-        if not scent:
-            raise Http404
-
-        context = {
-            "og_title": f"{scent.name} - 나의 향수 추천 결과",
-            "og_description": scent.description,
-            "og_image": image_url,  # S3 이미지 URL
-            "og_url": f"{settings.SERVICE_BASE_URL}/share/{type}/{results_id}/",
-            "redirect_url": f"{settings.SERVICE_BASE_URL}/result/{type}/{results_id}/",
-        }
-
-        return render(request, "og_share.html", context)
+    def get(self, request: Request, share_id: str) -> HttpResponse:
+        result = ImageUserService.web_data(share_id)
+        return render(request, "og_share.html", result)
