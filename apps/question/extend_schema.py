@@ -311,7 +311,7 @@ value_list = {
                         "description": "과즙감 위에 꽃향이 얹히는 향",
                     },
                 },
-                "thumbnail_url": "https://d2lb2.net/uploads/images/scent/pear-velvet.jpg",
+                "thumbnail_url": "https://cloudfront.net/uploads/images/scent/pear-velvet.jpg",
             },
             "created_at": "2026-04-23T06:49:20.702339Z",
             "ai_comment": "고객님의 소중한 공간에 '페어 벨벳' 향수를 추천해 드려요. 이 향수는 특히 화사한 거실 분위기를 연출하기에 더없이 좋습니다. 싱그러운 배의 과즙감과 부드러운 벨벳의 조화가 고객님께서 원하시는 '화사함'과 '밝은' 에너지를 공간에 가득 채워줄 거예요. 또한 은은하고 '부드러운' 잔향은 침실에 '안락함'을 더해, 편안하고 포근한 휴식처를 만드는 데 기여할 겁니다. 전반적으로 고객님의 취향과 높은 점수로 잘 맞아, 긍정적이고 사랑스러운 공간을 완성하는 데 훌륭한 선택이 될 것이라고 생각해요.",
@@ -319,7 +319,9 @@ value_list = {
         },
         "200",
     ),
-    "201_web_post": extend_schema("OK", {"share_id": "LV3Xyp0yKJYo"}, "201"),
+    "201_web_post": extend_schema(
+        "OK", {"share_id": "LV3Xy", "og_crawler": "https://fragmnt.pics/api/v1/share-og/LV3Xy"}, "201"
+    ),
     "200_keyword_get": extend_schemas(
         "OK", [{"keyword_id": 1, "keyword_division": "분위기", "keyword_name": "시원함"}], "200"
     ),

@@ -86,7 +86,7 @@ class ResultsService(QuestServices):
                 image_url=image_url,
             )
 
-        data = {"share_id": question_id, "og_crawler": f"https://fragmnt.pics/api/v1/share-og/{question_id}"}
+        data = {"share_id": question_id, "og_crawler": f"https://fragmnt.pics/share-og/{question_id}"}
 
         return data
 
