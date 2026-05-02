@@ -75,9 +75,7 @@ class ResultsService(QuestServices):
             division=type_data, result_id=question_id, content_object=query_data, holding_time=expires_at
         )
 
-        data = {
-            "share_id": question_id,
-        }
+        data = {"share_id": question_id, "og_crawler": f"https://fragmnt.pics/api/{type_data}/share-og/{result_id}"}
 
         return data
 

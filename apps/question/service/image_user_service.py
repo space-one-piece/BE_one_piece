@@ -177,19 +177,8 @@ class ImageUserService(QuestServices, Gemini):
             result_id=result_id,
             division=division,
         )
+        image_data = image_url_cloud(image_url)
+        if image_data:
+            return image_data
 
-        return image_url_cloud(image_url)
-
-    # @classmethod
-    # def get_share_meta_context(cls, share_id: str):
-    #     # 1. DB에서 공유 데이터 조회 (아까 만든 로직)
-    #     share_instance = get_object_or_404(Share, token=share_id)
-    #     actual_data = share_instance.content_object
-    #
-    #     # 2. OG 태그에 들어갈 컨텍스트 구성
-    #     return {
-    #         "recommended_scent": actual_data.recommended_scent,
-    #         "ai_comment": actual_data.ai_comment,
-    #         "image_url": actual_data.image.url if actual_data.image else "기본이미지주소",
-    #         "share_token": share_id,
-    #     }
+        return ""

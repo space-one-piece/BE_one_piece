@@ -8,6 +8,7 @@ from apps.analysis.serializers.analysis_serializers import ScentDetailSerializer
 
 class ResultsSerializer(serializers.Serializer[dict[str, Any]]):
     share_id = serializers.CharField()
+    og_crawler = serializers.CharField()
 
 
 class ResultsIntSerializer(serializers.Serializer[dict[str, Any]]):

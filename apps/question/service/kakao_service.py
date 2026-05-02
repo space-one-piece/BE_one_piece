@@ -1,4 +1,5 @@
 import json
+from typing import Any
 
 import requests
 from django.conf import settings
@@ -24,10 +25,10 @@ def get_access_token(code: str) -> str:
     data = resp.json()
     if "access_token" not in data:
         raise ValueError(data.get("error_description", "토큰 발급 실패"))
-    return data["access_token"]
+    return getattr(data, "access_token", "")
 
 
-def send_kakao(data: dict, access_token: str) -> dict:
+def send_kakao(data: dict[str, Any], access_token: str) -> dict[str, Any]:
     image_url = ImageUserService.web_share(data["result_id"], data["type"])
     template = {
         "object_type": "feed",

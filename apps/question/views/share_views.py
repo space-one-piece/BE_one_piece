@@ -1,12 +1,13 @@
 from concurrent.futures import ThreadPoolExecutor
 
 from django.conf import settings
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import render
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from rest_framework import status
 from rest_framework.permissions import AllowAny
+from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -77,7 +78,7 @@ class ShareView(APIView):
             ),
         },
     )
-    def post(self, request):
+    def post(self, request: Request) -> Response:
         serializer = ShareRequestSerializer(data=request.data)
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -161,7 +162,7 @@ class ShareFileView(APIView):
             ),
         },
     )
-    def post(self, request):
+    def post(self, request: Request) -> Response:
         channels_raw = request.data.get("channels", "")
         channels = [c.strip() for c in channels_raw.split(",") if c.strip()]
         uploaded_file = request.FILES.get("file")
@@ -208,7 +209,7 @@ class ShareOGView(APIView):
             ),
         },
     )
-    def get(self, request, type: str, results_id: int):
+    def get(self, request: Request, type: str, results_id: int) -> HttpResponse:
         result = ImageUserService.result_division(results_id, type)
         image_url = ImageUserService.web_share(
             result_id=results_id,

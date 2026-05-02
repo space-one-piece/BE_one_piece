@@ -1,10 +1,12 @@
+from typing import Any
+
 import requests
 from django.conf import settings
 
 from apps.question.service.image_user_service import ImageUserService
 
 
-def send_discord(data: dict) -> dict:
+def send_discord(data: dict[str, Any]) -> dict[str, Any]:
     """Discord Webhook으로 메시지/이미지 전송"""
     webhook_url = settings.DISCORD_WEBHOOK_URL
     if not webhook_url:
@@ -32,7 +34,7 @@ def send_discord(data: dict) -> dict:
     return {"channel": "discord", "success": False, "message": resp.text}
 
 
-def send_discord_file(file, filename: str, content_type: str) -> dict:
+def send_discord_file(file: Any, filename: str, content_type: str) -> dict[str, Any]:
     """파일을 Discord에 직접 첨부 전송"""
     webhook_url = settings.DISCORD_WEBHOOK_URL
     if not webhook_url:
