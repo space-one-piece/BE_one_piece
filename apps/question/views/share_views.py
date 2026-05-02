@@ -189,6 +189,7 @@ class ShareOGView(APIView):
         tags=["share"],
         summary="공유 OG 페이지 조회 API",
         request=None,
+        description="소셜 플랫폼 에서만 미리보기 출력용",
         responses={
             200: OpenApiResponse(
                 response=OpenApiTypes.OBJECT,

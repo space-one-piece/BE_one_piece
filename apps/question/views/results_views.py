@@ -27,7 +27,7 @@ class ShareCreateUrlAPIView(APIView):
     @extend_schema(
         tags=["share"],
         summary="web share 생성 API",
-        description="web share 생성 API",
+        description="web share 생성 API\ntype : image | chatbot | keyword | survey",
         request=ShareSerializer,
         responses={
             201: OpenApiResponse(response=ShareSerializer, examples=[value_list["201_web_post"]]),
