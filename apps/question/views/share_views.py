@@ -187,7 +187,7 @@ class ShareOGView(APIView):
 
     @extend_schema(
         tags=["share"],
-        summary="공유 API",
+        summary="공유 OG 페이지 조회 API",
         request=None,
         responses={
             200: OpenApiResponse(
