@@ -25,7 +25,7 @@ class ShareCreateUrlAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     @extend_schema(
-        tags=["quest"],
+        tags=["share"],
         summary="web share 생성 API",
         description="web share 생성 API",
         request=ShareSerializer,
@@ -55,7 +55,7 @@ class ShareViewAPIView(APIView):
     permission_classes = [AllowAny]
 
     @extend_schema(
-        tags=["quest"],
+        tags=["share"],
         summary="web share 조회 API",
         description="web share 조회 API",
         request=None,
