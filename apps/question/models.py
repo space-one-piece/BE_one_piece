@@ -103,6 +103,7 @@ class Share(TimeStampModel):
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey("content_type", "object_id")
     is_active = models.BooleanField(null=False, blank=False, default=True)
+    image_url = models.CharField(null=False, blank=False, default="")
 
     class Meta:
         db_table = "share"
