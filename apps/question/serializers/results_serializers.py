@@ -7,7 +7,7 @@ from apps.analysis.serializers.analysis_serializers import ScentDetailSerializer
 
 
 class ResultsSerializer(serializers.Serializer[dict[str, Any]]):
-    web_share_url = serializers.CharField()
+    share_id = serializers.CharField()
 
 
 class ResultsIntSerializer(serializers.Serializer[dict[str, Any]]):
@@ -27,10 +27,6 @@ class ResultsOutSerializer(serializers.Serializer[Any]):
 class UserInput(serializers.Serializer[Any]):
     title = serializers.CharField()
     answer = serializers.CharField()
-
-
-class WebShareSerializer(serializers.Serializer[Any]):
-    web_share_url = serializers.CharField()
 
 
 class ResultWebShareSerializer(serializers.Serializer[Any]):
@@ -62,3 +58,22 @@ class ResultListSerializer(serializers.Serializer[Any]):
 
 class ResultImageSerializer(serializers.Serializer[Any]):
     image_data = serializers.CharField()
+
+
+class ShareSerializer(serializers.Serializer[Any]):
+    result_id = serializers.IntegerField()
+    type = serializers.CharField()
+
+
+class ScentDataSerializer(serializers.ModelSerializer[Scent]):
+    class Meta:
+        model = Scent
+        fields = ["name", "eng_name", "description", "tags", "profile", "scent_notes", "thumbnail_url"]
+
+
+class ShareOutSerializer(serializers.Serializer[Any]):
+    id = serializers.IntegerField()
+    recommended_scent = ScentDataSerializer()
+    created_at = serializers.DateTimeField()
+    ai_comment = serializers.CharField()
+    match_score = serializers.IntegerField()

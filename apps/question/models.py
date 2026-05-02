@@ -1,3 +1,5 @@
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
 from apps.analysis.models import Scent
@@ -91,3 +93,18 @@ class QuestionsResults(TimeStampModel):
             (models.Index(fields=["user"], name="IDX_questions_results_user_id")),
             (models.Index(fields=["scent"], name="IDX_questions_results_scent_id")),
         ]
+
+
+class Share(TimeStampModel):
+    division = models.CharField(null=False, blank=False)
+    result_id = models.CharField(null=False, blank=False)
+    holding_time = models.DateTimeField(null=False, blank=False)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey("content_type", "object_id")
+    is_active = models.BooleanField(null=False, blank=False, default=True)
+
+    class Meta:
+        db_table = "share"
+        verbose_name = "web_share list"
+        verbose_name_plural = "web_share list"
