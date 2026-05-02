@@ -257,8 +257,8 @@ class QuestServices:
             "og_title": f"{scent.name} - 나의 향수 추천 결과",
             "og_description": scent.description,
             "og_image": data.image_url,
-            "og_url": f"{settings.SERVICE_BASE_URL}/share/{share_id}/",
-            "redirect_url": f"{settings.SERVICE_BASE_URL}/result/{share_id}/",
+            "og_url": f"{settings.SERVICE_BASE_URL}/{share_id}",
+            "redirect_url": f"{settings.SERVICE_BASE_URL}/{share_id}",
         }
 
         return context
