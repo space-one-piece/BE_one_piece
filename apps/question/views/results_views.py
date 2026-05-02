@@ -199,7 +199,7 @@ class ResultImageAPIView(APIView):
         },
     )
     def post(self, request: Request, results_id: int, division: str) -> Response:
-        byte = ImageUserService.web_share(request.user.id, results_id, division)
+        byte = ImageUserService.web_share(results_id, division)
         serializer = ResultImageSerializer(data=byte)
         serializer.is_valid()
 

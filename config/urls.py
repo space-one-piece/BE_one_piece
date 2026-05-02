@@ -24,12 +24,15 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, Spec
 
 from apps.analysis.views.scent_views import ScentDetailAPIView, ScentListCreateAPIView
 from apps.question.views.results_views import ShareCreateUrlAPIView, ShareViewAPIView
+from apps.question.views.share_views import ShareOGView, ShareView
 
 urlpatterns = [
     path("api/admin/", admin.site.urls),
     # web share
     path("api/v1/analyses/web-share", ShareCreateUrlAPIView.as_view(), name="web_share"),
     path("api/v1/analyses/web-share/<str:share_id>", ShareViewAPIView.as_view(), name="web_share"),
+    path("api/v1/share", ShareView.as_view(), name="share"),
+    path("api/v1/<str:type>/share-og/<int:results_id>", ShareOGView.as_view(), name="share-og"),
     # 유저 어드민
     path("api/v1/admin/", include(("apps.users.urls.admin-urls", "admin"))),
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),

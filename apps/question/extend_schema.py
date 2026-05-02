@@ -335,4 +335,46 @@ value_list = {
     "404": extend_schema("Not Found", {"error_detail": "질문 결과가 없습니다."}, "404"),
     "410": extend_schema("Gone", {"error_detail": "만료된 공유 링크입니다."}, "410"),
     "429": extend_schema("Too Many Requests", {"error_detail": "너무 자주 접근하였습니다."}, "429"),
+    "200_share": extend_schemas(
+        "OK",
+        [
+            {"channel": "kakao", "success": True, "message": "카카오톡 전송 성공"},
+            {"channel": "discord", "success": True, "message": "디스코드 전송 성공"},
+        ],
+        "200",
+    ),
+    # POST /share/ — 카카오만 실패한 부분 성공 케이스
+    "200_share_partial": extend_schemas(
+        "OK (일부 실패)",
+        [
+            {"channel": "kakao", "success": False, "message": "KOE320: invalid token"},
+            {"channel": "discord", "success": True, "message": "디스코드 전송 성공"},
+        ],
+        "200",
+    ),
+    "200_share_file": extend_schemas(
+        "OK",
+        [
+            {"channel": "discord", "success": True, "message": "파일 전송 성공"},
+        ],
+        "200",
+    ),
+    # 400 — serializer 검증 실패
+    "400_share_validation": extend_schema(
+        "Bad Request",
+        {"error_detail": {"channels": ["유효하지 않은 채널입니다. 선택 가능: kakao, discord"]}},
+        "400",
+    ),
+    # 400 — 카카오 토큰 누락
+    "400_share_kakao_token": extend_schema(
+        "Bad Request",
+        {"error_detail": "카카오 채널은 X-Kakao-Token 헤더가 필요합니다."},
+        "400",
+    ),
+    # 400 — 파일 누락
+    "400_share_no_file": extend_schema(
+        "Bad Request",
+        {"error_detail": "file 필드가 필요합니다."},
+        "400",
+    ),
 }

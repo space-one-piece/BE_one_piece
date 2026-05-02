@@ -61,6 +61,53 @@ class S3Handler:
             logger.error(e)
             return image_url
 
+    @staticmethod
+    def build_share_image_key(scent_name: str, result_id: int, division: str) -> str:
+        safe_name = scent_name.replace(" ", "_")
+        return f"uploads/images/share_results/{safe_name}_{result_id}_{division}.jpg"
+
+    def check_share_image_exists(self, s3_key: str) -> bool:
+        try:
+            self.client.head_object(
+                Bucket=self.bucket_name,
+                Key=s3_key,
+            )
+            return True
+        except ClientError as e:
+            if e.response["Error"]["Code"] == "404":
+                return False
+            logger = logging.getLogger(__name__)
+            logger.error(e)
+            return False
+
+    def upload_share_image(self, image_bytes: bytes, s3_key: str) -> str:
+        try:
+            self.client.put_object(
+                Bucket=self.bucket_name,
+                Key=s3_key,
+                Body=image_bytes,
+                ContentType="image/jpeg",
+            )
+            return self.get_img_url(s3_key)
+        except ClientError as e:
+            logger = logging.getLogger(__name__)
+            logger.error(e)
+            raise
+
+    def get_or_create_share_image(
+        self,
+        image_bytes: bytes,
+        scent_name: str,
+        result_id: int,
+        division: str,
+    ) -> str:
+        s3_key = self.build_share_image_key(scent_name, result_id, division)
+
+        if self.check_share_image_exists(s3_key):
+            return self.get_img_url(s3_key)
+
+        return self.upload_share_image(image_bytes, s3_key)
+
 
 def image_url_edit(image_url: str) -> str:
     parsed = urlparse(image_url)
