@@ -23,6 +23,8 @@ from django.views.generic import RedirectView
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 
 from apps.analysis.views.scent_views import ScentDetailAPIView, ScentListCreateAPIView
+from apps.question.views.results_views import ResultsCreateUrlAPIView
+from apps.question.views.share_views import ShareOGView, ShareView
 from apps.question.views.results_views import ShareCreateUrlAPIView, ShareViewAPIView
 
 urlpatterns = [
@@ -35,6 +37,8 @@ urlpatterns = [
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     # Swagger UI
     path("api/docs/", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),
+    path("api/v1/share", ShareView.as_view(), name="share"),
+    path("api/v1/<str:type>share-og/<int:results_id>", ShareOGView.as_view(), name="share-og"),
     # Redoc UI
     path("api/redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
     path("", RedirectView.as_view(url="/api/docs/", permanent=False)),

@@ -1,5 +1,3 @@
-import base64
-
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
@@ -8,7 +6,7 @@ from playwright.sync_api import sync_playwright
 from apps.analysis.models import ImageAnalysis
 from apps.chatbot.models import ChatbotRecommendation
 from apps.core.utils.cloud_front import image_url_cloud
-from apps.core.utils.s3_handler import image_url_edit
+from apps.core.utils.s3_handler import S3Handler, image_url_edit
 from apps.question.google_ai_studio import Gemini
 from apps.question.models import QuestionsResults
 from apps.question.service.service import QuestServices
@@ -114,7 +112,7 @@ class ImageUserService(QuestServices, Gemini):
         user_data.save()
 
     @classmethod
-    def web_share(cls, user_id: int, result_id: int, division: str) -> dict[str, str]:
+    def web_share(cls, result_id: int, division: str) -> str:
         if result_id is None:
             raise Http404
 
@@ -131,6 +129,12 @@ class ImageUserService(QuestServices, Gemini):
         scent = getattr(result_obj, "scent", None)
         if not scent:
             raise Http404
+
+        s3_handler = S3Handler()
+        s3_key = S3Handler.build_share_image_key(scent.name, result_id, division)
+
+        if s3_handler.check_share_image_exists(s3_key):
+            return s3_handler.get_img_url(s3_key)
 
         raw_profile = scent.profile
         profile_list = []
@@ -152,7 +156,7 @@ class ImageUserService(QuestServices, Gemini):
             "scent_name": scent.name,
             "scent_image_url": image_url_cloud(scent.thumbnail_url),
             "description": scent.description,
-            "ai_comment": ai_comment,  # 수정된 부분
+            "ai_comment": ai_comment,
             "profiles": profile_list,
             "notes_list": notes_list,
         }
@@ -167,6 +171,25 @@ class ImageUserService(QuestServices, Gemini):
             image_bytes = page.screenshot(full_page=True, type="png")
             browser.close()
 
-        data = {"image_data": base64.b64encode(image_bytes).decode("utf-8")}
+        image_url = s3_handler.get_or_create_share_image(
+            image_bytes=image_bytes,
+            scent_name=scent.name,
+            result_id=result_id,
+            division=division,
+        )
 
-        return data
+        return image_url_cloud(image_url)
+
+    # @classmethod
+    # def get_share_meta_context(cls, share_id: str):
+    #     # 1. DB에서 공유 데이터 조회 (아까 만든 로직)
+    #     share_instance = get_object_or_404(Share, token=share_id)
+    #     actual_data = share_instance.content_object
+    #
+    #     # 2. OG 태그에 들어갈 컨텍스트 구성
+    #     return {
+    #         "recommended_scent": actual_data.recommended_scent,
+    #         "ai_comment": actual_data.ai_comment,
+    #         "image_url": actual_data.image.url if actual_data.image else "기본이미지주소",
+    #         "share_token": share_id,
+    #     }

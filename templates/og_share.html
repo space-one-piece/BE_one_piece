@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <!-- 크롤러용 OG 태그 -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ og_url }}">
+    <meta property="og:title" content="{{ og_title }}">
+    <meta property="og:description" content="{{ og_description }}">
+    <meta property="og:image" content="{{ og_image }}">
+
+    <!-- 트위터/슬랙 대비 -->
+    <meta name="twitter:card" content="summary_large_image">
+
+    <title>{{ og_title }}</title>
+
+    <!-- ⚡️ 핵심: 사용자 리다이렉트 스크립트 -->
+    <script type="text/javascript">
+        // 페이지가 로드되자마자 실제 프론트엔드 상세페이지로 이동시킵니다.
+        window.location.href = "{{ redirect_url }}";
+    </script>
+</head>
+<body>
+    <!-- 스크립트가 작동하지 않을 경우를 대비한 안내 -->
+    <p>결과 페이지로 이동 중입니다. 잠시만 기다려주세요...</p>
+    <a href="{{ redirect_url }}">이동하지 않는다면 여기를 클릭하세요.</a>
+</body>
+</html>
