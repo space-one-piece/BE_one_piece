@@ -1,5 +1,4 @@
 from django.core.cache import cache
-from django.shortcuts import get_object_or_404
 from rest_framework.exceptions import ValidationError
 
 from apps.users.models.models import User
@@ -14,8 +13,11 @@ class passwordservice:
         if not cached_email or cached_email != email.strip():
             raise ValidationError({"detail": "인증 토큰이 유효하지 않거나 만료되었습니다."})
 
-        user = get_object_or_404(User, email=email)
-        user.set_password(new_password)
-        user.save()
+        user = User.objects.filter(email=email).first()
 
-        cache.delete(cache_key)
+        if user is not None:
+            user.set_password(new_password)
+            user.save()
+            cache.delete(cache_key)
+        else:
+            raise ValidationError("인증 정보가 올바르지 않습니다.")

@@ -34,7 +34,7 @@ class LoginView(APIView):
         request=LoginSerializer,
         responses={
             200: LoginResponseSerializer,
-            400: OpenApiResponse(response=ErrorResponseSerializer, description="필수 값 누락"),
+            400: OpenApiResponse(response=ErrorResponseSerializer, description="필수 값 누락 또는 형식 에러"),
             401: OpenApiResponse(response=ErrorResponseSerializer, description="인증 실패(이메일/비밀번호 불일치)"),
             403: OpenApiResponse(response=ErrorResponseSerializer, description="권한 없음(비활성 계정)"),
         },
@@ -42,30 +42,30 @@ class LoginView(APIView):
     )
     def post(self, request: Request, *args: Any, **kwargs: Any) -> Any:
         serializer = LoginSerializer(data=request.data)
-        if serializer.is_valid():
-            data = LoginService.login_user(
-                email=serializer.validated_data["email"], password=serializer.validated_data["password"]
+        serializer.is_valid(raise_exception=True)
+
+        data = LoginService.login_user(
+            email=serializer.validated_data["email"], password=serializer.validated_data["password"]
+        )
+
+        access_token = data.get("access")
+        refresh_token = data.get("refresh")
+
+        response = Response({"access": access_token}, status=status.HTTP_200_OK)
+
+        if refresh_token and isinstance(refresh_token, str):
+            jwt_settings = cast(dict[str, Any], settings.SIMPLE_JWT)
+            response.set_cookie(
+                key=cast(str, jwt_settings.get("AUTH_COOKIE", "refresh_token")),
+                value=refresh_token,
+                httponly=cast(bool, jwt_settings.get("AUTH_COOKIE_HTTP_ONLY", True)),
+                secure=cast(bool, jwt_settings.get("AUTH_COOKIE_SECURE", False)),
+                samesite=cast(Literal["Lax", "Strict", "None"], jwt_settings.get("AUTH_COOKIE_SAMESITE", "Lax")),
+                path=cast(str, jwt_settings.get("AUTH_COOKIE_PATH", "/")),
+                max_age=int(cast(timedelta, jwt_settings.get("REFRESH_TOKEN_LIFETIME")).total_seconds()),
             )
-
-            access_token = data.get("access")
-            refresh_token = data.get("refresh")
-
-            response = Response({"access": access_token}, status=status.HTTP_200_OK)
-
-            if refresh_token and isinstance(refresh_token, str):
-                jwt_settings = cast(dict[str, Any], settings.SIMPLE_JWT)
-                response.set_cookie(
-                    key=cast(str, jwt_settings.get("AUTH_COOKIE", "refresh_token")),
-                    value=refresh_token,
-                    httponly=cast(bool, jwt_settings.get("AUTH_COOKIE_HTTP_ONLY", True)),
-                    secure=cast(bool, jwt_settings.get("AUTH_COOKIE_SECURE", False)),
-                    samesite=cast(Literal["Lax", "Strict", "None"], jwt_settings.get("AUTH_COOKIE_SAMESITE", "Lax")),
-                    path=cast(str, jwt_settings.get("AUTH_COOKIE_PATH", "/")),
-                    max_age=int(cast(timedelta, jwt_settings.get("REFRESH_TOKEN_LIFETIME")).total_seconds()),
-                )
-                return response
-            return Response({"detail": "토큰 발급에 실패했습니다."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return response
+        return Response({"detail": "토큰 발급에 실패했습니다."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 # 로그아웃
@@ -88,7 +88,7 @@ class LogoutView(APIView):
                     },
                 },
             ),
-            401: OpenApiResponse(description="인증 실패 (로그인 필요)"),
+            401: OpenApiResponse(response=ErrorResponseSerializer, description="인증 실패(로그인필요)"),
         },
     )
     def post(self, request: Request, *args: Any, **kwargs: Any) -> Response:
@@ -155,7 +155,13 @@ class AccountRecoveryView(APIView):
         description="이메일 인증 후 발급받은 UUID 토큰과 기존 비밀번호를 입력하여 계정을 복구합니다.",
         request=AccountRecoverySerializer,
         responses={
-            200: OpenApiResponse(description="복구 성공"),
+            200: OpenApiResponse(
+                description="복구 성공",
+                response={
+                    "type": "object",
+                    "properties": {"detail": {"type": "string", "example": "계정이 성공적으로 복구되었습니다."}},
+                },
+            ),
             400: OpenApiResponse(response=ErrorResponseSerializer, description="인증 실패 또는 기간만료"),
         },
         tags=["accounts"],

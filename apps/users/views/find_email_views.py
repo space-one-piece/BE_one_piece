@@ -29,10 +29,10 @@ class FindEmailView(APIView):
             ),
             400: OpenApiResponse(
                 response=ErrorResponseSerializer,
-                description="필수값 누락 또는 인증 실패 (예: '인증정보가 만료되었거나 올바르지 않습니다.')",
+                description="필수값 누락 또는 인증 실패 (detail 키로 에러 메시지 반환)",
             ),
             404: OpenApiResponse(
-                response=ErrorResponseSerializer, description="사용자 없음 (예 '일치하는 사용자 정보가 없습니다.')"
+                response=ErrorResponseSerializer, description="사용자 없음 (detail 키로 에러 메시지 반환)"
             ),
         },
         tags=["accounts"],

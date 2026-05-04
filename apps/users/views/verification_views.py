@@ -1,9 +1,10 @@
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from apps.users.serializers.error_response_serializers import ErrorResponseSerializer
 from apps.users.serializers.verification_serializers import (
     EmailSendSerializer,
     EmailVerifySerializer,
@@ -19,7 +20,16 @@ class EmailSendView(APIView):
         summary="이메일 인증번호 발송",
         description="사용자가 입력한 이메일로 6자리 인증번호를 발송합니다.",
         request=EmailSendSerializer,
-        responses={200: {"example": {"detail": "인증 이메일이 발송되었습니다."}}},
+        responses={
+            200: OpenApiResponse(
+                description="발송 성공",
+                response={
+                    "type": "object",
+                    "properties": {"detail": {"type": "string", "example": "인증 메일이 발송되었습니다."}},
+                },
+            ),
+            400: ErrorResponseSerializer,
+        },
         tags=["Verification"],
     )
     def post(self, request: Request) -> Response:
@@ -38,8 +48,17 @@ class EmailConfirmView(APIView):
         description="이메일로 발송된 인증번호를 검증하고 회원가입용 토큰을 발급합니다.",
         request=EmailVerifySerializer,
         responses={
-            200: {"example": {"detail": "이메일 인증에 성공했습니다."}},
-            400: {"example": {"detail": "인증번호가 잘못되었거나 만료되었습니다.."}},
+            200: OpenApiResponse(
+                description="인증 성공",
+                response={
+                    "type": "object",
+                    "properties": {
+                        "detail": {"type": "string", "example": "이메일 인증에 성공했습니다.."},
+                        "token": {"type": "string", "example": "uuid-token-string"},
+                    },
+                },
+            ),
+            400: ErrorResponseSerializer,
         },
         tags=["Verification"],
     )
@@ -63,7 +82,16 @@ class SmsSendView(APIView):
         summary="휴대폰 인증번호 발송",
         description="사용자가 입력한 휴대폰 번호로 6자리 인증번호를 SMS로 발송합니다.",
         request=SmsSendSerializer,
-        responses={200: {"example": {"detail": "인증 문자가 발송되었습니다."}}},
+        responses={
+            200: OpenApiResponse(
+                description="발송 성공",
+                response={
+                    "type": "object",
+                    "properties": {"detail": {"type": "string", "example": "인증 메일이 발송되었습니다."}},
+                },
+            ),
+            400: ErrorResponseSerializer,
+        },
         tags=["Verification"],
     )
     def post(self, request: Request) -> Response:
@@ -82,8 +110,17 @@ class SmsConfirmView(APIView):
         description="휴대폰으로 발송된 인증번호를 검증하고 회원가입용 토큰을 발급합니다.",
         request=SmsVerifySerializer,
         responses={
-            200: {"example": {"detail": "휴대폰 인증에 성공했습니다."}},
-            400: {"example": {"detail": "인증번호가 잘못되었거나 만료되었습니다.."}},
+            200: OpenApiResponse(
+                description="인증 성공",
+                response={
+                    "type": "object",
+                    "properties": {
+                        "detail": {"type": "string", "example": "휴대폰 인증에 성공했습니다.."},
+                        "token": {"type": "string", "example": "uuid-token-string"},
+                    },
+                },
+            ),
+            400: ErrorResponseSerializer,
         },
         tags=["Verification"],
     )

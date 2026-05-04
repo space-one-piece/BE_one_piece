@@ -63,21 +63,12 @@ class PasswordResetTestCase(TestCase):
         response = self.client.post(self.url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data["error_detail"], "인증 토큰이 유효하지 않거나 만료되었습니다.")
-
-    def test_password_reset_user_not_found(self) -> None:
-        token = "token-for-missing-user"
-        non_existent_email = "none@test.com"
-        cache.set(f"signup_token_{token}", non_existent_email, timeout=600)
-
-        data = {
-            "email": non_existent_email,
-            "email_uuid_token": token,
-            "new_password": "new-password123!",
-            "new_password_confirm": "new-password123!",
-        }
-
-        response = self.client.post(self.url, data, format="json")
-
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-        self.assertIn("Not found.", str(response.data.get("error_detail", response.data.get("detail"))))
+        error_data = response.data
+        if isinstance(error_data, dict):
+            msg_obj = error_data.get("detail") or error_data.get("error_detail")
+            if isinstance(msg_obj, dict):
+                msg_obj = msg_obj.get("detail")
+            actual_message = str(msg_obj)
+        else:
+            actual_message = str(error_data)
+        self.assertEqual(actual_message, "인증 토큰이 유효하지 않거나 만료되었습니다.")

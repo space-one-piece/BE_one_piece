@@ -22,8 +22,11 @@ def frontend_redirect(*, provider: str, is_success: bool = True, **kwargs: Any) 
     if is_success:
         params = kwargs
     else:
-        params = {"provider": provider, "is_success": "false"}
-        params.update(kwargs)
+        params = {
+            "provider": provider,
+            "is_success": "false",
+            "detail": kwargs.get("detail", "소셜 로그인에 실패했습니다."),
+        }
 
     query_string = urllib.parse.urlencode(params)
     url = f"{base}/?{query_string}" if not base.endswith("/") else f"{base}?{query_string}"
@@ -99,8 +102,12 @@ class NaverSocialLoginCallbackView(APIView):
             state = request.query_params.get("state")
             saved_state = request.session.get("social_login_state")
 
-            if not code or state != saved_state:
-                return frontend_redirect(provider="naver", is_success=False)
+            if not code:
+                return frontend_redirect(provider="naver", is_success=False, detail="인증 코드가 없습니다.")
+            if state != saved_state:
+                return frontend_redirect(
+                    provider="naver", is_success=False, detail="상태 값이 일치하지 않습니다.(CSRF위험)"
+                )
 
             service = NaverOAuthService()
             access_token = service.get_access_token(code or "", cast(str, state))
@@ -108,12 +115,14 @@ class NaverSocialLoginCallbackView(APIView):
             user = service.get_or_create_user(user_info)
 
             refresh = RefreshToken.for_user(user)
-            response = frontend_redirect(provider="naver", is_success=True, code=code)
+            response = frontend_redirect(provider="naver", is_success=True)
             set_auth_cookies(response, refresh=str(refresh))
             return response
         except Exception:
             logger.exception("naver callback error")
-            return frontend_redirect(provider="naver", is_success=False)
+            return frontend_redirect(
+                provider="naver", is_success=False, detail="네이버 로그인 처리 중 오류가 발생했습니다."
+            )
         finally:
             request.session.pop("social_login_state", None)
 
@@ -174,8 +183,12 @@ class KakaoSocialLoginCallbackView(APIView):
             state = request.query_params.get("state")
             saved_state = request.session.get("social_login_state")
 
-            if not code or state != saved_state:
-                return frontend_redirect(provider="kakao", is_success=False)
+            if not code:
+                return frontend_redirect(provider="kakao", is_success=False, detail="인증 코드가 없습니다.")
+            if state != saved_state:
+                return frontend_redirect(
+                    provider="kakao", is_success=False, detail="상태 값이 일치하지 않습니다.(CSRF위험)"
+                )
 
             service = KaKaoOAuthService()
             access_token = service.get_access_token(code or "", cast(str, state))
@@ -183,12 +196,14 @@ class KakaoSocialLoginCallbackView(APIView):
             user = service.get_or_create_user(user_info)
 
             refresh = RefreshToken.for_user(user)
-            response = frontend_redirect(provider="kakao", is_success=True, code=code)
+            response = frontend_redirect(provider="kakao", is_success=True)
             set_auth_cookies(response, refresh=str(refresh))
             return response
         except Exception:
             logger.exception("kakao callback error")
-            return frontend_redirect(provider="kakao", is_success=False)
+            return frontend_redirect(
+                provider="kakao", is_success=False, detail="카카오 로그인 처리 중 오류가 발생했습니다."
+            )
         finally:
             request.session.pop("social_login_state", None)
 
@@ -249,8 +264,12 @@ class GoogleSocialLoginCallbackView(APIView):
             state = request.query_params.get("state")
             saved_state = request.session.get("social_login_state")
 
-            if not code or state != saved_state:
-                return frontend_redirect(provider="google", is_success=False)
+            if not code:
+                return frontend_redirect(provider="google", is_success=False, detail="인증 코드가 없습니다.")
+            if state != saved_state:
+                return frontend_redirect(
+                    provider="google", is_success=False, detail="상태 값이 일치하지 않습니다.(CSRF위험)"
+                )
 
             service = GoogleOAuthService()
             access_token = service.get_access_token(code or "", cast(str, state))
@@ -258,11 +277,13 @@ class GoogleSocialLoginCallbackView(APIView):
             user = service.get_or_create_user(user_info)
 
             refresh = RefreshToken.for_user(user)
-            response = frontend_redirect(provider="google", is_success=True, code=code)
+            response = frontend_redirect(provider="google", is_success=True)
             set_auth_cookies(response, refresh=str(refresh))
             return response
         except Exception:
             logger.exception("google callback error")
-            return frontend_redirect(provider="google", is_success=False)
+            return frontend_redirect(
+                provider="google", is_success=False, detail="구글 로그인 처리 중 오류가 발생했습니다."
+            )
         finally:
             request.session.pop("social_login_state", None)
