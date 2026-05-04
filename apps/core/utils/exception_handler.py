@@ -27,12 +27,35 @@ def custom_exception_handler(exc: Exception, context: dict[str, Any]) -> Respons
         return response
 
     status_code = response.status_code
-    if isinstance(response.data, dict) and "detail" in response.data:
-        message = response.data["detail"]
-    elif isinstance(response.data, list) and len(response.data) > 0:
-        message = response.data[0]
-    else:
-        message = ERROR_MESSAGES.get(status_code, "알 수 없는 에러가 발생했습니다.")
+    # 기본 에러 코드 설정 (UnboundLocalError 방지)
+    error_code = getattr(exc, "default_code", "ERROR").upper()
+    original_data = response.data
 
-    response.data = {"error_detail": message}
+    message = ""
+
+    if hasattr(exc, "detail"):
+        if isinstance(exc.detail, dict) and exc.detail:
+            first_key = next(iter(exc.detail))
+            first_error = exc.detail[first_key]
+
+            if isinstance(first_error, list) and len(first_error) > 0:
+                error_code = getattr(first_error[0], "code", error_code).upper()
+
+            message = ", ".join([f"{k}: {v[0] if isinstance(v, list) else v}" for k, v in exc.detail.items()])
+
+        elif isinstance(exc.detail, list) and len(exc.detail) > 0:
+            # 2. 리스트 형태 (DuplicateUserError 등)
+            error_code = getattr(exc.detail[0], "code", error_code).upper()
+            message = str(exc.detail[0])
+
+    if not message:
+        if isinstance(original_data, dict):
+            message = original_data.get("detail", ERROR_MESSAGES.get(status_code, "에러가 발생했습니다."))
+        elif isinstance(original_data, list) and len(original_data) > 0:
+            message = original_data[0]
+        else:
+            message = ERROR_MESSAGES.get(status_code, "알 수 없는 에러가 발생했습니다.")
+
+    response.data = {"status": status_code, "code": error_code, "message": str(message), "error_detail": original_data}
+
     return response

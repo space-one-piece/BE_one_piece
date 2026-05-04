@@ -6,6 +6,18 @@ from apps.users.models.models import User
 
 
 class SignUpSerializer(serializers.ModelSerializer[User]):
+    email = serializers.EmailField(
+        validators=[
+            RegexValidator(
+                r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$",
+                "유효한 이메일 형식이 아닙니다.",
+                code="INVALID_EMAIL_FORMAT",
+            )
+        ],
+        error_messages={
+            "unique": "이미 가입된 이메일입니다.",
+        },
+    )
     password = serializers.CharField(write_only=True, validators=[validate_password])
     name = serializers.CharField(max_length=20)
     birthday = serializers.DateField()
@@ -18,3 +30,4 @@ class SignUpSerializer(serializers.ModelSerializer[User]):
     class Meta:
         model = User
         fields = ("email", "password", "name", "birthday", "phone_number", "email_uuid_token", "sms_uuid_token")
+        extra_kwargs = {"email": {"error_messages": {"unique": "이미 가입된 이메일입니다."}}}
