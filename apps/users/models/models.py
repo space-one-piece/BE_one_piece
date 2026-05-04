@@ -66,6 +66,7 @@ class SocialUser(TimeStampModel):
     class Meta:
         db_table = "social_user"
         verbose_name = "소셜 연동 정보"
+        verbose_name_plural = "소셜 연동 정보"
 
 
 # 탈퇴 유저 정보
@@ -81,3 +82,4 @@ class UserWithdrawal(TimeStampModel):
     class Meta:
         db_table = "user_withdrawal"
         verbose_name = "탈퇴 정보"
+        verbose_name_plural = "탈퇴 정보"
