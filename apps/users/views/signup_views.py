@@ -6,6 +6,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from apps.users.serializers.error_response_serializers import ErrorResponseSerializer
 from apps.users.serializers.user_signup_serializers import SignUpSerializer
 from apps.users.services.signup_services import DuplicateUserError, SignUpService
 
@@ -22,16 +23,14 @@ class SignUpView(APIView):
                 description="회원가입 성공",
                 response=SignUpSerializer,
             ),
-            400: OpenApiResponse(description="Bad Request (검증 실패)"),
-            409: OpenApiResponse(description="Conflict (중복 가입)"),
+            400: OpenApiResponse(description="Bad Request (검증 실패)", response=ErrorResponseSerializer),
+            409: OpenApiResponse(description="Conflict (중복 가입)", response=ErrorResponseSerializer),
         },
         tags=["accounts"],
     )
     def post(self, request: Request) -> Response:
         serializer = SignUpSerializer(data=request.data)
-
-        if not serializer.is_valid():
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
 
         service = SignUpService()
         try:
@@ -39,7 +38,7 @@ class SignUpView(APIView):
             return Response({"message": "회원가입이 완료되었습니다."}, status=status.HTTP_201_CREATED)
 
         except DuplicateUserError as e:
-            return Response({"error_detail": str(e)}, status=status.HTTP_409_CONFLICT)
+            raise ValidationError(detail=str(e), code="USER_ALREADY_EXISTS")
 
         except ValidationError as e:
-            return Response({"error_detail": e.detail}, status=status.HTTP_400_BAD_REQUEST)
+            raise e

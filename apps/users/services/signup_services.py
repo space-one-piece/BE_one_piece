@@ -18,8 +18,8 @@ class SignUpService:
         input_email: str = str(validated_data.pop("email"))
         input_phone: str = str(validated_data.pop("phone_number")).replace("-", "")
         password: str = validated_data.pop("password")
-        email_uuid_token: str = validated_data.pop("email_token")
-        sms_uuid_token: str = validated_data.pop("sms_token")
+        email_uuid_token: str = validated_data.pop("email_uuid_token")
+        sms_uuid_token: str = validated_data.pop("sms_uuid_token")
 
         cached_email = cache.get(f"signup_token_{email_uuid_token}")
         cached_phone = cache.get(f"signup_token_{sms_uuid_token}")
