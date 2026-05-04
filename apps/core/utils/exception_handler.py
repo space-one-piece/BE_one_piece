@@ -27,7 +27,6 @@ def custom_exception_handler(exc: Exception, context: dict[str, Any]) -> Respons
         return response
 
     status_code = response.status_code
-    # 기본 에러 코드 설정 (UnboundLocalError 방지)
     error_code = getattr(exc, "default_code", "ERROR").upper()
     original_data = response.data
 
@@ -44,7 +43,6 @@ def custom_exception_handler(exc: Exception, context: dict[str, Any]) -> Respons
             message = ", ".join([f"{k}: {v[0] if isinstance(v, list) else v}" for k, v in exc.detail.items()])
 
         elif isinstance(exc.detail, list) and len(exc.detail) > 0:
-            # 2. 리스트 형태 (DuplicateUserError 등)
             error_code = getattr(exc.detail[0], "code", error_code).upper()
             message = str(exc.detail[0])
 
