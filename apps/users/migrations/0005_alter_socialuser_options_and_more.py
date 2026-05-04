@@ -4,18 +4,17 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('users', '0004_remove_user_gender'),
+        ("users", "0004_remove_user_gender"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='socialuser',
-            options={'verbose_name': '소셜 연동 정보', 'verbose_name_plural': '소셜 연동 정보'},
+            name="socialuser",
+            options={"verbose_name": "소셜 연동 정보", "verbose_name_plural": "소셜 연동 정보"},
         ),
         migrations.AlterModelOptions(
-            name='userwithdrawal',
-            options={'verbose_name': '탈퇴 정보', 'verbose_name_plural': '탈퇴 정보'},
+            name="userwithdrawal",
+            options={"verbose_name": "탈퇴 정보", "verbose_name_plural": "탈퇴 정보"},
         ),
     ]
