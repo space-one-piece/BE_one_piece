@@ -28,10 +28,8 @@ class PasswordResetView(APIView):
                     "properties": {"detail": {"type": "string", "example": "비밀번호가 성공적으로 변경되었습니다."}},
                 },
             ),
-            400: OpenApiResponse(
-                response=ErrorResponseSerializer, description="필수 값 누락 또는 인증 토큰이 유효하지 않음"
-            ),
-            404: OpenApiResponse(response=ErrorResponseSerializer, description="해당 이메일의 사용자를 찾을 수 없음"),
+            400: OpenApiResponse(response=ErrorResponseSerializer, description="인증 토큰이 유효하지 않음"),
+            404: OpenApiResponse(response=ErrorResponseSerializer, description="사용자를 찾을 수 없음"),
         },
         tags=["accounts"],
     )

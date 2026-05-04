@@ -41,8 +41,10 @@ class SocialLoginTest(APITestCase):
         session.save()
 
         response = self.client.get(self.kakao_callback_url, {"code": "test_code", "state": "test_state"})
+
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
-        self.assertIn("code=test_code", response.url)  # type: ignore
+        self.assertIn("http://localhost:5173", response.url)  # type: ignore
+        self.assertIn("refresh_token", response.cookies)
 
     # naver test
     @patch("apps.users.services.social_login_services.NaverOAuthService.get_access_token")
@@ -57,8 +59,10 @@ class SocialLoginTest(APITestCase):
         session.save()
 
         response = self.client.get(self.naver_callback_url, {"code": "test_code", "state": "test_state"})
+
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
-        self.assertIn("code=test_code", response.url)  # type: ignore
+        self.assertIn("http://localhost:5173", response.url)  # type: ignore
+        self.assertIn("refresh_token", response.cookies)
 
     # google test
     @patch("apps.users.services.social_login_services.GoogleOAuthService.get_access_token")
@@ -74,7 +78,8 @@ class SocialLoginTest(APITestCase):
 
         response = self.client.get(self.google_callback_url, {"code": "test_code", "state": "test_state"})
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
-        self.assertIn("code=test_code", response.url)  # type: ignore
+        self.assertIn("http://localhost:5173", response.url)  # type: ignore
+        self.assertIn("refresh_token", response.cookies)
 
     # 실패 테스트
     def test_login_failure_invalid_state(self) -> None:
@@ -85,3 +90,4 @@ class SocialLoginTest(APITestCase):
         response = self.client.get(self.kakao_callback_url, {"code": "test_code", "state": "wrong_state"})
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
         self.assertIn("is_success=false", response.url)  # type: ignore
+        self.assertIn("detail=", response.url)  # type: ignore

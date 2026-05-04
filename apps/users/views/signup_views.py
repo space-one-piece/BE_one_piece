@@ -21,7 +21,10 @@ class SignUpView(APIView):
         responses={
             201: OpenApiResponse(
                 description="회원가입 성공",
-                response=SignUpSerializer,
+                response={
+                    "type": "object",
+                    "properties": {"detail": {"type": "string", "example": "회원가입이 완료되었습니다."}},
+                },
             ),
             400: OpenApiResponse(description="Bad Request (검증 실패)", response=ErrorResponseSerializer),
             409: OpenApiResponse(description="Conflict (중복 가입)", response=ErrorResponseSerializer),

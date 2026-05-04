@@ -1,6 +1,6 @@
 from typing import Any, cast
 
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
@@ -49,8 +49,8 @@ class ProfileView(APIView):
         serializer.is_valid(raise_exception=True)
 
         current_user = cast(User, request.user)
-
         updated_user = UserProfileUpdateService.update_user_profile(user=current_user, data=serializer.validated_data)
+
         return Response(UserProfileUpdateSerializer(updated_user).data)
 
 
@@ -61,7 +61,17 @@ class ProfileImageView(APIView):
         summary="프로필 이미지 등록",
         description="S3에 업로드된 이미지 URL을 전달받아 사용자 프로필 이미지로 등록합니다.",
         request=ProfileImageUpdateSerializer,
-        responses={200: None, 400: ErrorResponseSerializer, 401: ErrorResponseSerializer},
+        responses={
+            200: OpenApiResponse(
+                description="등록 성공",
+                response={
+                    "type": "object",
+                    "properties": {"detail": {"type": "string", "example": "프로필 사진이 등록되었습니다."}},
+                },
+            ),
+            400: ErrorResponseSerializer,
+            401: ErrorResponseSerializer,
+        },
         tags=["accounts"],
     )
     def patch(self, request: Request) -> Response:
