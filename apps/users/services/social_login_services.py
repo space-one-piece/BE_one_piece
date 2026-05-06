@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 class NaverOAuthService:
     AUTH_URL = "https://nid.naver.com/oauth2.0/authorize"
     TOKEN_URL = "https://nid.naver.com/oauth2.0/token"
-    USER_INFO_URL = "https://nid.naver.com/v1/nid/me"
+    USER_INFO_URL = "https://openapi.naver.com/v1/nid/me"
 
     def get_auth_url(self) -> tuple[str, str]:
         state = uuid.uuid4().hex
@@ -115,7 +115,7 @@ class NaverOAuthService:
 
 class KaKaoOAuthService:
     AUTH_URL = "https://kauth.kakao.com/oauth/authorize"
-    TOKEN_URL = "https://kauth.kakao.com/oauth2.0/token"
+    TOKEN_URL = "https://kauth.kakao.com/oauth/token"
     USER_INFO_URL = "https://kapi.kakao.com/v2/user/me"
 
     def get_auth_url(self) -> tuple[str, str]:
@@ -248,7 +248,7 @@ class GoogleOAuthService:
                 name=user_info.get("name", "구글유저")[:30],
                 phone_number=f"G_{google_id[:18]}",
                 birthday=date(1990, 1, 1),
-                profile_image_url=user_info.get("profile_image_url", ""),
+                profile_image_url=user_info.get("picture", ""),
                 social_type=SocialTypeChoice.GOOGLE,
                 is_active=True,
             )
