@@ -157,25 +157,35 @@
 <summary><b>상세 내용 보기 (클릭)</b></summary>
 
 ### 🔑 주요 기능 (Key Features)
+
 * **멀티모달 AI 분석 및 장애 방어 (AI Integration & Resilience)**
-    * **Google Gemini API**를 활용하여 이미지의 무드 및 향기 메타데이터 정밀 추출
-    * 외부 API 지연(504 Timeout) 대비 **재시도(Retry) 로직** 및 **Fallback 방어선**(DB 기반 인기 향수 제공) 구축
-* **이미지 메타데이터 전처리 파이프라인**
-    * **OpenCV & ColorThief**를 활용한 지배 색상(Hex), 명도, 채도, 대비 분석 및 수치화
-    * **S3 Presigned URL** 방식을 도입하여 대용량 이미지 처리 시 서버 부하 최소화 및 보안 강화
-* **자체 매칭 알고리즘 및 통합 API (BFF Pattern)**
-    * **다이스 계수(Dice Coefficient)** 알고리즘 기반 키워드 매칭 및 가중치(Weight) 적용 추천 로직 구현
-    * 이미지·설문·챗봇 데이터를 단일 엔드포인트로 묶어주는 **BFF(Backend For Frontend) 패턴** 설계
+    * **Google Gemini Vision API**를 활용하여 이미지의 무드·분위기를 분석, 향 태그(2개)·키워드(3개)·강도·감성 코멘트를 구조화된 JSON으로 정밀 추출
+    * 허용 목록 기반 **프롬프트 엔지니어링**으로 AI 응답을 DB 매칭 가능한 단어로 강제하여 매칭 정확도 향상
+    * 메인/서브 모델 순차 전환 **Fallback + Retry 패턴** 구축, 전체 실패 시 베스트셀러 향수 자동 추천으로 무중단 서비스 보장
+
+* **이미지 메타데이터 전처리 파이프라인 (Image Preprocessing Pipeline)**
+    * **ColorThief**로 이미지 대표 색상(Dominant Color) HEX 추출, **OpenCV** HSV 변환으로 평균 밝기·채도 수치화
+    * 그레이스케일 표준편차(RMS Contrast) 방식으로 이미지 대비값 계산, 모든 수치를 0~100 백분율로 정규화
+    * **AWS S3 Presigned URL** 방식으로 클라이언트→S3 직접 업로드 구현, 서버 메모리·대역폭 부하 최소화 및 보안 강화
+
+* **자체 매칭 알고리즘 및 통합 API (Custom Algorithm & BFF Pattern)**
+    * **다이스 계수(Dice Coefficient)** 알고리즘 기반 향수 매칭 구현 — Precision·Recall을 동시에 고려하여 태그 과다 보유 향수의 불공정 고점수 문제 해결
+    * 태그(70%) + 키워드(30%) **가중 평균** 및 **UX Base Score Mapping**으로 매칭 점수를 사용자 친화적 백분율로 보정
+    * 이미지 분석·설문·챗봇 3개 이질적 데이터 소스를 단일 엔드포인트로 통합하는 **BFF(Backend For Frontend) 패턴** 설계
 
 ### 🛠️ 기술 스택 (Technical Stack)
+
 * **Backend:** Python, Django (REST Framework)
-* **Data / AI:** Google Gemini API, OpenCV, Numpy, ColorThief
-* **Infrastructure:** AWS S3, Docker, Nginx, Gunicorn
+* **AI / Data:** Google Gemini Vision API, OpenCV, NumPy, ColorThief
+* **Infrastructure:** AWS S3 (Presigned URL), CloudFront CDN, Docker, Nginx, Gunicorn
 
 ### 🚀 개발 중점 사항 (Development Focus)
-* **시스템 가용성 최적화**: Gunicorn 동시성 튜닝(Thread/Worker 설정)을 통해 외부 API 대기 시간으로 인한 서버 연쇄 장애 방지
-* **데이터 무결성 보장**: 복수 테이블 데이터 동시 Insert 시 `transaction.atomic()`을 적용하여 원자성 확보
+
+* **시스템 가용성 최적화**: Gemini API 외부 호출을 트랜잭션 범위 밖에서 처리하고, Gunicorn Worker 설정으로 외부 API 대기 시간으로 인한 서버 연쇄 장애 방지
+* **데이터 무결성 보장**: `ImageAnalysis`·`ImageColorAnalysis` 복수 테이블 동시 Insert 시 `transaction.atomic()` 적용, 외부 I/O(S3) 완료 후에만 트랜잭션 개방하여 DB 락 최소화
+* **알고리즘 개선 경험**: Jaccard(단순 교집합 비율) → Dice Coefficient(Precision+Recall 균형)로 매칭 알고리즘을 데이터 기반으로 직접 개선한 문제 해결 경험 보유
 * **인터페이스 추상화**: 다형성(Polymorphism)을 활용해 출처가 다른 데이터를 단일 규격(DTO)으로 추상화하여 프론트엔드 렌더링 효율 극대화
+
 </details>
 
 ---
