@@ -257,7 +257,7 @@ class QuestServices:
             "og_title": f"{scent.name} - 나의 향수 추천 결과",
             "og_description": scent.description,
             "og_image": data.image_url,
-            "og_url": f"{settings.SERVICE_BASE_URL}/{share_id}",
+            "og_url": f"{settings.KAKAO_REDIRECT_URIS}/share-og/{share_id}",
             "redirect_url": f"{settings.SERVICE_BASE_URL}/{share_id}",
         }
 
