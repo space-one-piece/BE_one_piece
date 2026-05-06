@@ -17,7 +17,11 @@
     <!-- ⚡️ 핵심: 사용자 리다이렉트 스크립트 -->
     <script type="text/javascript">
         // 페이지가 로드되자마자 실제 프론트엔드 상세페이지로 이동시킵니다.
-        window.location.href = "{{ redirect_url }}";
+        window.onload = function() {
+        setTimeout(function() {
+            window.location.href = "{{ redirect_url }}";
+        }, 500);
+    };
     </script>
 </head>
 <body>
