@@ -12,6 +12,19 @@ from apps.question.models import QuestionsResults
 from apps.question.service.service import QuestServices
 from apps.users.models.models import User
 
+SCENT_COLOR_MAP = {
+    "amber": "radial-gradient(circle, #E6BE8A 0%, #D4A373 50%, rgba(255,255,255,0) 100%)",
+    "aquatic": "radial-gradient(circle, #A3C9D9 0%, #D1E5ED 50%, rgba(255,255,255,0) 100%)",
+    "citrus": "radial-gradient(circle, #EAB638 0%, #A2C579 50%, rgba(255,255,255,0) 100%)",
+    "floral": "radial-gradient(circle, #FFB6C1 0%, #FFD1DC 50%, rgba(255,255,255,0) 100%)",
+    "fruity": "radial-gradient(circle, #FF7E5F 0%, #FEB47B 50%, rgba(255,255,255,0) 100%)",
+    "green": "radial-gradient(circle, #92B4A7 0%, #B5C9C3 50%, rgba(255,255,255,0) 100%)",
+    "musk": "radial-gradient(circle, #E3D9D1 0%, #F5F5F5 50%, rgba(255,255,255,0) 100%)",
+    "powdery": "radial-gradient(circle, #D1D1E9 0%, #E2E2F3 50%, rgba(255,255,255,0) 100%)",
+    "spicy": "radial-gradient(circle, #D98880 0%, #F2D7D5 50%, rgba(255,255,255,0) 100%)",
+    "woody": "radial-gradient(circle, #A28D76 0%, #D4C3B1 50%, rgba(255,255,255,0) 100%)",
+}
+
 
 class ImageUserService(QuestServices, Gemini):
     CATEGORY_PROMPTS: dict[str, str] = {
@@ -130,6 +143,8 @@ class ImageUserService(QuestServices, Gemini):
         if not scent:
             raise Http404
 
+        scent_color = SCENT_COLOR_MAP.get(scent.categories, SCENT_COLOR_MAP["citrus"])
+
         s3_handler = S3Handler()
         s3_key = S3Handler.build_share_image_key(scent.name, result_id, division)
 
@@ -155,11 +170,10 @@ class ImageUserService(QuestServices, Gemini):
 
         context = {
             "scent_name": scent.name,
-            "scent_image_url": image_url_cloud(scent.thumbnail_url),
-            "description": scent.description,
+            "eng_name": scent.eng_name,
+            "scent_color": scent_color,
+            "tags": scent.tags if isinstance(scent.tags, list) else scent.tags.split(",") if scent.tags else [],
             "ai_comment": ai_comment,
-            "profiles": profile_list,
-            "notes_list": notes_list,
         }
 
         html_string = render_to_string("share_template.html", context)
