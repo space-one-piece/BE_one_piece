@@ -11,7 +11,6 @@ from apps.chatbot.models import ChatbotRecommendation
 from apps.core.utils.cloud_front import image_url_cloud
 from apps.core.utils.hashids import encode_id
 from apps.question.models import QuestionsResults, Share
-from apps.question.service.image_user_service import ImageUserService
 from apps.question.service.service import QuestServices
 
 
@@ -72,10 +71,14 @@ class ResultsService(QuestServices):
 
         expires_at = timezone.now() + datetime.timedelta(days=7)
 
-        image_url = ImageUserService.web_share(
-            result_id=result_id,
-            division=type_data,
-        )
+        # 이미지 생성 미사용으로
+        # image_url = ImageUserService.web_share(
+        #     result_id=result_id,
+        #     division=type_data,
+        # )
+
+        image_url = image_url_cloud("uploads/images/share_results/초대장.png")
+
         share_data = Share.objects.filter(result_id=question_id).first()
         if not share_data:
             Share.objects.create(
@@ -83,7 +86,7 @@ class ResultsService(QuestServices):
                 result_id=question_id,
                 content_object=query_data,
                 holding_time=expires_at,
-                image_url=image_url,
+                image_url=image_url if image_url else "",
             )
 
         data = {"share_id": question_id, "og_crawler": f"https://fragmnt.pics/share-og/{question_id}"}
