@@ -254,8 +254,8 @@ class QuestServices:
             raise Http404
 
         context = {
-            "og_title": f"{scent.name} - 나의 향수 추천 결과",
-            "og_description": scent.description,
+            "og_title": "Fragmnt - 나만의 향기를 찾아보세요",
+            "og_description": "취향에 맞는 다양한 향기를 추천받을 수 있습니다",
             "og_image": data.image_url,
             "og_url": f"{settings.KAKAO_REDIRECT_URIS}/share-og/{share_id}",
             "redirect_url": f"{settings.SERVICE_BASE_URL}/{share_id}",
