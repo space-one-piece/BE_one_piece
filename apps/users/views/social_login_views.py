@@ -115,7 +115,8 @@ class NaverSocialLoginCallbackView(APIView):
             user = service.get_or_create_user(user_info)
 
             refresh = RefreshToken.for_user(user)
-            response = frontend_redirect(provider="naver", is_success=True)
+            access_token = str(refresh.access_token)
+            response = frontend_redirect(provider="naver", is_success=True, access_token=access_token)
             set_auth_cookies(response, refresh=str(refresh))
             return response
         except Exception:
@@ -196,7 +197,8 @@ class KakaoSocialLoginCallbackView(APIView):
             user = service.get_or_create_user(user_info)
 
             refresh = RefreshToken.for_user(user)
-            response = frontend_redirect(provider="kakao", is_success=True)
+            access_token = str(refresh.access_token)
+            response = frontend_redirect(provider="kakao", is_success=True, access_token=access_token)
             set_auth_cookies(response, refresh=str(refresh))
             return response
         except Exception:
@@ -277,7 +279,8 @@ class GoogleSocialLoginCallbackView(APIView):
             user = service.get_or_create_user(user_info)
 
             refresh = RefreshToken.for_user(user)
-            response = frontend_redirect(provider="google", is_success=True)
+            access_token = str(refresh.access_token)
+            response = frontend_redirect(provider="google", is_success=True, access_token=access_token)
             set_auth_cookies(response, refresh=str(refresh))
             return response
         except Exception:
