@@ -321,10 +321,22 @@ CORS_ALLOWED_ORIGINS = [
     "https://fe-one-piece.vercel.app",
 ]
 
+CSRF_COOKIE_SAMESITE = "None"
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SAMESITE = "None"
+SESSION_COOKIE_SECURE = True
+
+COOKIE_DOMAIN = os.getenv("COOKIE_DOMAIN", None)
+COOKIE_SECURE = True
+
 CORS_ALLOWED_ORIGIN_REGEXES = [
     r"^https://.*\.vercel\.app$",
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://fe-one-piece.vercel.app",
+    "https://fragmnt.pics",
+]
 
 REDIS_HOST = os.getenv("REDIS_HOST", "redis")
 REDIS_PORT = int(os.getenv("REDIS_PORT", "6379"))
