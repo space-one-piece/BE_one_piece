@@ -289,7 +289,7 @@ class GoogleOAuthService:
                 name=name[:30] if name else "구글유저",
                 phone_number=None,
                 birthday=None,
-                profile_image_url=profile_image_url or "",
+                profile_image_url="",
                 social_type=SocialTypeChoice.GOOGLE,
                 is_active=True,
             )
