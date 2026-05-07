@@ -28,7 +28,7 @@ class User(TimeStampModel, AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length=255, unique=True, verbose_name="이메일")
     password = models.CharField(max_length=128, default="", verbose_name="비밀번호")
     name = models.CharField(max_length=30, verbose_name="이름")
-    birthday = models.DateField(verbose_name="생년월일")
+    birthday = models.DateField(verbose_name="생년월일", null=True, blank=True)
     profile_image_url = models.CharField(max_length=255, null=True, blank=True)
     social_type = models.CharField(
         max_length=10,
@@ -36,7 +36,7 @@ class User(TimeStampModel, AbstractBaseUser, PermissionsMixin):
         default="GENERAL",
         verbose_name="가입 경로",
     )
-    phone_number = models.CharField(max_length=20, unique=True, verbose_name="휴대전화")
+    phone_number = models.CharField(max_length=20, unique=True, verbose_name="휴대전화", null=True, blank=True)
     status = models.CharField(choices=UserStatus, default=UserStatus.ACTIVE)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
