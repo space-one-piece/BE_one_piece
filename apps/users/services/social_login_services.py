@@ -79,6 +79,15 @@ class NaverOAuthService:
         if social_user:
             user = social_user.user
             self._validate_user_status(user)
+            user.name = user_info.get("name", user.name) or user.name
+            user.profile_image_url = user_info.get("profile_image", user.profile_image_url)
+            mobile = user_info.get("mobile", "").replace("-", "")
+            if mobile:
+                user.phone_number = mobile
+            birthday_date = self.parse_naver_birthday(user_info)
+            if birthday_date:
+                user.birthday = birthday_date
+            user.save(update_fields=["name", "profile_image_url", "phone_number", "birthday"])
             return user
 
         existing_user = User.objects.filter(email=email).first()
@@ -89,15 +98,15 @@ class NaverOAuthService:
 
         name = user_info.get("name")
         birthday_date = self.parse_naver_birthday(user_info)
-        profile_image_url = user_info.get("profile_image_url")
+        profile_image_url = user_info.get("profile_image", "")
         mobile = user_info.get("mobile", "").replace("-", "")
 
         with transaction.atomic():
             user = User.objects.create(
                 email=email,
                 name=name[:30] if name else "네이버유저",
-                phone_number=mobile if mobile else f"N_{naver_id[:18]}",
-                birthday=birthday_date or date(1990, 1, 1),
+                phone_number=mobile if mobile else None,
+                birthday=birthday_date or None,
                 profile_image_url=profile_image_url or "",
                 social_type=SocialTypeChoice.NAVER,
                 is_active=True,
@@ -146,19 +155,45 @@ class KaKaoOAuthService:
         response.raise_for_status()
         return cast(dict[str, Any], response.json())
 
+    def parse_kakao_birthday(self, kakao_account: dict[str, Any]) -> date | None:
+        birthday = kakao_account.get("birthday")  # MMDD 형식
+        birthyear = kakao_account.get("birthyear")
+        if birthday and birthyear:
+            try:
+                return date(int(birthyear), int(birthday[:2]), int(birthday[2:]))
+            except (ValueError, TypeError):
+                pass
+        return None
+
     def get_or_create_user(self, user_info: dict[str, Any]) -> Any:
         kakao_id = str(user_info.get("id"))
         kakao_account = user_info.get("kakao_account", {})
-        email = kakao_account.get("email")
+        profile = kakao_account.get("profile", {})
 
+        email = kakao_account.get("email")
         if not email:
-            raise ValidationError({"code": "email_required", "message": "카카오 계정에 이메일이 없습니다."})
+            email = f"kakao_{kakao_id}@kakao.local"
+
+        name = kakao_account.get("name") or profile.get("nickname")
+        profile_image_url = profile.get("profile_image_url", "")
+        phone_number = kakao_account.get("phone_number", "").replace("+82 ", "0").replace("-", "")
+        birthday_date = self.parse_kakao_birthday(kakao_account)
 
         social_user = SocialUser.objects.filter(provider=SocialTypeChoice.KAKAO, social_id=kakao_id).first()
 
         if social_user:
-            self._validate_user_status(social_user.user)
-            return social_user.user
+            user = social_user.user
+            self._validate_user_status(user)
+            if name:
+                user.name = name[:30]
+            if profile_image_url:
+                user.profile_image_url = profile_image_url
+            if phone_number:
+                user.phone_number = phone_number
+            if birthday_date:
+                user.birthday = birthday_date
+            user.save(update_fields=["name", "profile_image_url", "phone_number", "birthday"])
+            return user
 
         existing_user = User.objects.filter(email=email).first()
         if existing_user:
@@ -166,15 +201,12 @@ class KaKaoOAuthService:
             SocialUser.objects.get_or_create(user=existing_user, provider=SocialTypeChoice.KAKAO, social_id=kakao_id)
             return existing_user
 
-        profile_image_url = kakao_account.get("profile_image_url", {})
-        name = kakao_account.get("name")
-
         with transaction.atomic():
             user = User.objects.create(
                 email=email,
                 name=name[:30] if name else "카카오유저",
-                phone_number=f"K_{kakao_id[:18]}",
-                birthday=date(1990, 1, 1),
+                phone_number=phone_number if phone_number else None,
+                birthday=birthday_date or None,
                 profile_image_url=profile_image_url or "",
                 social_type=SocialTypeChoice.KAKAO,
                 is_active=True,
@@ -230,11 +262,20 @@ class GoogleOAuthService:
         if not email:
             raise ValidationError({"code": "email_required", "message": "구글 계정에 이메일이 없습니다."})
 
+        name = user_info.get("name")
+        profile_image_url = user_info.get("picture", "")
+
         social_user = SocialUser.objects.filter(provider=SocialTypeChoice.GOOGLE, social_id=google_id).first()
 
         if social_user:
-            self._validate_user_status(social_user.user)
-            return social_user.user
+            user = social_user.user
+            self._validate_user_status(user)
+            if name:
+                user.name = name[:30]
+            if profile_image_url:
+                user.profile_image_url = profile_image_url
+            user.save(update_fields=["name", "profile_image_url"])
+            return user
 
         existing_user = User.objects.filter(email=email).first()
         if existing_user:
@@ -245,10 +286,10 @@ class GoogleOAuthService:
         with transaction.atomic():
             user = User.objects.create(
                 email=email,
-                name=user_info.get("name", "구글유저")[:30],
-                phone_number=f"G_{google_id[:18]}",
-                birthday=date(1990, 1, 1),
-                profile_image_url=user_info.get("picture", ""),
+                name=name[:30] if name else "구글유저",
+                phone_number=None,
+                birthday=None,
+                profile_image_url=profile_image_url or "",
                 social_type=SocialTypeChoice.GOOGLE,
                 is_active=True,
             )
