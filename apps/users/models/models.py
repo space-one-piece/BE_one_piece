@@ -2,7 +2,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 from django.db import models
 
 from apps.core.models import TimeStampModel
-from apps.users.choices import SocialTypeChoice, UserGender, UserStatus, WithdrawalReason
+from apps.users.choices import SocialTypeChoice, UserStatus, WithdrawalReason
 
 
 class UserManager(BaseUserManager["User"]):
@@ -28,18 +28,20 @@ class User(TimeStampModel, AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length=255, unique=True, verbose_name="이메일")
     password = models.CharField(max_length=128, default="", verbose_name="비밀번호")
     name = models.CharField(max_length=30, verbose_name="이름")
-    birthday = models.DateField(verbose_name="생년월일")
+    birthday = models.DateField(verbose_name="생년월일", null=True, blank=True)
+    profile_image_url = models.CharField(max_length=255, null=True, blank=True)
     social_type = models.CharField(
         max_length=10,
         choices=SocialTypeChoice,
         default="GENERAL",
         verbose_name="가입 경로",
     )
-    phone_number = models.CharField(max_length=20, unique=True, verbose_name="휴대전화")
-    gender = models.CharField(max_length=6, choices=UserGender, verbose_name="성별")
+    phone_number = models.CharField(max_length=20, unique=True, verbose_name="휴대전화", null=True, blank=True)
     status = models.CharField(choices=UserStatus, default=UserStatus.ACTIVE)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
+
+    objects = UserManager()
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["name", "phone_number"]
@@ -64,6 +66,7 @@ class SocialUser(TimeStampModel):
     class Meta:
         db_table = "social_user"
         verbose_name = "소셜 연동 정보"
+        verbose_name_plural = "소셜 연동 정보"
 
 
 # 탈퇴 유저 정보
@@ -79,3 +82,4 @@ class UserWithdrawal(TimeStampModel):
     class Meta:
         db_table = "user_withdrawal"
         verbose_name = "탈퇴 정보"
+        verbose_name_plural = "탈퇴 정보"

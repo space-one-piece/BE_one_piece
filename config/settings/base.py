@@ -35,22 +35,40 @@ ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
-INSTALLED_APPS = [
+DJANGO_APPS = [
+    "jazzmin",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "rest_framework",
-    "apps.analysis",
-    "apps.chatbot",
-    "apps.question",
-    "apps.users",
-    "drf_yasg",
 ]
 
+THIRD_PARTY_APPS = [
+    "rest_framework_simplejwt",
+    "rest_framework_simplejwt.token_blacklist",
+    "rest_framework",
+    "corsheaders",
+    "drf_spectacular",
+    "django_filters",
+    "admin_auto_filters",
+]
+
+# 추가한 도메인별 앱을 줄바꿈, 쉼표를 사용하여 나열.
+CUSTOM_APPS: list[str] = [
+    "apps.question",
+    "apps.analysis",
+    "apps.users",
+    "apps.chatbot",
+    "apps.core",
+    "apps.scent",
+]
+
+INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + CUSTOM_APPS
+
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",  # 장고가 직접 CSS, JS 파일을 이동하게 도와주는거
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -66,7 +84,7 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -92,6 +110,16 @@ DATABASES = {
         "PASSWORD": os.getenv("DB_PASSWORD"),
         "HOST": os.getenv("DB_HOST"),
         "PORT": os.getenv("DB_PORT"),
+    }
+}
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": f"redis://{os.getenv('REDIS_HOST')}:{os.getenv('REDIS_PORT')}/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
     }
 }
 
@@ -140,16 +168,28 @@ SIMPLE_JWT = {
     "USER_ID_CLAIM": "user_id",
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
+    "AUTH_COOKIE": "refresh_token",
+    "AUTH_COOKIE_HTTP_ONLY": True,
+    "AUTH_COOKIE_PATH": "/",
+    "AUTH_COOKIE_SAMESITE": "None",
+    "AUTH_COOKIE_SECURE": True,
 }
 
 # rest_framework 설정
 REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ],
     "DEFAULT_RENDERER_CLASSES": [
         "rest_framework.renderers.JSONRenderer",
     ],
     "DEFAULT_PARSER_CLASSES": [
         "rest_framework.parsers.JSONParser",
     ],
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "EXCEPTION_HANDLER": "apps.core.utils.exception_handler.custom_exception_handler",
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 10,
 }
 
 AUTH_USER_MODEL = "users.User"
@@ -163,3 +203,215 @@ CSRF_TRUSTED_ORIGINS = [
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 APPEND_SLASH = False
+
+# AWS S3 settings
+AWS_S3_REGION = os.getenv("AWS_S3_REGION", "")
+AWS_S3_ACCESS_KEY_ID = os.getenv("AWS_S3_ACCESS_KEY_ID", "")
+AWS_S3_SECRET_ACCESS_KEY = os.getenv("AWS_S3_SECRET_ACCESS_KEY", "")
+AWS_S3_BUCKET_NAME = os.getenv("AWS_S3_BUCKET_NAME", "")
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Fragrance Recommendation API",
+    "DESCRIPTION": "Fragrance Recommendation API",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "COMPONENT_SPLIT_REQUEST": True,
+}
+
+# SMTP Settings
+EMAIL_BACKEND = os.environ.get("EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend")
+EMAIL_HOST = os.environ.get("EMAIL_HOST", "smtp.gmail.com")
+EMAIL_PORT = int(os.environ.get("EMAIL_PORT", 587))
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+# Coll SMS Verify Settings
+COOLSMS_API_KEY = os.environ.get("COOLSMS_API_KEY")
+COOLSMS_API_SECRET = os.environ.get("COOLSMS_API_SECRET")
+COOLSMS_PHONE_NUMBER = os.environ.get("COOLSMS_PHONE_NUMBER")
+
+# GEMINI
+PJG_GEMINI_KEY = os.environ.get("PJG_GEMINI_KEY", "")
+LGB_GEMINI_KEY = os.getenv("LGB_GEMINI_KEY", "")
+HHJ_GEMINI_KEY = os.getenv("HHJ_GEMINI_KEY", "")
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+SUB_GEMINI_MODEL = os.getenv("SUB_GEMINI_MODEL", "gemini-2.0-flash")
+
+
+LOG_DIR = os.path.join(BASE_DIR, "logs")
+if not os.path.exists(LOG_DIR):
+    os.makedirs(LOG_DIR)
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "[{asctime}] {levelname} [{name}:{lineno}] {message}",
+            "style": "{",
+        },
+        "simple": {
+            "format": "[{levelname}] {message}",
+            "style": "{",
+        },
+    },
+    "handlers": {
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        },
+        "file_error": {
+            "level": "WARNING",
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": os.path.join(LOG_DIR, "error.log"),
+            "maxBytes": 1024 * 1024 * 10,
+            "backupCount": 5,
+            "formatter": "verbose",
+        },
+    },
+    "loggers": {
+        "apps": {
+            "handlers": ["console", "file_error"],
+            "level": "INFO",
+            "propagate": False,
+        },
+        "django": {
+            "handlers": ["console", "file_error"],
+            "level": "INFO",
+            "propagate": False,
+        },
+    },
+}
+
+# HASHIDS
+HASHIDS_SALT = os.getenv("HASHIDS_SALT", "")
+
+# Kakao OAuth Settings
+KAKAO_CLIENT_ID = os.getenv("KAKAO_CLIENT_ID")
+KAKAO_CLIENT_SECRET = os.getenv("KAKAO_CLIENT_SECRET")
+KAKAO_REDIRECT_URI = os.getenv("KAKAO_REDIRECT_URI")
+
+# NAVER OAuth Settings
+NAVER_CLIENT_ID = os.getenv("NAVER_CLIENT_ID")
+NAVER_CLIENT_SECRET = os.getenv("NAVER_CLIENT_SECRET")
+NAVER_REDIRECT_URI = os.getenv("NAVER_REDIRECT_URI")
+
+# Google OAuth Settings
+GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
+GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
+GOOGLE_REDIRECT_URI = os.getenv("GOOGLE_REDIRECT_URI")
+
+FRONTEND_SOCIAL_REDIRECT_URL = os.getenv("FRONTEND_SOCIAL_REDIRECT_URL")
+
+DISCORD_WEBHOOK_URL = os.getenv("DISCORD_WEBHOOK_URL")
+KAKAO_REST_API_KEY = os.getenv("KAKAO_REST_API_KEY")
+KAKAO_REDIRECT_URIS = os.getenv("KAKAO_REDIRECT_URIS")
+SERVICE_BASE_URL = os.getenv("SERVICE_BASE_URL")
+
+# CORS
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "https://fragmnt.pics",
+    "https://www.fragmnt.pics",
+    "https://fe-one-piece.vercel.app",
+]
+
+CSRF_COOKIE_SAMESITE = "None"
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SAMESITE = "None"
+SESSION_COOKIE_SECURE = True
+
+COOKIE_DOMAIN = os.getenv("COOKIE_DOMAIN", None)
+COOKIE_SECURE = True
+
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^https://.*\.vercel\.app$",
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://fe-one-piece.vercel.app",
+    "https://fragmnt.pics",
+]
+
+REDIS_HOST = os.getenv("REDIS_HOST", "redis")
+REDIS_PORT = int(os.getenv("REDIS_PORT", "6379"))
+
+CF_DOMAIN = os.getenv("CF_DOMAIN", "")
+
+
+JAZZMIN_SETTINGS = {
+    # 기본 설정
+    "site_title": "My Admin",
+    "site_header": "My Admin",
+    "site_brand": "My Admin",
+    "welcome_sign": "환영합니다",
+    # 로고 (없으면 텍스트로 표시)
+    # "site_logo": "img/logo.png",
+    # 상단 링크
+    "topmenu_links": [
+        {"name": "홈", "url": "admin:index"},
+        {"name": "사이트 보기", "url": "/"},
+    ],
+    # 사이드바 아이콘 (Font Awesome 사용)
+    "icons": {
+        "auth.Group": "fas fa-users",
+        "auth.User": "fas fa-user",
+        # 앱별 아이콘
+        "question.questionsresults": "fas fa-list",
+        "chatbot.chatbotrecommendation": "fas fa-robot",
+        "analysis.imageanalysis": "fas fa-image",
+        "scent.scent": "fas fa-leaf",
+    },
+    # 앱 순서 및 이름 변경
+    "order_with_respect_to": [
+        "auth",
+        "scent",
+        "chatbot",
+        "analysis",
+        "question",
+    ],
+    # 사이드바 설정
+    "show_sidebar": True,
+    "navigation_expanded": True,
+    # 검색창
+    "search_model": [],
+    # 테마
+    "show_ui_builder": False,  # True 하면 우측 하단에 UI 커스터마이저 버튼 생김
+}
+
+JAZZMIN_UI_TWEAKS = {
+    "navbar_small_text": False,
+    "footer_small_text": False,
+    "body_small_text": False,
+    "brand_small_text": False,
+    "brand_colour": False,
+    "accent": "accent-primary",  # 포인트 색상
+    "navbar": "navbar-dark",  # 상단바 색상
+    "no_navbar_border": False,
+    "navbar_fixed": False,
+    "layout_boxed": False,
+    "footer_fixed": False,
+    "sidebar_fixed": False,
+    "sidebar": "sidebar-dark-primary",  # 사이드바 색상
+    "sidebar_nav_small_text": False,
+    "sidebar_disable_expand": False,
+    "sidebar_nav_child_indent": False,
+    "sidebar_nav_compact_style": False,
+    "sidebar_nav_legacy_style": False,
+    "sidebar_nav_flat_style": False,
+    "theme": "default",  # 테마 선택
+    "dark_mode_theme": None,
+    "button_classes": {
+        "primary": "btn-primary",
+        "secondary": "btn-secondary",
+        "info": "btn-info",
+        "warning": "btn-warning",
+        "danger": "btn-danger",
+        "success": "btn-success",
+    },
+}

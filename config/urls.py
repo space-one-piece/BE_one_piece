@@ -20,26 +20,33 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 from django.views.generic import RedirectView
-from drf_yasg import openapi  # type: ignore
-from drf_yasg.views import get_schema_view  # type: ignore
-from rest_framework import permissions
+from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 
-schema_view = get_schema_view(
-    openapi.Info(
-        title="Fragrance Recommendation API",
-        default_version="v1",
-        description="Fragrance Recommendation API",
-    ),
-    public=True,
-    permission_classes=(permissions.AllowAny,),
-)
+from apps.analysis.views.scent_views import ScentDetailAPIView, ScentListCreateAPIView
+from apps.question.views.results_views import ShareCreateUrlAPIView, ShareViewAPIView
+from apps.question.views.share_views import ShareOGView
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
-    path("docs/", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"),
-    path("swagger/", schema_view.with_ui("swagger", cache_timeout=0), name="schema-swagger-ui"),
-    path("", RedirectView.as_view(url="/swagger/", permanent=False)),
-    path("api/v1/question", include("apps.question.urls")),
+    path("api/admin/", admin.site.urls),
+    # web share
+    path("api/v1/analyses/web-share", ShareCreateUrlAPIView.as_view(), name="web_share"),
+    path("api/v1/analyses/web-share/<str:share_id>", ShareViewAPIView.as_view(), name="web_share"),
+    # path("api/v1/share", ShareView.as_view(), name="share"), 카카오톡 디스코드 자동 전송
+    path("share-og/<str:share_id>", ShareOGView.as_view(), name="share-og"),
+    path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
+    # Swagger UI
+    path("api/docs/", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),
+    # Redoc UI
+    path("api/redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
+    path("", RedirectView.as_view(url="/api/docs/", permanent=False)),
+    path("api/v1/question/", include("apps.question.urls")),
+    path("api/v1/chatbot/", include("apps.chatbot.urls")),
+    path("api/v1/accounts/", include("apps.users.urls.urls")),
+    # 이미지 분석
+    path("api/v1/analyses", include("apps.analysis.urls.analysis_urls")),
+    # 향 데이터
+    path("api/v1/scents", ScentListCreateAPIView.as_view(), name="scent-list-create"),
+    path("api/v1/scents/<int:id>", ScentDetailAPIView.as_view(), name="scent-detail"),
 ]
 
 if settings.DEBUG:
