@@ -4,7 +4,7 @@ from typing import Any, Literal, cast
 from django.conf import settings
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import status
-from rest_framework.exceptions import NotAuthenticated
+from rest_framework.exceptions import NotAuthenticated, ValidationError
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -15,7 +15,6 @@ from apps.users.serializers.auth_serializers import (
     AccountRecoverySerializer,
     LoginResponseSerializer,
     LoginSerializer,
-    LogoutSerializer,
     UserWithdrawalSerializer,
 )
 from apps.users.serializers.error_response_serializers import ErrorResponseSerializer
@@ -71,13 +70,11 @@ class LoginView(APIView):
 # 로그아웃
 class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
-    serializer_class = LogoutSerializer
 
     @extend_schema(
         summary="로그아웃",
         tags=["accounts"],
         description="전달받은 Refresh token을 블랙리스트에 추가하여 무효화합니다.",
-        request=LogoutSerializer,  # 요청 시리얼라이저 명시
         responses={
             200: OpenApiResponse(
                 description="로그아웃 성공",
@@ -92,17 +89,19 @@ class LogoutView(APIView):
         },
     )
     def post(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
         user = request.user
         if not isinstance(user, User):
             raise NotAuthenticated()
 
-        refresh_token: str = serializer.validated_data["refresh"]
-        LogoutService.logout(refresh_token, request.user)  # type: ignore[arg-type]
+        refresh_token = request.COOKIES.get("refresh_token")
+        if not refresh_token:
+            raise ValidationError({"code": "token_required", "message": "refresh_token 쿠키가 없습니다."})
 
-        return Response({"detail": "성공적으로 로그아웃 되었습니다."}, status=status.HTTP_200_OK)
+        LogoutService.logout(refresh_token, user)
+
+        response = Response({"detail": "성공적으로 로그아웃 되었습니다."}, status=status.HTTP_200_OK)
+        response.delete_cookie("refresh_token", path="/", samesite="None")
+        return response
 
 
 # 계정 탈퇴

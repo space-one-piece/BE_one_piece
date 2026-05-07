@@ -24,11 +24,6 @@ class LoginResponseSerializer(serializers.Serializer[Any]):
     refresh = serializers.CharField()
 
 
-# 로그아웃
-class LogoutSerializer(serializers.Serializer[Any]):
-    refresh = serializers.CharField(help_text="로그아웃할 사용자의 Refresh token")
-
-
 # 회원탈퇴
 class UserWithdrawalSerializer(serializers.Serializer[Any]):
     password = serializers.CharField(write_only=True, label="비밀번호 확인")
