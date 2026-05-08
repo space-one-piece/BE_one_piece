@@ -44,10 +44,6 @@ class ShareCreateUrlAPIView(APIView):
 
         url = ResultsService.new_web_share(type_data, result_id)
         serializer = ResultsSerializer(url)
-        ImageUserService.web_share(
-            result_id=result_id,
-            division=type_data,
-        )
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
