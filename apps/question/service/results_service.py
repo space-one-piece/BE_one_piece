@@ -59,7 +59,7 @@ class ResultsService(QuestServices):
     def new_web_share(cls, type_data: str, result_id: int) -> dict[str, str]:
         query_data: ImageAnalysis | ChatbotRecommendation | QuestionsResults
         if type_data == "image":
-            query_data = get_object_or_404(ImageAnalysis, pk=result_id)
+            query_data = get_object_or_404(ImageAnalysis, image_resource_id=result_id)
         elif type_data == "chatbot":
             query_data = get_object_or_404(ChatbotRecommendation, pk=result_id)
         else:
