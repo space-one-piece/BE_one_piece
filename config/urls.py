@@ -31,7 +31,6 @@ urlpatterns = [
     # web share
     path("api/v1/analyses/web-share", ShareCreateUrlAPIView.as_view(), name="web_share"),
     path("api/v1/analyses/web-share/<str:share_id>", ShareViewAPIView.as_view(), name="web_share"),
-    # path("api/v1/share", ShareView.as_view(), name="share"), 카카오톡 디스코드 자동 전송
     path("share-og/<str:share_id>", ShareOGView.as_view(), name="share-og"),
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     # Swagger UI
