@@ -1,10 +1,15 @@
+from typing import Any
+
 from django.contrib import admin
+from django.utils.safestring import mark_safe
 
 from apps.analysis.models import Scent
+from apps.core.utils.cloud_front import image_url_cloud
 
 
 @admin.register(Scent)
 class ScentAdmin(admin.ModelAdmin):  # type: ignore[type-arg]
+    readonly_fields = ["image_preview"]
     list_display = (
         "id",
         "name",
@@ -17,6 +22,7 @@ class ScentAdmin(admin.ModelAdmin):  # type: ignore[type-arg]
         "is_bestseller",
         "season",
         "similar_scents",
+        "image_preview",
         "created_at",
     )
     search_fields = ("name", "eng_name", "tags")
@@ -35,3 +41,8 @@ class ScentAdmin(admin.ModelAdmin):  # type: ignore[type-arg]
         "created_at",
     )
     list_filter = ("name", "tags")
+
+    def image_preview(self, obj: Any) -> str:
+        if obj.thumbnail_url:
+            return mark_safe(f'<img src="{image_url_cloud(obj.thumbnail_url)}" width="200" />')
+        return "이미지 없음"

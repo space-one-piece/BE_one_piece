@@ -13,28 +13,19 @@
 <table id="result_list" style="width:100%; table-layout:fixed;">
     <thead>
         <tr>
-            <th scope="col" style="width:10%;">
-                <div class="text"><span>구분</span></div>
-            </th>
-            <th scope="col" style="width:5%;">
-                <div class="text"><span>ID</span></div>
-            </th>
-            <th scope="col" style="width:15%;">
-                <div class="text"><span>이름</span></div>
-            </th>
-            <th scope="col" style="width:20%;">
-                <div class="text"><span>향수명</span></div>
-            </th>
-            <th scope="col" style="width:15%;">
-                <div class="text"><span>생성일</span></div>
-            </th>
+            <th scope="col" style="width:10%;"><div class="text"><span>구분</span></div></th>
+            <th scope="col" style="width:5%;"><div class="text"><span>ID</span></div></th>
+            <th scope="col" style="width:10%;"><div class="text"><span>이름</span></div></th>
+            <th scope="col" style="width:10%;"><div class="text"><span>미리보기</span></div></th>
+            <th scope="col" style="width:20%;"><div class="text"><span>향수명</span></div></th>
+            <th scope="col" style="width:15%;"><div class="text"><span>생성일</span></div></th>
         </tr>
     </thead>
     <tbody>
         {% for row in combined_results %}
             {% if row.is_first_of_group %}
                 <tr class="row1">
-                    <td colspan="5" style="background:#417690; color:white; font-weight:bold; padding:6px 12px; font-size:13px;">
+                    <td colspan="6" style="background:#417690; color:white; font-weight:bold; padding:6px 12px; font-size:13px;">
                         📂 {{ row.source_label }}
                     </td>
                 </tr>
@@ -43,12 +34,22 @@
                 <td>{{ row.division }}</td>
                 <td>{{ row.id }}</td>
                 <td>{{ row.name }}</td>
+
+                <td>
+                    {% if row.thumbnail_url and row.thumbnail_url != "-" %}
+                        <img src="{{ row.thumbnail_url }}" width="50" height="50"
+                             style="object-fit: cover; border-radius: 4px; border: 1px solid #ddd;">
+                    {% else %}
+                        <span style="color: #ccc; font-size: 11px;">No Image</span>
+                    {% endif %}
+                </td>
+
                 <td>{{ row.scent_name }}</td>
                 <td>{{ row.created_at|date:"Y-m-d H:i" }}</td>
             </tr>
         {% empty %}
             <tr>
-                <td colspan="5" style="text-align:center; padding:20px; color:#999;">
+                <td colspan="6" style="text-align:center; padding:20px; color:#999;">
                     {% if search_query %}검색 결과가 없습니다.{% else %}검색어를 입력하세요.{% endif %}
                 </td>
             </tr>
@@ -56,25 +57,4 @@
     </tbody>
 </table>
 
-{% endblock %}
-
-{% block content_title %}<h1>통합 검색</h1>{% endblock %}
-
-{% block pagination %}{% endblock %}
-
-{% block extrahead %}
-{{ block.super }}
-<style>
-    /* ✅ 콘텐츠 영역 꽉 채우기 */
-    #content { width: 100% !important; }
-    #changelist { width: 100% !important; }
-    #changelist .results { overflow-x: auto; }
-    #result_list { width: 100% !important; }
-
-    /* ✅ 컬럼 간격 */
-    #result_list td, #result_list th {
-        padding: 8px 12px;
-        white-space: nowrap;
-    }
-</style>
 {% endblock %}
