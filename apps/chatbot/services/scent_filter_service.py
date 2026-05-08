@@ -22,7 +22,7 @@ def _scent_to_dict(scent: Scent) -> dict[str, Any]:
     return {
         "id": scent.id,
         "name": scent.name,
-        "englishName": scent.eng_name,  #
+        "englishName": scent.eng_name,
         "category": scent.categories,
         "intensity": scent.intensity,
         "tags": scent.tags or [],
