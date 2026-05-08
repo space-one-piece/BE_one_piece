@@ -43,7 +43,6 @@ class ScentAdmin(admin.ModelAdmin):  # type: ignore[type-arg]
     list_filter = ("name", "tags")
 
     def image_preview(self, obj: Any) -> str:
-        # obj.thumbnail_url 등 이미지 경로가 담긴 필드를 넣으세요
         if obj.thumbnail_url:
             return mark_safe(f'<img src="{image_url_cloud(obj.thumbnail_url)}" width="200" />')
         return "이미지 없음"

@@ -1,10 +1,15 @@
+from typing import Any
+
 from django.contrib import admin
+from django.utils.safestring import mark_safe
 
 from apps.analysis.models import ImageAnalysis
+from apps.core.utils.cloud_front import image_url_cloud
 
 
 @admin.register(ImageAnalysis)
 class ImageAnalysisAdmin(admin.ModelAdmin):  # type: ignore[type-arg]
+    readonly_fields = ["image_preview"]
     list_display = (
         "id",
         "get_recommended_scent",
@@ -18,6 +23,7 @@ class ImageAnalysisAdmin(admin.ModelAdmin):  # type: ignore[type-arg]
         "match_score",
         "review",
         "rating",
+        "image_preview",
         "is_helpful",
         "is_fallback",
         "created_at",
@@ -41,6 +47,11 @@ class ImageAnalysisAdmin(admin.ModelAdmin):  # type: ignore[type-arg]
         "created_at",
     )
     list_filter = ("recommended_scent__name", "user__name")
+
+    def image_preview(self, obj: Any) -> str:
+        if obj.recommended_scent.thumbnail_url:
+            return mark_safe(f'<img src="{image_url_cloud(obj.recommended_scent.thumbnail_url)}" width="200" />')
+        return "이미지 없음"
 
     @admin.display(ordering="recommended_scent", description="recommended scent")
     def get_recommended_scent(self, obj: ImageAnalysis) -> str:
