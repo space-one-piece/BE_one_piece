@@ -2,16 +2,6 @@
 # 컨텍스트 → 향수 데이터 매핑 테이블
 # ========================
 
-# space 매핑
-# SPACE_TO_PLACE: dict[str, list[str]] = {
-#     "bedroom": ["bedroom", "dressing-room", "vanity", "nursery"],
-#     "livingroom": ["living-room", "lounge", "sunroom", "dinning-room"],
-#     "bathroom": ["bathroom"],
-#     "study": ["workspace", "studio"],
-#     "kitchen": ["kitchen", "dinning-room"],
-#     "office": ["office", "workspace", "studio"],
-#     "entryway": ["entryway"],
-# }
 SPACE_TO_PLACE: dict[str, list[str]] = {
     "bedroom": ["Bedroom", "Dressing Room", "Vanity", "Nursery"],
     "livingroom": ["Living Room", "Lounge", "Sunroom", "Dining Room"],
