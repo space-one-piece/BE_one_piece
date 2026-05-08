@@ -71,12 +71,6 @@ class ResultsService(QuestServices):
 
         expires_at = timezone.now() + datetime.timedelta(days=7)
 
-        # 이미지 생성 미사용으로
-        # image_url = ImageUserService.web_share(
-        #     result_id=result_id,
-        #     division=type_data,
-        # )
-
         image_url = image_url_cloud("uploads/images/share_results/초대장.png")
 
         share_data = Share.objects.filter(result_id=question_id).first()
